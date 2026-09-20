@@ -13,108 +13,226 @@ const __dirname = path.dirname(__filename);
 
 const port = process.env.PORT || 3000;
 
+/* =========================
+   OPENAI
+========================= */
+
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-/*
-  نرفع الحد لأن الصور تصل كـ Base64.
-  الحد الأقصى العملي للصورة من الواجهة سيكون 6MB.
-*/
-app.use(express.json({ limit: "10mb" }));
+/* =========================
+   MIDDLEWARE
+========================= */
 
-/* الصفحة الرئيسية */
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-/* ملفات الموقع */
-app.use(express.static(__dirname));
+app.use(
+  express.json({
+    limit: "25mb"
+  })
+);
 
 /* =========================
-   CHAT API
+   MAIN PAGE
+========================= */
+
+app.get("/", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "index.html")
+  );
+});
+
+/* =========================
+   STATIC FILES
+========================= */
+
+app.use(
+  express.static(__dirname)
+);
+
+/* =========================
+   AI CHAT
 ========================= */
 
 app.post("/api/chat", async (req, res) => {
+
   try {
-    const messages = Array.isArray(req.body?.messages)
-      ? req.body.messages
-      : [];
 
-    const image = req.body?.image || null;
+    const messages =
+      Array.isArray(req.body?.messages)
+        ? req.body.messages
+        : [];
 
-    if (!messages.length && !image) {
+    if (!messages.length) {
+
       return res.status(400).json({
-        error: "لا توجد رسالة أو صورة."
+        error: "لا توجد رسالة."
       });
+
     }
 
     /*
-      آخر 30 رسالة نصية فقط
+      نحافظ على آخر 30 رسالة
+      حتى لا يكبر حجم الطلب.
     */
-    const previousMessages = messages
-      .slice(-30)
-      .map((m) => ({
-        role:
-          m.role === "assistant"
-            ? "assistant"
-            : "user",
-        content: String(m.content || "")
-      }));
+
+    const recentMessages =
+      messages.slice(-30);
 
     /*
-      نبني الإدخال بطريقة Responses API
+      تحويل رسائل الموقع
+      إلى صيغة Responses API
     */
-    const input = [];
 
-    for (const message of previousMessages) {
-      input.push({
-        role: message.role,
-        content: [
-          {
-            type: "input_text",
-            text: message.content
+    const input =
+      recentMessages.map(message => {
+
+        /*
+          رسالة المستخدم
+        */
+
+        if (message.role === "user") {
+
+          /*
+            إذا كانت الرسالة تحتوي
+            على صورة
+          */
+
+          if (
+            Array.isArray(message.content)
+          ) {
+
+            const content =
+              message.content
+                .map(item => {
+
+                  /*
+                    نص
+                  */
+
+                  if (
+                    item.type === "text"
+                  ) {
+
+                    return {
+                      type: "input_text",
+                      text:
+                        String(
+                          item.text || ""
+                        )
+                    };
+
+                  }
+
+                  /*
+                    صورة
+                  */
+
+                  if (
+                    item.type === "image_url"
+                  ) {
+
+                    return {
+                      type: "input_image",
+                      image_url:
+                        item.image_url
+                    };
+
+                  }
+
+                  return null;
+
+                })
+                .filter(Boolean);
+
+            return {
+              role: "user",
+              content
+            };
           }
-        ]
+
+          /*
+            رسالة مستخدم عادية
+          */
+
+          return {
+            role: "user",
+            content: [
+              {
+                type: "input_text",
+                text:
+                  String(
+                    message.content || ""
+                  )
+              }
+            ]
+          };
+        }
+
+        /*
+          رسائل المساعد السابقة
+        */
+
+        if (
+          message.role === "assistant"
+        ) {
+
+          return {
+            role: "assistant",
+            content: [
+              {
+                type: "output_text",
+                text:
+                  String(
+                    message.content || ""
+                  )
+              }
+            ]
+          };
+
+        }
+
+        return null;
+
+      }).filter(Boolean);
+
+    /* =========================
+       OPENAI RESPONSE
+    ========================== */
+
+    const response =
+      await client.responses.create({
+
+        model:
+          "gpt-5.6-luna",
+
+        instructions:
+          `
+أنت المساعد الرسمي لمنصة التطور چات.
+
+أجب بالعربية بشكل واضح ومفيد.
+
+استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
+أو عندما تكون مناسبة للسياق.
+
+إذا أرسل المستخدم صورة:
+- حلل الصورة بدقة.
+- صف محتواها عند الطلب.
+- اقرأ النص الموجود فيها إن أمكن.
+- أجب عن أسئلة المستخدم المتعلقة بالصورة.
+- لا تدّعي رؤية شيء غير واضح في الصورة.
+
+لا تدّعي تنفيذ أفعال لم تنفذها.
+`,
+
+        input,
+
+        store: false
+
       });
-    }
 
-    /*
-      إذا توجد صورة، نضيفها إلى آخر طلب
-    */
-    if (image) {
-      input.push({
-        role: "user",
-        content: [
-          {
-            type: "input_text",
-            text:
-              previousMessages.length
-                ? "حلل الصورة المرفقة وأجب عن طلب المستخدم."
-                : "حلل الصورة المرفقة."
-          },
-          {
-            type: "input_image",
-            image_url: image
-          }
-        ]
-      });
-    }
-
-    const response = await client.responses.create({
-      model: "gpt-5.6-luna",
-
-      instructions:
-        "أنت المساعد الرسمي لمنصة التطور چات. " +
-        "أجب بالعربية بشكل واضح ومفيد. " +
-        "استخدم اللهجة العراقية عندما يطلب المستخدم ذلك. " +
-        "إذا أرسل المستخدم صورة، حلل محتواها بدقة وأجب بناءً عليها. " +
-        "لا تدّعي تنفيذ أفعال لم تنفذها.",
-
-      input,
-
-      store: false
-    });
+    /* =========================
+       RESPONSE TEXT
+    ========================== */
 
     const reply =
       response.output_text ||
@@ -125,19 +243,33 @@ app.post("/api/chat", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("OpenAI Error:", error);
+
+    console.error(
+      "OpenAI Error:",
+      error
+    );
 
     return res.status(500).json({
       error:
         error?.message ||
         "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي."
     });
+
   }
+
 });
 
-/* تشغيل السيرفر */
-app.listen(port, () => {
-  console.log(
-    `التطور چات يعمل على المنفذ ${port}`
-  );
-});
+/* =========================
+   START SERVER
+========================= */
+
+app.listen(
+  port,
+  () => {
+
+    console.log(
+      `التطور چات يعمل على المنفذ ${port}`
+    );
+
+  }
+);
