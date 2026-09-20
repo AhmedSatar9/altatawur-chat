@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000;
 const apiKey = process.env.OPENAI_API_KEY;
 
 if (!apiKey) {
-  console.error("❌ OPENAI_API_KEY غير موجود في ملف .env");
+  console.error("❌ OPENAI_API_KEY غير موجود.");
 }
 
 const client = new OpenAI({
@@ -98,33 +98,58 @@ app.post("/api/chat", async (req, res) => {
 
 
     /* =========================
-       LAST 30 MESSAGES
+       SYSTEM INSTRUCTIONS
     ========================== */
 
-    const recentMessages =
-      messages.slice(-30);
+    const systemMessage = {
+      role: "system",
+
+      content: `
+أنت المساعد الرسمي لمنصة التطور چات.
+
+أجب بالعربية بشكل واضح ومفيد.
+
+استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
+أو عندما تكون مناسبة للسياق.
+
+إذا أرسل المستخدم صورة:
+
+- حلل الصورة بدقة.
+- أجب عن الأسئلة المتعلقة بالصورة.
+- صف محتوى الصورة عند الطلب.
+- اقرأ النصوص الظاهرة في الصورة عندما تكون واضحة.
+- إذا كان جزء من الصورة غير واضح، قل ذلك بوضوح.
+- لا تخمّن معلومات غير ظاهرة في الصورة.
+
+لا تدّعي تنفيذ أي إجراء لم تنفذه فعلياً.
+`
+    };
 
 
     /* =========================
-       CONVERT TO RESPONSES INPUT
+       CONVERT MESSAGES
     ========================== */
 
-    const input = [];
+    const convertedMessages = [];
 
 
-    for (const message of recentMessages) {
+    for (
+      const message
+      of messages.slice(-30)
+    ) {
 
       /*
         =========================
-        USER MESSAGE
+        USER
         =========================
       */
 
-      if (message.role === "user") {
+      if (
+        message.role === "user"
+      ) {
 
         /*
-          رسالة تحتوي على محتوى متعدد
-          نص + صورة
+          رسالة متعددة المحتوى
         */
 
         if (
@@ -139,26 +164,25 @@ app.post("/api/chat", async (req, res) => {
             of message.content
           ) {
 
-            /*
-              TEXT
-            */
+            /* TEXT */
 
             if (
-              item?.type === "input_text"
+              item?.type === "input_text" ||
+              item?.type === "text"
             ) {
 
               const text =
                 String(
                   item.text || ""
-                ).trim();
+                );
 
 
-              if (text) {
+              if (text.trim()) {
 
                 content.push({
 
                   type:
-                    "input_text",
+                    "text",
 
                   text
 
@@ -169,35 +193,37 @@ app.post("/api/chat", async (req, res) => {
             }
 
 
-            /*
-              IMAGE
-            */
+            /* IMAGE */
 
-            else if (
-              item?.type === "input_image"
+            if (
+              item?.type === "input_image" ||
+              item?.type === "image_url"
             ) {
 
-              let imageUrl =
+              let imageData =
                 item.image_url;
 
 
               /*
-                نتأكد أن الصورة
-                Data URL صحيحة
+                إذا جاءت من index.html
+                تكون String مباشرة.
               */
 
               if (
-                typeof imageUrl === "string" &&
-                imageUrl.startsWith("data:image/")
+                typeof imageData === "string"
               ) {
 
                 content.push({
 
                   type:
-                    "input_image",
+                    "image_url",
 
-                  image_url:
-                    imageUrl
+                  image_url: {
+
+                    url:
+                      imageData
+
+                  }
 
                 });
 
@@ -208,13 +234,9 @@ app.post("/api/chat", async (req, res) => {
           }
 
 
-          /*
-            لا نرسل رسالة فارغة
-          */
-
           if (content.length > 0) {
 
-            input.push({
+            convertedMessages.push({
 
               role:
                 "user",
@@ -228,7 +250,7 @@ app.post("/api/chat", async (req, res) => {
         }
 
         /*
-          USER MESSAGE عادية
+          رسالة نصية عادية
         */
 
         else {
@@ -236,28 +258,18 @@ app.post("/api/chat", async (req, res) => {
           const text =
             String(
               message.content || ""
-            ).trim();
+            );
 
 
-          if (text) {
+          if (text.trim()) {
 
-            input.push({
+            convertedMessages.push({
 
               role:
                 "user",
 
-              content: [
-
-                {
-
-                  type:
-                    "input_text",
-
-                  text
-
-                }
-
-              ]
+              content:
+                text
 
             });
 
@@ -270,7 +282,7 @@ app.post("/api/chat", async (req, res) => {
 
       /*
         =========================
-        ASSISTANT MESSAGE
+        ASSISTANT
         =========================
       */
 
@@ -281,28 +293,18 @@ app.post("/api/chat", async (req, res) => {
         const text =
           String(
             message.content || ""
-          ).trim();
+          );
 
 
-        if (text) {
+        if (text.trim()) {
 
-          input.push({
+          convertedMessages.push({
 
             role:
               "assistant",
 
-            content: [
-
-              {
-
-                type:
-                  "output_text",
-
-                text
-
-              }
-
-            ]
+            content:
+              text
 
           });
 
@@ -314,15 +316,26 @@ app.post("/api/chat", async (req, res) => {
 
 
     /* =========================
-       CHECK INPUT
+       FINAL MESSAGES
     ========================== */
 
-    if (!input.length) {
+    const finalMessages = [
+
+      systemMessage,
+
+      ...convertedMessages
+
+    ];
+
+
+    if (
+      finalMessages.length === 1
+    ) {
 
       return res.status(400).json({
 
         error:
-          "لم يتم العثور على محتوى صالح للإرسال."
+          "لم يتم العثور على محتوى صالح."
 
       });
 
@@ -330,64 +343,41 @@ app.post("/api/chat", async (req, res) => {
 
 
     /* =========================
-       OPENAI
+       SEND TO OPENAI
     ========================== */
 
     console.log(
-      "📨 إرسال طلب إلى OpenAI..."
+      "📨 إرسال الطلب إلى OpenAI..."
     );
 
 
     const response =
-      await client.responses.create({
+      await client.chat.completions.create({
 
         model:
           "gpt-5.6-luna",
 
-        instructions:
-          `
-أنت المساعد الرسمي لمنصة التطور چات.
-
-أجب بالعربية بشكل واضح ومفيد.
-
-استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
-أو عندما يكون استخدامها مناسباً للسياق.
-
-إذا أرسل المستخدم صورة:
-
-- حلل الصورة بدقة.
-- أجب عن الأسئلة المتعلقة بالصورة.
-- صف محتوى الصورة عند الطلب.
-- اقرأ النصوص الظاهرة في الصورة عندما تكون واضحة.
-- إذا كان جزء من الصورة غير واضح، قل ذلك بوضوح.
-- لا تخمّن معلومات غير ظاهرة في الصورة.
-
-إذا أرسل المستخدم ملفاً أو معلومات، تعامل معها حسب المحتوى المتاح لك.
-
-لا تدّعي تنفيذ أي إجراء لم تنفذه فعلياً.
-`,
-
-        input,
-
-        store:
-          false
+        messages:
+          finalMessages
 
       });
 
 
     /* =========================
-       GET RESPONSE
+       GET REPLY
     ========================== */
 
     const reply =
-      response?.output_text ||
-      "";
+      response?.choices?.[0]?.message?.content;
 
 
-    if (!reply.trim()) {
+    if (
+      !reply ||
+      !String(reply).trim()
+    ) {
 
       console.error(
-        "OpenAI returned no text:",
+        "❌ OpenAI لم يرجع نصاً:",
         response
       );
 
@@ -395,7 +385,7 @@ app.post("/api/chat", async (req, res) => {
       return res.status(500).json({
 
         error:
-          "تمت معالجة الطلب ولكن لم يصل رد نصي من الذكاء الاصطناعي."
+          "لم يصل رد نصي من الذكاء الاصطناعي."
 
       });
 
@@ -403,18 +393,18 @@ app.post("/api/chat", async (req, res) => {
 
 
     /* =========================
-       SEND RESPONSE
+       SUCCESS
     ========================== */
 
     console.log(
-      "✅ تم استلام رد OpenAI"
+      "✅ تم استلام الرد من OpenAI"
     );
 
 
     return res.status(200).json({
 
       reply:
-        reply.trim()
+        String(reply).trim()
 
     });
 
@@ -432,10 +422,6 @@ app.post("/api/chat", async (req, res) => {
       error
     );
 
-
-    /*
-      OpenAI API ERROR
-    */
 
     const errorMessage =
       error?.error?.message ||
