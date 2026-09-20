@@ -26,6 +26,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      overflow-x: hidden;
     }
     button,
     textarea {
@@ -74,7 +75,6 @@
       color: #6ee7b7;
       font-size: 14px;
     }
-    /* HEADER ACTIONS */
     .header-actions {
       display: flex;
       align-items: center;
@@ -90,11 +90,9 @@
       font-size: 15px;
       cursor: pointer;
       white-space: nowrap;
-      transition: .2s;
     }
     .new-chat:hover {
       color: white;
-      border-color: rgba(255,255,255,.18);
       background: rgba(255,255,255,.04);
     }
     .menu {
@@ -106,7 +104,6 @@
       color: white;
       font-size: 25px;
       cursor: pointer;
-      flex-shrink: 0;
     }
     /* CHAT */
     .chat {
@@ -270,6 +267,129 @@
       opacity: .5;
       cursor: not-allowed;
     }
+    /* SIDEBAR */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      opacity: 0;
+      visibility: hidden;
+      transition: .25s;
+      z-index: 40;
+    }
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 330px;
+      max-width: 88%;
+      height: 100vh;
+      background: #0b1020;
+      border-left: 1px solid var(--border);
+      transform: translateX(105%);
+      transition: transform .28s ease;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -15px 0 50px rgba(0,0,0,.3);
+    }
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    .sidebar-header {
+      height: 92px;
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sidebar-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .close-sidebar {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: white;
+      border-radius: 12px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .sidebar-new {
+      margin: 18px;
+      height: 50px;
+      border: none;
+      border-radius: 15px;
+      background: var(--gradient);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .conversations {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 12px 20px;
+    }
+    .conversation {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px;
+      margin-bottom: 5px;
+      border-radius: 14px;
+      transition: .2s;
+    }
+    .conversation:hover {
+      background: rgba(255,255,255,.04);
+    }
+    .conversation.active {
+      background: rgba(139,92,246,.13);
+    }
+    .conversation-open {
+      flex: 1;
+      min-width: 0;
+      padding: 13px 12px;
+      border: none;
+      background: transparent;
+      color: #e8ebf5;
+      text-align: right;
+      cursor: pointer;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border-radius: 10px;
+    }
+    .conversation-delete {
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: transparent;
+      color: #727b90;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .conversation-delete:hover {
+      color: #ff6b81;
+      background: rgba(255,107,129,.08);
+    }
+    .empty-conversations {
+      color: var(--muted);
+      text-align: center;
+      padding: 35px 20px;
+      line-height: 1.8;
+      font-size: 14px;
+    }
     /* MOBILE */
     @media (max-width: 600px) {
       header {
@@ -325,6 +445,9 @@
         padding-left: 12px;
         padding-right: 12px;
       }
+      .sidebar {
+        width: 310px;
+      }
     }
     @media (max-width: 390px) {
       .brand-info h1 {
@@ -363,6 +486,7 @@
       <button
         class="menu"
         type="button"
+        onclick="openSidebar()"
       >
         ☰
       </button>
@@ -397,19 +521,88 @@
     </div>
   </div>
 </div>
+<!-- SIDEBAR -->
+<div
+  class="overlay"
+  id="overlay"
+  onclick="closeSidebar()"
+></div>
+<aside
+  class="sidebar"
+  id="sidebar"
+>
+  <div class="sidebar-header">
+    <div class="sidebar-title">
+      محادثاتك
+    </div>
+    <button
+      class="close-sidebar"
+      onclick="closeSidebar()"
+    >
+      ×
+    </button>
+  </div>
+  <button
+    class="sidebar-new"
+    onclick="newChat()"
+  >
+    + محادثة جديدة
+  </button>
+  <div
+    class="conversations"
+    id="conversations"
+  ></div>
+</aside>
 <script>
   const chat = document.getElementById("chat");
   const input = document.getElementById("messageInput");
   const sendButton = document.getElementById("sendButton");
-  let messages = JSON.parse(
-    localStorage.getItem("altatawur_chat") || "[]"
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const conversations = document.getElementById("conversations");
+  /* =========================
+     CHAT DATA
+  ========================= */
+  let chats = JSON.parse(
+    localStorage.getItem("altatawur_chats") || "[]"
   );
-  function saveMessages() {
+  let currentChatId =
+    localStorage.getItem("altatawur_current_chat") || null;
+  /* =========================
+     CHAT STORAGE
+  ========================= */
+  function saveChats() {
     localStorage.setItem(
-      "altatawur_chat",
-      JSON.stringify(messages)
+      "altatawur_chats",
+      JSON.stringify(chats)
+    );
+    if (currentChatId) {
+      localStorage.setItem(
+        "altatawur_current_chat",
+        currentChatId
+      );
+    }
+  }
+  function createChat() {
+    const chatObject = {
+      id: Date.now().toString(),
+      title: "محادثة جديدة",
+      messages: []
+    };
+    chats.unshift(chatObject);
+    currentChatId = chatObject.id;
+    saveChats();
+    renderConversations();
+    return chatObject;
+  }
+  function getCurrentChat() {
+    return chats.find(
+      chat => chat.id === currentChatId
     );
   }
+  /* =========================
+     WELCOME
+  ========================= */
   function showWelcome() {
     chat.innerHTML = `
       <section class="welcome" id="welcome">
@@ -424,14 +617,21 @@
       </section>
     `;
   }
+  /* =========================
+     ADD MESSAGE
+  ========================= */
   function addMessage(role, text) {
-    const message = document.createElement("div");
-    message.className = `message ${role}`;
-    const avatar = document.createElement("div");
+    const message =
+      document.createElement("div");
+    message.className =
+      `message ${role}`;
+    const avatar =
+      document.createElement("div");
     avatar.className = "avatar";
     avatar.textContent =
       role === "user" ? "أ" : "ت";
-    const bubble = document.createElement("div");
+    const bubble =
+      document.createElement("div");
     bubble.className = "bubble";
     bubble.textContent = text;
     message.appendChild(avatar);
@@ -443,27 +643,129 @@
     });
     return message;
   }
-  function loadMessages() {
-    if (!messages.length) {
+  /* =========================
+     LOAD CHAT
+  ========================= */
+  function loadChat(chatId) {
+    const selected =
+      chats.find(c => c.id === chatId);
+    if (!selected) {
       showWelcome();
       return;
     }
+    currentChatId = selected.id;
+    saveChats();
     chat.innerHTML = "";
-    messages.forEach(message => {
-      addMessage(
-        message.role,
-        message.content
-      );
+    if (!selected.messages.length) {
+      showWelcome();
+    } else {
+      selected.messages.forEach(message => {
+        addMessage(
+          message.role,
+          message.content
+        );
+      });
+    }
+    renderConversations();
+  }
+  /* =========================
+     RENDER SIDEBAR
+  ========================= */
+  function renderConversations() {
+    conversations.innerHTML = "";
+    if (!chats.length) {
+      conversations.innerHTML = `
+        <div class="empty-conversations">
+          ما عندك محادثات محفوظة حالياً.
+          <br>
+          ابدأ محادثة جديدة من الزر بالأعلى.
+        </div>
+      `;
+      return;
+    }
+    chats.forEach(item => {
+      const row =
+        document.createElement("div");
+      row.className =
+        "conversation" +
+        (
+          item.id === currentChatId
+            ? " active"
+            : ""
+        );
+      const openButton =
+        document.createElement("button");
+      openButton.className =
+        "conversation-open";
+      openButton.textContent =
+        item.title || "محادثة جديدة";
+      openButton.onclick = function() {
+        loadChat(item.id);
+        closeSidebar();
+      };
+      const deleteButton =
+        document.createElement("button");
+      deleteButton.className =
+        "conversation-delete";
+      deleteButton.textContent = "🗑";
+      deleteButton.onclick = function(event) {
+        event.stopPropagation();
+        deleteChat(item.id);
+      };
+      row.appendChild(openButton);
+      row.appendChild(deleteButton);
+      conversations.appendChild(row);
     });
   }
+  /* =========================
+     DELETE CHAT
+  ========================= */
+  function deleteChat(chatId) {
+    chats =
+      chats.filter(
+        chat => chat.id !== chatId
+      );
+    if (currentChatId === chatId) {
+      if (chats.length) {
+        currentChatId =
+          chats[0].id;
+        loadChat(currentChatId);
+      } else {
+        currentChatId = null;
+        showWelcome();
+      }
+    }
+    saveChats();
+    renderConversations();
+  }
+  /* =========================
+     NEW CHAT
+  ========================= */
+  function newChat() {
+    const newConversation =
+      createChat();
+    showWelcome();
+    input.value = "";
+    input.style.height = "52px";
+    closeSidebar();
+    input.focus();
+  }
+  /* =========================
+     TYPING
+  ========================= */
   function addTyping() {
-    const message = document.createElement("div");
-    message.className = "message assistant";
-    message.id = "typingMessage";
-    const avatar = document.createElement("div");
+    const message =
+      document.createElement("div");
+    message.className =
+      "message assistant";
+    message.id =
+      "typingMessage";
+    const avatar =
+      document.createElement("div");
     avatar.className = "avatar";
     avatar.textContent = "ت";
-    const bubble = document.createElement("div");
+    const bubble =
+      document.createElement("div");
     bubble.className = "bubble";
     bubble.innerHTML = `
       <div class="typing">
@@ -482,50 +784,94 @@
   }
   function removeTyping() {
     const typing =
-      document.getElementById("typingMessage");
+      document.getElementById(
+        "typingMessage"
+      );
     if (typing) {
       typing.remove();
     }
   }
+  /* =========================
+     SEND MESSAGE
+  ========================= */
   async function sendMessage() {
-    const text = input.value.trim();
-    if (!text || sendButton.disabled) {
+    const text =
+      input.value.trim();
+    if (
+      !text ||
+      sendButton.disabled
+    ) {
       return;
     }
-    messages.push({
+    /*
+      إذا ماكو محادثة حالياً،
+      ننشئ واحدة تلقائياً.
+    */
+    if (!currentChatId) {
+      createChat();
+    }
+    const current =
+      getCurrentChat();
+    if (!current) {
+      return;
+    }
+    /* عنوان المحادثة من أول رسالة */
+    if (
+      current.messages.length === 0
+    ) {
+      current.title =
+        text.length > 32
+          ? text.substring(0, 32) + "..."
+          : text;
+    }
+    current.messages.push({
       role: "user",
       content: text
     });
-    saveMessages();
-    addMessage("user", text);
+    saveChats();
+    renderConversations();
+    addMessage(
+      "user",
+      text
+    );
     input.value = "";
     input.style.height = "52px";
     sendButton.disabled = true;
     addTyping();
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          messages: messages
-        })
-      });
-      const data = await response.json();
+      const response =
+        await fetch(
+          "/api/chat",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify({
+                messages:
+                  current.messages
+              })
+          }
+        );
+      const data =
+        await response.json();
       removeTyping();
       if (!response.ok) {
         throw new Error(
-          data.error || "حدث خطأ."
+          data.error ||
+          "حدث خطأ."
         );
       }
       const reply =
-        data.reply || "ما حصلت جواب.";
-      messages.push({
+        data.reply ||
+        "ما حصلت جواب.";
+      current.messages.push({
         role: "assistant",
         content: reply
       });
-      saveMessages();
+      saveChats();
       addMessage(
         "assistant",
         reply
@@ -542,14 +888,21 @@
       input.focus();
     }
   }
-  function newChat() {
-    messages = [];
-    localStorage.removeItem(
-      "altatawur_chat"
-    );
-    showWelcome();
-    input.focus();
+  /* =========================
+     SIDEBAR
+  ========================= */
+  function openSidebar() {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+    renderConversations();
   }
+  function closeSidebar() {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  }
+  /* =========================
+     TEXTAREA
+  ========================= */
   input.addEventListener(
     "input",
     function() {
@@ -573,7 +926,55 @@
       }
     }
   );
-  loadMessages();
+  /* =========================
+     INITIALIZATION
+  ========================= */
+  function initialize() {
+    /*
+      دعم المحادثات القديمة
+      التي كانت محفوظة بالإصدار السابق.
+    */
+    const oldMessages =
+      JSON.parse(
+        localStorage.getItem(
+          "altatawur_chat"
+        ) || "[]"
+      );
+    if (
+      !chats.length &&
+      oldMessages.length
+    ) {
+      const oldChat = {
+        id: Date.now().toString(),
+        title:
+          oldMessages[0]?.content ||
+          "محادثة قديمة",
+        messages:
+          oldMessages
+      };
+      chats.push(oldChat);
+      currentChatId =
+        oldChat.id;
+      localStorage.removeItem(
+        "altatawur_chat"
+      );
+      saveChats();
+    }
+    if (
+      !currentChatId &&
+      chats.length
+    ) {
+      currentChatId =
+        chats[0].id;
+    }
+    if (currentChatId) {
+      loadChat(currentChatId);
+    } else {
+      showWelcome();
+    }
+    renderConversations();
+  }
+  initialize();
 </script>
 </body>
 </html>
