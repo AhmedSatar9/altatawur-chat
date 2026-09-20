@@ -1,33 +1,690 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>التطور چات</title>
+
 <style>
-:root{--bg:#060914;--panel:#0b1222;--panel2:#101a2d;--line:#1d2a43;--text:#f4f7ff;--muted:#8e9ab3;--cyan:#18e5ef;--purple:#9a55ff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 75% 10%,#18204a 0,transparent 35%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;height:100vh;overflow:hidden}.app{display:flex;height:100vh}
-.sidebar{width:280px;background:rgba(7,12,24,.94);border-left:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:14px}.brand{display:flex;align-items:center;gap:10px;padding:8px}.bot,.bigbot,.mini{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#06101b;font-weight:900}.bot{width:42px;height:42px;border-radius:14px;display:grid;place-items:center}.brand b{font-size:19px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1px}.new{border:0;border-radius:12px;padding:13px;background:linear-gradient(90deg,var(--cyan),#a74cff);color:#041019;font-weight:800;cursor:pointer}.search{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px;color:var(--muted)}.chats{overflow:auto;flex:1}.chat{padding:11px;border-radius:10px;color:#ccd5e7;cursor:pointer;margin:3px 0}.chat:hover,.chat.active{background:var(--panel2)}.chat small{display:block;color:#65738e;margin-top:4px}.bottom{border-top:1px solid var(--line);padding-top:12px;color:#aab6cc}.bottom div{padding:10px}
-.main{flex:1;display:flex;flex-direction:column;min-width:0}.top{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(6,9,20,.72);backdrop-filter:blur(10px)}.model{background:var(--panel);border:1px solid var(--line);padding:10px 14px;border-radius:11px}.profile{display:flex;align-items:center;gap:10px}.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#36e7f1,#8c50ff);display:grid;place-items:center;color:#07101c;font-weight:bold}
-.messages{flex:1;overflow:auto;padding:30px max(20px,8vw)}.welcome{text-align:center;margin:8vh auto 35px;max-width:650px}.bigbot{margin:auto auto 18px;width:74px;height:74px;border-radius:24px;display:grid;place-items:center;font-size:34px;box-shadow:0 0 45px #16dce955}.welcome h1{font-size:32px;margin:0 0 10px}.welcome p{color:var(--muted);line-height:1.8}.msg{display:flex;gap:12px;margin:20px 0;align-items:flex-start}.msg.user{flex-direction:row-reverse}.bubble{max-width:min(760px,82%);padding:14px 17px;border-radius:16px;background:var(--panel2);border:1px solid var(--line);line-height:1.8;white-space:pre-wrap}.user .bubble{background:linear-gradient(135deg,#124b61,#493078);border-color:#315b79}.mini{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none}.composer{padding:15px 6vw 20px}.box{max-width:900px;margin:auto;background:var(--panel);border:1px solid #2a3b5c;border-radius:18px;padding:10px;display:flex;align-items:flex-end;gap:9px}.box textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;font:inherit;min-height:46px;padding:10px}.icon,.send{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:#111b30;color:#b9c6dc;cursor:pointer}.send{border:0;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#06101b;font-weight:900}.hint{text-align:center;color:#687792;font-size:11px;margin-top:9px}.typing{opacity:.65}
-@media(max-width:760px){.sidebar{display:none}.top{padding:0 14px}.messages{padding:18px 14px}.welcome{margin-top:10vh}.welcome h1{font-size:25px}.composer{padding:10px 10px 14px}.model{font-size:12px}.top .profile span{display:none}}
+:root{
+  --bg:#070912;
+  --panel:#0d1220;
+  --panel2:#11182a;
+  --border:rgba(255,255,255,.09);
+  --text:#f5f7ff;
+  --muted:#8d96aa;
+  --purple:#8b5cf6;
+  --cyan:#22d3ee;
+  --gradient:linear-gradient(135deg,#8b5cf6,#22d3ee);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  height:100vh;
+  overflow:hidden;
+}
+
+.app{
+  height:100vh;
+  display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  width:270px;
+  background:rgba(13,18,32,.96);
+  border-left:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  padding:18px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:24px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:var(--gradient);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:800;
+  box-shadow:0 8px 30px rgba(139,92,246,.25);
+}
+
+.brand-name{
+  font-size:19px;
+  font-weight:800;
+}
+
+.brand-sub{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.new{
+  width:100%;
+  border:1px solid var(--border);
+  background:var(--gradient);
+  color:white;
+  border-radius:13px;
+  padding:13px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  margin-bottom:18px;
+}
+
+.chat-title{
+  color:var(--muted);
+  font-size:12px;
+  margin:8px 4px;
+}
+
+.chat-item{
+  padding:12px;
+  border-radius:11px;
+  background:rgba(255,255,255,.04);
+  color:#dce2f0;
+  font-size:14px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.sidebar-bottom{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  padding-top:16px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* MAIN */
+
+.main{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+
+.top{
+  height:70px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 24px;
+  background:rgba(7,9,18,.85);
+  backdrop-filter:blur(15px);
+}
+
+.mobile-logo{
+  display:none;
+}
+
+.top-title{
+  font-size:17px;
+  font-weight:700;
+}
+
+.status{
+  margin-right:10px;
+  font-size:11px;
+  color:#68e0b2;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+  background:#43d99b;
+  border-radius:50%;
+}
+
+/* MESSAGES */
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding:35px max(20px,calc((100% - 850px)/2));
+  scroll-behavior:smooth;
+}
+
+.welcome{
+  min-height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.welcome-inner{
+  max-width:600px;
+}
+
+.big-logo{
+  width:75px;
+  height:75px;
+  margin:0 auto 22px;
+  border-radius:24px;
+  background:var(--gradient);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:36px;
+  font-weight:900;
+  box-shadow:0 15px 50px rgba(139,92,246,.25);
+}
+
+.welcome h1{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+.welcome p{
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.8;
+}
+
+.message{
+  display:flex;
+  margin-bottom:22px;
+  gap:12px;
+  animation:fade .25s ease;
+}
+
+.message.user{
+  flex-direction:row-reverse;
+}
+
+.avatar{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  font-size:14px;
+}
+
+.ai .avatar{
+  background:var(--gradient);
+}
+
+.user .avatar{
+  background:#20283b;
+}
+
+.bubble{
+  max-width:min(720px,80%);
+  padding:13px 16px;
+  border-radius:17px;
+  line-height:1.8;
+  font-size:15px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.ai .bubble{
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-top-right-radius:5px;
+}
+
+.user .bubble{
+  background:var(--gradient);
+  border-top-left-radius:5px;
+}
+
+/* COMPOSER */
+
+.composer{
+  padding:14px max(20px,calc((100% - 850px)/2));
+  background:linear-gradient(to top,rgba(7,9,18,1),rgba(7,9,18,.85));
+}
+
+.box{
+  display:flex;
+  align-items:flex-end;
+  gap:10px;
+  padding:8px;
+  background:#101625;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:18px;
+  box-shadow:0 10px 35px rgba(0,0,0,.25);
+}
+
+textarea{
+  flex:1;
+  resize:none;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:white;
+  font-family:inherit;
+  font-size:15px;
+  line-height:1.6;
+  padding:9px 10px;
+  min-height:42px;
+  max-height:140px;
+}
+
+textarea::placeholder{
+  color:#697287;
+}
+
+.send{
+  width:43px;
+  height:43px;
+  border:0;
+  border-radius:13px;
+  background:var(--gradient);
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.send:disabled{
+  opacity:.45;
+}
+
+.hint{
+  text-align:center;
+  color:#596276;
+  font-size:10px;
+  margin-top:8px;
+}
+
+/* TYPING */
+
+.typing{
+  display:flex;
+  gap:5px;
+  padding:5px 2px;
+}
+
+.typing span{
+  width:7px;
+  height:7px;
+  background:#8790a4;
+  border-radius:50%;
+  animation:bounce 1.2s infinite;
+}
+
+.typing span:nth-child(2){
+  animation-delay:.15s;
+}
+
+.typing span:nth-child(3){
+  animation-delay:.3s;
+}
+
+@keyframes bounce{
+  0%,60%,100%{transform:translateY(0)}
+  30%{transform:translateY(-5px)}
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:none}
+}
+
+/* MOBILE */
+
+@media(max-width:760px){
+
+  .sidebar{
+    display:none;
+  }
+
+  .top{
+    height:62px;
+    padding:0 16px;
+    justify-content:center;
+    position:relative;
+  }
+
+  .mobile-logo{
+    display:flex;
+    position:absolute;
+    right:16px;
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    background:var(--gradient);
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:16px;
+  }
+
+  .top-title{
+    font-size:16px;
+  }
+
+  .status{
+    display:none;
+  }
+
+  .messages{
+    padding:22px 14px;
+  }
+
+  .welcome h1{
+    font-size:27px;
+  }
+
+  .welcome p{
+    font-size:14px;
+  }
+
+  .big-logo{
+    width:65px;
+    height:65px;
+    font-size:30px;
+  }
+
+  .bubble{
+    max-width:82%;
+    font-size:14px;
+  }
+
+  .composer{
+    padding:10px 10px calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .hint{
+    display:none;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
-<aside class="sidebar"><div class="brand"><div class="bot">✦</div><div><b>التطور چات</b><small>ALTATAWUR CHAT</small></div></div>
-<button class="new" onclick="newChat()">＋ محادثة جديدة</button><div class="search">⌕ &nbsp; ابحث في محادثاتك...</div>
-<div class="chats" id="chatList"><div class="chat active">محادثة جديدة <small>الآن</small></div><div class="chat">أفكار لمشروع جديد</div><div class="chat">كتابة محتوى إعلاني</div></div>
-<div class="bottom"><div>⚙ الإعدادات</div><div>◉ الباقات</div></div></aside>
-<main class="main"><header class="top"><div class="model">⚡ التطور AI · <b>ذكي</b>⌄</div><div class="profile"><span>المستخدم</span><div class="avatar">أ</div></div></header>
-<section class="messages" id="messages"><div class="welcome" id="welcome"><div class="bigbot">✦</div><h1>مرحباً بك في التطور چات 👋</h1><p>هسه صار عندك اتصال حقيقي بالذكاء الاصطناعي بعد إضافة مفتاح API.</p></div></section>
-<div class="composer"><div class="box"><button class="icon" title="مرفقات">＋</button><textarea id="input" placeholder="اكتب رسالتك هنا..." rows="1"></textarea><button class="send" onclick="sendMsg()">➤</button></div><div class="hint">التطور چات قد يخطئ أحياناً. تحقق من المعلومات المهمة.</div></div>
-</main></div>
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="logo">ت</div>
+      <div>
+        <div class="brand-name">التطور چات</div>
+        <div class="brand-sub">منصة ذكاء اصطناعي</div>
+      </div>
+    </div>
+
+    <button class="new" onclick="newChat()">
+      ＋ محادثة جديدة
+    </button>
+
+    <div class="chat-title">المحادثات</div>
+
+    <div class="chat-item" id="chatName">
+      محادثة جديدة
+    </div>
+
+    <div class="sidebar-bottom">
+      التطور چات © 2026
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="top">
+      <div class="mobile-logo">ت</div>
+      <div class="top-title">التطور چات</div>
+      <div class="status">
+        <span class="status-dot"></span>
+        متصل
+      </div>
+    </header>
+
+    <section class="messages" id="messages">
+
+      <div class="welcome" id="welcome">
+
+        <div class="welcome-inner">
+
+          <div class="big-logo">ت</div>
+
+          <h1>هلا بيك 👋</h1>
+
+          <p>
+            أني التطور چات، مساعدك الذكي.
+            <br>
+            اسألني أي سؤال وخلينا نبدأ.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <div class="composer">
+
+      <div class="box">
+
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="اكتب رسالتك هنا..."
+        ></textarea>
+
+        <button
+          class="send"
+          id="send"
+          onclick="sendMsg()"
+        >
+          ↑
+        </button>
+
+      </div>
+
+      <div class="hint">
+        التطور چات قد يخطئ أحياناً، تحقق من المعلومات المهمة.
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
 <script>
-const input=document.getElementById('input'),messages=document.getElementById('messages'); let history=[];
-input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}});
-function add(text,user=false,typing=false){const row=document.createElement('div');row.className='msg '+(user?'user':'');row.innerHTML=`<div class="mini">${user?'أ':'✦'}</div><div class="bubble ${typing?'typing':''}">${text}</div>`;messages.appendChild(row);messages.scrollTop=messages.scrollHeight;return row}
-async function sendMsg(){const t=input.value.trim();if(!t)return;document.getElementById('welcome')?.remove();input.value='';add(t,true);history.push({role:'user',content:t});const wait=add('جاري التفكير…',false,true);
-try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})});const d=await r.json();wait.remove();if(!r.ok)throw new Error(d.error||'خطأ');add(d.reply);history.push({role:'assistant',content:d.reply})}catch(e){wait.remove();add('صار خطأ بالاتصال. تأكد من إعداد OPENAI_API_KEY ثم أعد تشغيل السيرفر.');console.error(e)}}
-function newChat(){history=[];messages.innerHTML='<div class="welcome" id="welcome"><div class="bigbot">✦</div><h1>محادثة جديدة ✨</h1><p>شنو تحب تسألني اليوم؟</p></div>';input.focus()}
+
+let history = [];
+
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+const sendButton = document.getElementById("send");
+const welcome = document.getElementById("welcome");
+
+input.addEventListener("keydown", function(e){
+
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    sendMsg();
+  }
+
+});
+
+input.addEventListener("input", function(){
+
+  this.style.height = "auto";
+  this.style.height = Math.min(this.scrollHeight,140) + "px";
+
+});
+
+function addMessage(text,user=false,typing=false){
+
+  if(welcome){
+    welcome.style.display="none";
+  }
+
+  const row=document.createElement("div");
+
+  row.className="message " + (user ? "user" : "ai");
+
+  const avatar=document.createElement("div");
+  avatar.className="avatar";
+  avatar.textContent=user ? "أ" : "ت";
+
+  const bubble=document.createElement("div");
+  bubble.className="bubble";
+
+  if(typing){
+
+    bubble.innerHTML=`
+      <div class="typing">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    `;
+
+  }else{
+
+    bubble.textContent=text;
+
+  }
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+
+  messages.appendChild(row);
+
+  messages.scrollTop=messages.scrollHeight;
+
+  return row;
+}
+
+async function sendMsg(){
+
+  const text=input.value.trim();
+
+  if(!text) return;
+
+  sendButton.disabled=true;
+
+  addMessage(text,true);
+
+  history.push({
+    role:"user",
+    content:text
+  });
+
+  input.value="";
+  input.style.height="auto";
+
+  const typingRow=addMessage("",false,true);
+
+  try{
+
+    const response=await fetch("/api/chat",{
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({
+        messages:history
+      })
+
+    });
+
+    const data=await response.json();
+
+    typingRow.remove();
+
+    if(!response.ok){
+      throw new Error(data.error || "حدث خطأ");
+    }
+
+    const reply=data.reply || "ما حصلت رد.";
+
+    addMessage(reply,false);
+
+    history.push({
+      role:"assistant",
+      content:reply
+    });
+
+  }catch(error){
+
+    typingRow.remove();
+
+    addMessage(
+      "عذراً، صار خطأ بالاتصال بالخادم. حاول مرة ثانية."
+    );
+
+    console.error(error);
+
+  }finally{
+
+    sendButton.disabled=false;
+    input.focus();
+
+  }
+
+}
+
+function newChat(){
+
+  history=[];
+
+  messages.innerHTML=`
+    <div class="welcome" id="welcome">
+      <div class="welcome-inner">
+        <div class="big-logo">ت</div>
+        <h1>هلا بيك 👋</h1>
+        <p>
+          أني التطور چات، مساعدك الذكي.
+          <br>
+          اسألني أي سؤال وخلينا نبدأ.
+        </p>
+      </div>
+    </div>
+  `;
+
+  input.value="";
+  input.focus();
+
+}
+
+input.focus();
+
 </script>
-</body></html>
+
+</body>
+</html>
