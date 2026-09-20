@@ -379,9 +379,9 @@
 
   </header>
 
-  <button class="clear" onclick="clearChat()">
-    مسح المحادثة
-  </button>
+  <button class="clear" onclick="newChat()">
+  + محادثة جديدة
+</button>
 
   <main class="chat" id="chat">
 
@@ -431,25 +431,55 @@
   const chat = document.getElementById("chat");
   const input = document.getElementById("messageInput");
   const sendButton = document.getElementById("sendButton");
-  const welcome = document.getElementById("welcome");
 
-  let messages = [];
+  let messages = JSON.parse(
+    localStorage.getItem("altatawur_chat") || "[]"
+  );
+
+  function saveMessages() {
+    localStorage.setItem(
+      "altatawur_chat",
+      JSON.stringify(messages)
+    );
+  }
+
+  function showWelcome() {
+
+    chat.innerHTML = `
+      <section class="welcome" id="welcome">
+
+        <div class="welcome-logo">ت</div>
+
+        <h2>
+          أهلاً بك في <span>التطور چات</span>
+        </h2>
+
+        <p>
+          مساعدك الذكي للإجابة عن الأسئلة، شرح المواضيع،
+          كتابة النصوص وتوليد الأفكار.
+        </p>
+
+      </section>
+    `;
+  }
 
   function addMessage(role, text) {
 
-    if (welcome) {
-      welcome.style.display = "none";
-    }
-
     const message = document.createElement("div");
+
     message.className = `message ${role}`;
 
     const avatar = document.createElement("div");
+
     avatar.className = "avatar";
-    avatar.textContent = role === "user" ? "أ" : "ت";
+
+    avatar.textContent =
+      role === "user" ? "أ" : "ت";
 
     const bubble = document.createElement("div");
+
     bubble.className = "bubble";
+
     bubble.textContent = text;
 
     message.appendChild(avatar);
@@ -465,21 +495,41 @@
     return message;
   }
 
-  function addTyping() {
+  function loadMessages() {
 
-    if (welcome) {
-      welcome.style.display = "none";
+    if (!messages.length) {
+      showWelcome();
+      return;
     }
 
+    chat.innerHTML = "";
+
+    messages.forEach(message => {
+
+      addMessage(
+        message.role,
+        message.content
+      );
+
+    });
+  }
+
+  function addTyping() {
+
     const message = document.createElement("div");
+
     message.className = "message assistant";
+
     message.id = "typingMessage";
 
     const avatar = document.createElement("div");
+
     avatar.className = "avatar";
+
     avatar.textContent = "ت";
 
     const bubble = document.createElement("div");
+
     bubble.className = "bubble";
 
     bubble.innerHTML = `
@@ -491,6 +541,7 @@
     `;
 
     message.appendChild(avatar);
+
     message.appendChild(bubble);
 
     chat.appendChild(message);
@@ -503,7 +554,8 @@
 
   function removeTyping() {
 
-    const typing = document.getElementById("typingMessage");
+    const typing =
+      document.getElementById("typingMessage");
 
     if (typing) {
       typing.remove();
@@ -523,9 +575,12 @@
       content: text
     });
 
+    saveMessages();
+
     addMessage("user", text);
 
     input.value = "";
+
     input.style.height = "52px";
 
     sendButton.disabled = true;
@@ -553,17 +608,25 @@
       removeTyping();
 
       if (!response.ok) {
-        throw new Error(data.error || "حدث خطأ.");
+        throw new Error(
+          data.error || "حدث خطأ."
+        );
       }
 
-      const reply = data.reply || "ما حصلت جواب.";
+      const reply =
+        data.reply || "ما حصلت جواب.";
 
       messages.push({
         role: "assistant",
         content: reply
       });
 
-      addMessage("assistant", reply);
+      saveMessages();
+
+      addMessage(
+        "assistant",
+        reply
+      );
 
     } catch (error) {
 
@@ -579,55 +642,61 @@
     } finally {
 
       sendButton.disabled = false;
+
       input.focus();
 
     }
   }
 
-  input.addEventListener("input", function() {
-
-    this.style.height = "52px";
-
-    this.style.height =
-      Math.min(this.scrollHeight, 150) + "px";
-
-  });
-
-  input.addEventListener("keydown", function(event) {
-
-    if (event.key === "Enter" && !event.shiftKey) {
-
-      event.preventDefault();
-
-      sendMessage();
-
-    }
-
-  });
-
-  function clearChat() {
+  function newChat() {
 
     messages = [];
 
-    chat.innerHTML = `
-      <section class="welcome" id="welcome">
+    localStorage.removeItem(
+      "altatawur_chat"
+    );
 
-        <div class="welcome-logo">ت</div>
+    showWelcome();
 
-        <h2>
-          أهلاً بك في <span>التطور چات</span>
-        </h2>
-
-        <p>
-          مساعدك الذكي للإجابة عن الأسئلة، شرح المواضيع،
-          كتابة النصوص وتوليد الأفكار.
-        </p>
-
-      </section>
-    `;
-
+    input.focus();
   }
 
+  input.addEventListener(
+    "input",
+    function() {
+
+      this.style.height = "52px";
+
+      this.style.height =
+        Math.min(
+          this.scrollHeight,
+          150
+        ) + "px";
+
+    }
+  );
+
+  input.addEventListener(
+    "keydown",
+    function(event) {
+
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey
+      ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+      }
+
+    }
+  );
+
+  loadMessages();
+
+</script>
 </script>
 
 </body>
