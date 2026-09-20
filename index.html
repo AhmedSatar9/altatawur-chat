@@ -1,486 +1,629 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>التطور چات</title>
-
-<style>
-:root{
-  --bg:#070912;
-  --panel:#0d1220;
-  --panel2:#11182a;
-  --border:rgba(255,255,255,.09);
-  --text:#f5f7ff;
-  --muted:#8d96aa;
-  --purple:#8b5cf6;
-  --cyan:#22d3ee;
-  --gradient:linear-gradient(135deg,#8b5cf6,#22d3ee);
-}
-
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  height:100vh;
-  overflow:hidden;
-}
-
-.app{
-  height:100vh;
-  display:flex;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-  width:270px;
-  background:rgba(13,18,32,.96);
-  border-left:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-  padding:18px;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:24px;
-}
-
-.logo{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  background:var(--gradient);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  font-weight:800;
-  box-shadow:0 8px 30px rgba(139,92,246,.25);
-}
-
-.brand-name{
-  font-size:19px;
-  font-weight:800;
-}
-
-.brand-sub{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:3px;
-}
-
-.new{
-  width:100%;
-  border:1px solid var(--border);
-  background:var(--gradient);
-  color:white;
-  border-radius:13px;
-  padding:13px;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  margin-bottom:18px;
-}
-
-.chat-title{
-  color:var(--muted);
-  font-size:12px;
-  margin:8px 4px;
-}
-
-.chat-item{
-  padding:12px;
-  border-radius:11px;
-  background:rgba(255,255,255,.04);
-  color:#dce2f0;
-  font-size:14px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.sidebar-bottom{
-  margin-top:auto;
-  border-top:1px solid var(--border);
-  padding-top:16px;
-  color:var(--muted);
-  font-size:13px;
-}
-
-/* MAIN */
-
-.main{
-  flex:1;
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-}
-
-.top{
-  height:70px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  padding:0 24px;
-  background:rgba(7,9,18,.85);
-  backdrop-filter:blur(15px);
-}
-
-.mobile-logo{
-  display:none;
-}
-
-.top-title{
-  font-size:17px;
-  font-weight:700;
-}
-
-.status{
-  margin-right:10px;
-  font-size:11px;
-  color:#68e0b2;
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-
-.status-dot{
-  width:7px;
-  height:7px;
-  background:#43d99b;
-  border-radius:50%;
-}
-
-/* MESSAGES */
-
-.messages{
-  flex:1;
-  overflow-y:auto;
-  padding:35px max(20px,calc((100% - 850px)/2));
-  scroll-behavior:smooth;
-}
-
-.welcome{
-  min-height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
-
-.welcome-inner{
-  max-width:600px;
-}
-
-.big-logo{
-  width:75px;
-  height:75px;
-  margin:0 auto 22px;
-  border-radius:24px;
-  background:var(--gradient);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:36px;
-  font-weight:900;
-  box-shadow:0 15px 50px rgba(139,92,246,.25);
-}
-
-.welcome h1{
-  font-size:32px;
-  margin-bottom:10px;
-}
-
-.welcome p{
-  color:var(--muted);
-  font-size:15px;
-  line-height:1.8;
-}
-
-.message{
-  display:flex;
-  margin-bottom:22px;
-  gap:12px;
-  animation:fade .25s ease;
-}
-
-.message.user{
-  flex-direction:row-reverse;
-}
-
-.avatar{
-  width:38px;
-  height:38px;
-  min-width:38px;
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-  font-size:14px;
-}
-
-.ai .avatar{
-  background:var(--gradient);
-}
-
-.user .avatar{
-  background:#20283b;
-}
-
-.bubble{
-  max-width:min(720px,80%);
-  padding:13px 16px;
-  border-radius:17px;
-  line-height:1.8;
-  font-size:15px;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-
-.ai .bubble{
-  background:var(--panel2);
-  border:1px solid var(--border);
-  border-top-right-radius:5px;
-}
-
-.user .bubble{
-  background:var(--gradient);
-  border-top-left-radius:5px;
-}
-
-/* COMPOSER */
-
-.composer{
-  padding:14px max(20px,calc((100% - 850px)/2));
-  background:linear-gradient(to top,rgba(7,9,18,1),rgba(7,9,18,.85));
-}
-
-.box{
-  display:flex;
-  align-items:flex-end;
-  gap:10px;
-  padding:8px;
-  background:#101625;
-  border:1px solid rgba(255,255,255,.11);
-  border-radius:18px;
-  box-shadow:0 10px 35px rgba(0,0,0,.25);
-}
-
-textarea{
-  flex:1;
-  resize:none;
-  border:0;
-  outline:0;
-  background:transparent;
-  color:white;
-  font-family:inherit;
-  font-size:15px;
-  line-height:1.6;
-  padding:9px 10px;
-  min-height:42px;
-  max-height:140px;
-}
-
-textarea::placeholder{
-  color:#697287;
-}
-
-.send{
-  width:43px;
-  height:43px;
-  border:0;
-  border-radius:13px;
-  background:var(--gradient);
-  color:white;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.send:disabled{
-  opacity:.45;
-}
-
-.hint{
-  text-align:center;
-  color:#596276;
-  font-size:10px;
-  margin-top:8px;
-}
-
-/* TYPING */
-
-.typing{
-  display:flex;
-  gap:5px;
-  padding:5px 2px;
-}
-
-.typing span{
-  width:7px;
-  height:7px;
-  background:#8790a4;
-  border-radius:50%;
-  animation:bounce 1.2s infinite;
-}
-
-.typing span:nth-child(2){
-  animation-delay:.15s;
-}
-
-.typing span:nth-child(3){
-  animation-delay:.3s;
-}
-
-@keyframes bounce{
-  0%,60%,100%{transform:translateY(0)}
-  30%{transform:translateY(-5px)}
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(5px)}
-  to{opacity:1;transform:none}
-}
-
-/* MOBILE */
-
-@media(max-width:760px){
-
-  .sidebar{
-    display:none;
-  }
-
-  .top{
-    height:62px;
-    padding:0 16px;
-    justify-content:center;
-    position:relative;
-  }
-
-  .mobile-logo{
-    display:flex;
-    position:absolute;
-    right:16px;
-    width:34px;
-    height:34px;
-    border-radius:10px;
-    background:var(--gradient);
-    align-items:center;
-    justify-content:center;
-    font-weight:900;
-    font-size:16px;
-  }
-
-  .top-title{
-    font-size:16px;
-  }
-
-  .status{
-    display:none;
-  }
-
-  .messages{
-    padding:22px 14px;
-  }
-
-  .welcome h1{
-    font-size:27px;
-  }
-
-  .welcome p{
-    font-size:14px;
-  }
-
-  .big-logo{
-    width:65px;
-    height:65px;
-    font-size:30px;
-  }
-
-  .bubble{
-    max-width:82%;
-    font-size:14px;
-  }
-
-  .composer{
-    padding:10px 10px calc(10px + env(safe-area-inset-bottom));
-  }
-
-  .hint{
-    display:none;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b16">
+  <title>التطور چات</title>
+
+  <style>
+    :root {
+      --bg: #070a12;
+      --sidebar: #0b0f1c;
+      --panel: #101629;
+      --panel2: #151c30;
+      --border: rgba(255,255,255,.08);
+      --text: #f5f7ff;
+      --muted: #8e98b3;
+      --purple: #8b5cf6;
+      --cyan: #22d3ee;
+      --gradient: linear-gradient(135deg,#8b5cf6,#22d3ee);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Tahoma,
+        Arial,
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      height: 100vh;
+      display: flex;
+      position: relative;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar {
+      width: 280px;
+      background: var(--sidebar);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 4px 22px;
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: 0 8px 30px rgba(91, 92, 246, .25);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .new-chat {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      transition: .2s;
+    }
+
+    .new-chat:hover {
+      border-color: rgba(139,92,246,.5);
+      background: var(--panel2);
+    }
+
+    .new-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .section-title {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 6px 5px 10px;
+    }
+
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .chat-item {
+      padding: 12px;
+      border-radius: 12px;
+      color: #cbd2e5;
+      font-size: 14px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-item:hover,
+    .chat-item.active {
+      background: var(--panel2);
+      color: white;
+    }
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ================= MAIN ================= */
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at 50% -20%, rgba(139,92,246,.13), transparent 40%),
+        var(--bg);
+    }
+
+    .topbar {
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      flex-shrink: 0;
+      backdrop-filter: blur(15px);
+    }
+
+    .top-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mobile-menu {
+      display: none;
+      border: 0;
+      background: transparent;
+      color: white;
+      font-size: 25px;
+    }
+
+    .mini-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .top-title strong {
+      font-size: 17px;
+    }
+
+    .status {
+      color: #7ee7c3;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .clear-btn:hover {
+      color: white;
+      background: var(--panel);
+    }
+
+    /* ================= MESSAGES ================= */
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 35px 20px 150px;
+      scroll-behavior: smooth;
+    }
+
+    .messages-inner {
+      width: min(900px, 100%);
+      margin: auto;
+    }
+
+    .welcome {
+      text-align: center;
+      padding: 75px 20px 45px;
+    }
+
+    .welcome-logo {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 22px;
+      border-radius: 24px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      font-weight: 900;
+      box-shadow: 0 15px 50px rgba(100,80,240,.25);
+    }
+
+    .welcome h1 {
+      font-size: clamp(27px, 5vw, 40px);
+      margin-bottom: 12px;
+    }
+
+    .welcome h1 span {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .welcome p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 22px;
+      animation: appear .25s ease;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      flex: 0 0 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .assistant .avatar {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+    }
+
+    .user .avatar {
+      background: var(--gradient);
+    }
+
+    .bubble {
+      max-width: min(720px, 80%);
+      padding: 14px 17px;
+      border-radius: 17px;
+      line-height: 1.8;
+      font-size: 15px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .assistant .bubble {
+      background: rgba(16,22,41,.85);
+      border: 1px solid var(--border);
+      border-top-right-radius: 5px;
+    }
+
+    .user .bubble {
+      background: var(--gradient);
+      color: white;
+      border-top-left-radius: 5px;
+    }
+
+    .typing {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      height: 25px;
+    }
+
+    .typing span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #9da8c5;
+      animation: blink 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    @keyframes blink {
+      0%, 60%, 100% { opacity: .25; }
+      30% { opacity: 1; }
+    }
+
+    /* ================= INPUT ================= */
+
+    .composer-area {
+      position: fixed;
+      bottom: 0;
+      left: 280px;
+      right: 0;
+      padding: 18px 20px 22px;
+      background: linear-gradient(
+        to top,
+        var(--bg) 65%,
+        transparent
+      );
+      z-index: 10;
+    }
+
+    .composer {
+      width: min(900px, 100%);
+      margin: auto;
+      background: rgba(16,22,41,.96);
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 20px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 10px;
+      box-shadow: 0 15px 50px rgba(0,0,0,.25);
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: white;
+      min-height: 45px;
+      max-height: 150px;
+      padding: 12px 10px;
+      line-height: 1.6;
+    }
+
+    textarea::placeholder {
+      color: #68738f;
+    }
+
+    .send {
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--gradient);
+      color: white;
+      font-size: 21px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .2s;
+      flex-shrink: 0;
+    }
+
+    .send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(70,160,255,.25);
+    }
+
+    .send:disabled {
+      opacity: .5;
+      transform: none;
+    }
+
+    .hint {
+      text-align: center;
+      color: #56617c;
+      font-size: 10px;
+      margin-top: 8px;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 760px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        transform: translateX(100%);
+        transition: .25s;
+        box-shadow: -20px 0 50px rgba(0,0,0,.4);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        height: 64px;
+        padding: 0 15px;
+      }
+
+      .top-title {
+        gap: 8px;
+      }
+
+      .mini-logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+      }
+
+      .clear-btn {
+        font-size: 11px;
+        padding: 7px 9px;
+      }
+
+      .messages {
+        padding: 20px 12px 145px;
+      }
+
+      .welcome {
+        padding: 55px 10px 35px;
+      }
+
+      .welcome-logo {
+        width: 66px;
+        height: 66px;
+        font-size: 32px;
+      }
+
+      .welcome p {
+        font-size: 13px;
+      }
+
+      .bubble {
+        max-width: 85%;
+        font-size: 14px;
+        padding: 12px 14px;
+      }
+
+      .avatar {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        border-radius: 10px;
+      }
+
+      .composer-area {
+        left: 0;
+        padding: 12px 10px 16px;
+      }
+
+      .composer {
+        border-radius: 18px;
+      }
+
+      .hint {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <aside class="sidebar">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
 
     <div class="brand">
       <div class="logo">ت</div>
-      <div>
+
+      <div class="brand-text">
         <div class="brand-name">التطور چات</div>
-        <div class="brand-sub">منصة ذكاء اصطناعي</div>
+        <div class="brand-sub">مساعدك الذكي</div>
       </div>
     </div>
 
-    <button class="new" onclick="newChat()">
-      ＋ محادثة جديدة
+    <button class="new-chat" onclick="newChat()">
+      <span class="new-icon">＋</span>
+      <span>محادثة جديدة</span>
     </button>
 
-    <div class="chat-title">المحادثات</div>
+    <div class="section-title">المحادثات</div>
 
-    <div class="chat-item" id="chatName">
-      محادثة جديدة
-    </div>
+    <div class="chat-list" id="chatList"></div>
 
     <div class="sidebar-bottom">
-      التطور چات © 2026
+      التطور چات
+      <br>
+      <span>مساعدك الذكي في كل وقت</span>
     </div>
 
   </aside>
 
+  <!-- MAIN -->
   <main class="main">
 
-    <header class="top">
-      <div class="mobile-logo">ت</div>
-      <div class="top-title">التطور چات</div>
-      <div class="status">
-        <span class="status-dot"></span>
-        متصل
+    <header class="topbar">
+
+      <div class="top-title">
+
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+        <div class="mini-logo">ت</div>
+
+        <div>
+          <strong>التطور چات</strong>
+          <div class="status">● متصل الآن</div>
+        </div>
+
       </div>
+
+      <button class="clear-btn" onclick="clearChat()">
+        مسح المحادثة
+      </button>
+
     </header>
 
+    <!-- MESSAGES -->
     <section class="messages" id="messages">
 
-      <div class="welcome" id="welcome">
+      <div class="messages-inner" id="messagesInner">
 
-        <div class="welcome-inner">
+        <div class="welcome" id="welcome">
 
-          <div class="big-logo">ت</div>
+          <div class="welcome-logo">ت</div>
 
-          <h1>هلا بيك 👋</h1>
+          <h1>
+            أهلاً بك في <span>التطور چات</span>
+          </h1>
 
           <p>
-            أني التطور چات، مساعدك الذكي.
-            <br>
-            اسألني أي سؤال وخلينا نبدأ.
+            مساعدك الذكي للإجابة عن الأسئلة،
+            شرح المواضيع، كتابة النصوص وتوليد الأفكار.
           </p>
 
         </div>
@@ -489,20 +632,23 @@ textarea::placeholder{
 
     </section>
 
-    <div class="composer">
+    <!-- COMPOSER -->
+    <div class="composer-area">
 
-      <div class="box">
+      <div class="composer">
 
         <textarea
           id="input"
           rows="1"
           placeholder="اكتب رسالتك هنا..."
+          autocomplete="off"
         ></textarea>
 
         <button
           class="send"
-          id="send"
-          onclick="sendMsg()"
+          id="sendBtn"
+          onclick="sendMessage()"
+          aria-label="إرسال"
         >
           ↑
         </button>
@@ -510,7 +656,7 @@ textarea::placeholder{
       </div>
 
       <div class="hint">
-        التطور چات قد يخطئ أحياناً، تحقق من المعلومات المهمة.
+        التطور چات قد يخطئ أحيانًا، تحقق من المعلومات المهمة.
       </div>
 
     </div>
@@ -521,168 +667,303 @@ textarea::placeholder{
 
 <script>
 
-let history = [];
+  const input = document.getElementById("input");
+  const sendBtn = document.getElementById("sendBtn");
+  const messagesInner = document.getElementById("messagesInner");
+  const messagesBox = document.getElementById("messages");
+  const chatList = document.getElementById("chatList");
+  const sidebar = document.getElementById("sidebar");
 
-const input = document.getElementById("input");
-const messages = document.getElementById("messages");
-const sendButton = document.getElementById("send");
-const welcome = document.getElementById("welcome");
+  let messages = [];
+  let chats = JSON.parse(localStorage.getItem("altatawur_chats") || "[]");
 
-input.addEventListener("keydown", function(e){
+  /* ================= INIT ================= */
 
-  if(e.key === "Enter" && !e.shiftKey){
-    e.preventDefault();
-    sendMsg();
+  renderChatList();
+
+  input.addEventListener("input", () => {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 150) + "px";
+  });
+
+  input.addEventListener("keydown", (event) => {
+
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+
+  });
+
+  /* ================= SEND ================= */
+
+  async function sendMessage() {
+
+    const text = input.value.trim();
+
+    if (!text || sendBtn.disabled) return;
+
+    hideWelcome();
+
+    addMessage("user", text);
+
+    messages.push({
+      role: "user",
+      content: text
+    });
+
+    input.value = "";
+    input.style.height = "auto";
+
+    sendBtn.disabled = true;
+
+    const typing = addTyping();
+
+    try {
+
+      const response = await fetch("/api/chat", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          messages: messages
+        })
+
+      });
+
+      const data = await response.json();
+
+      typing.remove();
+
+      if (!response.ok) {
+        throw new Error(data.error || "حدث خطأ");
+      }
+
+      const reply = data.reply || "لم يصل رد من الذكاء الاصطناعي.";
+
+      addMessage("assistant", reply);
+
+      messages.push({
+        role: "assistant",
+        content: reply
+      });
+
+      saveCurrentChat();
+
+    } catch (error) {
+
+      typing.remove();
+
+      addMessage(
+        "assistant",
+        "عذرًا، حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. حاول مرة أخرى."
+      );
+
+      console.error(error);
+
+    } finally {
+
+      sendBtn.disabled = false;
+      input.focus();
+
+    }
   }
 
-});
+  /* ================= MESSAGE ================= */
 
-input.addEventListener("input", function(){
+  function addMessage(role, text) {
 
-  this.style.height = "auto";
-  this.style.height = Math.min(this.scrollHeight,140) + "px";
+    const row = document.createElement("div");
+    row.className = "message " + role;
 
-});
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = role === "user" ? "أ" : "ت";
 
-function addMessage(text,user=false,typing=false){
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
 
-  if(welcome){
-    welcome.style.display="none";
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+
+    messagesInner.appendChild(row);
+
+    scrollToBottom();
+
+    return row;
   }
 
-  const row=document.createElement("div");
+  function addTyping() {
 
-  row.className="message " + (user ? "user" : "ai");
+    const row = document.createElement("div");
+    row.className = "message assistant";
 
-  const avatar=document.createElement("div");
-  avatar.className="avatar";
-  avatar.textContent=user ? "أ" : "ت";
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = "ت";
 
-  const bubble=document.createElement("div");
-  bubble.className="bubble";
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
 
-  if(typing){
+    const typing = document.createElement("div");
+    typing.className = "typing";
 
-    bubble.innerHTML=`
-      <div class="typing">
-        <span></span>
-        <span></span>
-        <span></span>
+    typing.innerHTML = `
+      <span></span>
+      <span></span>
+      <span></span>
+    `;
+
+    bubble.appendChild(typing);
+
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+
+    messagesInner.appendChild(row);
+
+    scrollToBottom();
+
+    return row;
+  }
+
+  /* ================= CHAT ================= */
+
+  function newChat() {
+
+    messages = [];
+
+    messagesInner.innerHTML = `
+      <div class="welcome" id="welcome">
+
+        <div class="welcome-logo">ت</div>
+
+        <h1>
+          أهلاً بك في <span>التطور چات</span>
+        </h1>
+
+        <p>
+          مساعدك الذكي للإجابة عن الأسئلة،
+          شرح المواضيع، كتابة النصوص وتوليد الأفكار.
+        </p>
+
       </div>
     `;
 
-  }else{
+    sidebar.classList.remove("open");
 
-    bubble.textContent=text;
-
-  }
-
-  row.appendChild(avatar);
-  row.appendChild(bubble);
-
-  messages.appendChild(row);
-
-  messages.scrollTop=messages.scrollHeight;
-
-  return row;
-}
-
-async function sendMsg(){
-
-  const text=input.value.trim();
-
-  if(!text) return;
-
-  sendButton.disabled=true;
-
-  addMessage(text,true);
-
-  history.push({
-    role:"user",
-    content:text
-  });
-
-  input.value="";
-  input.style.height="auto";
-
-  const typingRow=addMessage("",false,true);
-
-  try{
-
-    const response=await fetch("/api/chat",{
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify({
-        messages:history
-      })
-
-    });
-
-    const data=await response.json();
-
-    typingRow.remove();
-
-    if(!response.ok){
-      throw new Error(data.error || "حدث خطأ");
-    }
-
-    const reply=data.reply || "ما حصلت رد.";
-
-    addMessage(reply,false);
-
-    history.push({
-      role:"assistant",
-      content:reply
-    });
-
-  }catch(error){
-
-    typingRow.remove();
-
-    addMessage(
-      "عذراً، صار خطأ بالاتصال بالخادم. حاول مرة ثانية."
-    );
-
-    console.error(error);
-
-  }finally{
-
-    sendButton.disabled=false;
     input.focus();
 
   }
 
-}
+  function clearChat() {
+    newChat();
+  }
 
-function newChat(){
+  function hideWelcome() {
 
-  history=[];
+    const welcome = document.getElementById("welcome");
 
-  messages.innerHTML=`
-    <div class="welcome" id="welcome">
-      <div class="welcome-inner">
-        <div class="big-logo">ت</div>
-        <h1>هلا بيك 👋</h1>
-        <p>
-          أني التطور چات، مساعدك الذكي.
-          <br>
-          اسألني أي سؤال وخلينا نبدأ.
-        </p>
-      </div>
-    </div>
-  `;
+    if (welcome) {
+      welcome.remove();
+    }
 
-  input.value="";
-  input.focus();
+  }
 
-}
+  /* ================= STORAGE ================= */
 
-input.focus();
+  function saveCurrentChat() {
+
+    if (!messages.length) return;
+
+    const firstUserMessage =
+      messages.find(m => m.role === "user");
+
+    if (!firstUserMessage) return;
+
+    const title =
+      firstUserMessage.content.length > 28
+        ? firstUserMessage.content.substring(0, 28) + "..."
+        : firstUserMessage.content;
+
+    const chat = {
+      id: Date.now(),
+      title,
+      messages: [...messages]
+    };
+
+    chats = chats.filter(c => c.title !== title);
+
+    chats.unshift(chat);
+
+    chats = chats.slice(0, 20);
+
+    localStorage.setItem(
+      "altatawur_chats",
+      JSON.stringify(chats)
+    );
+
+    renderChatList();
+  }
+
+  function renderChatList() {
+
+    chatList.innerHTML = "";
+
+    chats.forEach(chat => {
+
+      const item = document.createElement("div");
+
+      item.className = "chat-item";
+
+      item.textContent = chat.title;
+
+      item.onclick = () => loadChat(chat);
+
+      chatList.appendChild(item);
+
+    });
+
+  }
+
+  function loadChat(chat) {
+
+    messages = [...chat.messages];
+
+    messagesInner.innerHTML = "";
+
+    messages.forEach(message => {
+      addMessage(message.role, message.content);
+    });
+
+    sidebar.classList.remove("open");
+
+    scrollToBottom();
+
+  }
+
+  /* ================= UI ================= */
+
+  function scrollToBottom() {
+
+    setTimeout(() => {
+
+      messagesBox.scrollTop =
+        messagesBox.scrollHeight;
+
+    }, 50);
+
+  }
+
+  function toggleSidebar() {
+
+    sidebar.classList.toggle("open");
+
+  }
 
 </script>
 
