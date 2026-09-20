@@ -7,42 +7,32 @@ const port = process.env.PORT || 3000;
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-/* =========================
-   BASIC SETTINGS
-========================= */
 app.use(
   express.json({
     limit: "25mb"
   })
 );
-app.use(
-  express.static("public")
-);
+app.use(express.static("public"));
 /* =========================
    CHAT API
 ========================= */
 app.post("/api/chat", async (req, res) => {
   try {
-    const messages =
-      Array.isArray(req.body.messages)
-        ? req.body.messages
-        : [];
-    const attachment =
-      req.body.attachment || null;
+    const messages = Array.isArray(req.body.messages)
+      ? req.body.messages
+      : [];
+    const attachment = req.body.attachment || null;
     if (!messages.length) {
       return res.status(400).json({
         error: "لا توجد رسالة."
       });
     }
-    /*
-      نحول الرسائل السابقة
-      إلى صيغة Responses API
-    */
+    /* =========================
+       تحويل المحادثة
+    ========================= */
     const input = [];
     for (const message of messages.slice(-30)) {
-      if (!message.content) {
-        continue;
-      }
+      if (!message.content) continue;
       input.push({
         role:
           message.role === "assistant"
@@ -51,25 +41,22 @@ app.post("/api/chat", async (req, res) => {
         content: [
           {
             type: "input_text",
-            text:
-              String(message.content)
+            text: String(message.content)
           }
         ]
       });
     }
     /* =========================
-       ATTACHMENT
+       إضافة الصورة أو الملف
     ========================= */
     if (attachment) {
-      const lastUserMessage =
+      const lastMessage =
         input[input.length - 1];
       if (
-        lastUserMessage &&
-        lastUserMessage.role === "user"
+        lastMessage &&
+        lastMessage.role === "user"
       ) {
-        /*
-          IMAGE
-        */
+        /* صورة */
         if (
           attachment.type &&
           attachment.type.startsWith("image/")
@@ -79,27 +66,23 @@ app.post("/api/chat", async (req, res) => {
               error: "بيانات الصورة غير موجودة."
             });
           }
-          lastUserMessage.content.push({
+          lastMessage.content.push({
             type: "input_image",
-            image_url:
-              attachment.data,
+            image_url: attachment.data,
             detail: "auto"
           });
         }
-        /*
-          FILE / PDF / DOC / TXT
-        */
+        /* ملف */
         else {
           if (!attachment.data) {
             return res.status(400).json({
               error: "بيانات الملف غير موجودة."
             });
           }
-          lastUserMessage.content.push({
+          lastMessage.content.push({
             type: "input_file",
             filename:
-              attachment.name ||
-              "file",
+              attachment.name || "file",
             file_data:
               attachment.data
           });
@@ -107,16 +90,19 @@ app.post("/api/chat", async (req, res) => {
       }
     }
     /* =========================
-       OPENAI RESPONSE
+       OPENAI
     ========================= */
     const response =
       await client.responses.create({
-        model: "gpt-5.6-luna",
+        model: "gpt-5.5",
         instructions:
           "أنت المساعد الرسمي لمنصة التطور چات. أجب بالعربية بشكل واضح ومفيد. استخدم اللهجة العراقية فقط عندما يطلب المستخدم ذلك. إذا أرسل المستخدم صورة أو ملفاً، حلله اعتماداً على محتواه الفعلي ولا تدّعي رؤية أو قراءة شيء غير موجود.",
-        input,
+        input: input,
         store: false
       });
+    /* =========================
+       RESPONSE
+    ========================= */
     res.json({
       reply:
         response.output_text ||
