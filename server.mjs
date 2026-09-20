@@ -11,11 +11,6 @@ const port = process.env.PORT || 3000;
 /* =========================
    OPENAI
 ========================= */
-if (!process.env.OPENAI_API_KEY) {
-  console.error(
-    "❌ OPENAI_API_KEY غير موجود"
-  );
-}
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
@@ -32,10 +27,7 @@ app.use(
 ========================= */
 app.get("/", (req, res) => {
   res.sendFile(
-    path.join(
-      __dirname,
-      "index.html"
-    )
+    path.join(__dirname, "index.html")
   );
 });
 /* =========================
@@ -45,56 +37,131 @@ app.use(
   express.static(__dirname)
 );
 /* =========================
-   AI CHAT
+   CHAT API
 ========================= */
-app.post(
-  "/api/chat",
-  async (req, res) => {
-    try {
-      const messages =
-        Array.isArray(
-          req.body?.messages
-        )
-          ? req.body.messages
-          : [];
-      if (!messages.length) {
-        return res.status(400).json({
-          error: "لا توجد رسالة."
-        });
+app.post("/api/chat", async (req, res) => {
+  try {
+    const messages =
+      Array.isArray(req.body?.messages)
+        ? req.body.messages
+        : [];
+    if (!messages.length) {
+      return res.status(400).json({
+        error: "لا توجد رسالة."
+      });
+    }
+    /*
+      نأخذ آخر 30 رسالة
+    */
+    const recentMessages =
+      messages.slice(-30);
+    /*
+      هنا نحول صيغة الموقع
+      إلى صيغة Chat Completions
+    */
+    const apiMessages = [];
+    for (const message of recentMessages) {
+      if (!message) {
+        continue;
       }
-      /*
-        نأخذ آخر 30 رسالة
-      */
-      const recentMessages =
-        messages.slice(-30);
-      /*
-        تحويل رسائل الموقع
-        إلى صيغة Chat Completions
-      */
-      const apiMessages = [];
-      for (
-        const message
-        of recentMessages
-      ) {
-        if (
-          !message ||
-          !message.role
-        ) {
-          continue;
+      /* =========================
+         USER MESSAGE
+      ========================== */
+      if (message.role === "user") {
+        const content = [];
+        /*
+          الحالة الطبيعية من index.html:
+          content: [
+            {
+              type: "input_text",
+              text: "..."
+            },
+            {
+              type: "input_image",
+              image_url: "data:image/jpeg;base64,..."
+            }
+          ]
+        */
+        if (Array.isArray(message.content)) {
+          for (const item of message.content) {
+            if (!item) {
+              continue;
+            }
+            /*
+              TEXT
+            */
+            if (
+              item.type === "input_text" ||
+              item.type === "text"
+            ) {
+              if (item.text) {
+                content.push({
+                  type: "text",
+                  text:
+                    String(item.text)
+                });
+              }
+            }
+            /*
+              IMAGE
+              نحول:
+              input_image
+              إلى:
+              image_url
+            */
+            else if (
+              item.type === "input_image"
+            ) {
+              let imageUrl =
+                item.image_url;
+              /*
+                إذا كانت الصورة
+                موجودة كسلسلة نصية
+              */
+              if (
+                typeof imageUrl === "string" &&
+                imageUrl.length > 0
+              ) {
+                content.push({
+                  type: "image_url",
+                  image_url: {
+                    url: imageUrl
+                  }
+                });
+              }
+              /*
+                احتياطاً إذا وصلت
+                بصيغة object
+              */
+              else if (
+                imageUrl &&
+                typeof imageUrl === "object" &&
+                imageUrl.url
+              ) {
+                content.push({
+                  type: "image_url",
+                  image_url: {
+                    url:
+                      String(
+                        imageUrl.url
+                      )
+                  }
+                });
+              }
+            }
+          }
         }
-        /* =========================
-           USER
-        ========================== */
-        if (
-          message.role === "user"
+        /*
+          احتياط:
+          إذا وصلت الرسالة
+          بصيغة attachment
+        */
+        else if (
+          message.attachment &&
+          message.attachment.type === "image" &&
+          message.attachment.data
         ) {
-          const content = [];
-          /*
-            النص
-          */
-          if (
-            message.content
-          ) {
+          if (message.content) {
             content.push({
               type: "text",
               text:
@@ -103,82 +170,93 @@ app.post(
                 )
             });
           }
-          /*
-            الصورة
-          */
-          if (
-            message.attachment &&
-            message.attachment.type === "image" &&
-            message.attachment.data
-          ) {
-            content.push({
-              type: "image_url",
-              image_url: {
-                url:
-                  String(
-                    message.attachment.data
-                  )
-              }
-            });
-          }
-          /*
-            لا نضيف رسالة فارغة
-          */
-          if (
-            content.length
-          ) {
-            apiMessages.push({
-              role: "user",
-              content
-            });
-          }
-          continue;
-        }
-        /* =========================
-           ASSISTANT
-        ========================== */
-        if (
-          message.role === "assistant"
-        ) {
-          if (
-            message.content
-          ) {
-            apiMessages.push({
-              role: "assistant",
-              content:
+          content.push({
+            type: "image_url",
+            image_url: {
+              url:
                 String(
-                  message.content
+                  message.attachment.data
                 )
-            });
-          }
-          continue;
+            }
+          });
+        }
+        /*
+          رسالة نصية عادية
+        */
+        else if (message.content) {
+          content.push({
+            type: "text",
+            text:
+              String(
+                message.content
+              )
+          });
+        }
+        /*
+          نضيف الرسالة إذا بيها محتوى
+        */
+        if (content.length > 0) {
+          apiMessages.push({
+            role: "user",
+            content
+          });
         }
       }
-      /*
-        التأكد من وجود رسائل
-      */
-      if (
-        !apiMessages.length
-      ) {
-        return res.status(400).json({
-          error:
-            "لم يتم العثور على محتوى صالح."
-        });
-      }
-      console.log(
-        "📨 إرسال الطلب إلى OpenAI..."
-      );
       /* =========================
-         OPENAI
+         ASSISTANT MESSAGE
       ========================== */
-      const completion =
-        await client.chat.completions.create({
-          model:
-            "gpt-5.6-luna",
-          messages: [
-            {
-              role: "system",
-              content: `
+      else if (
+        message.role === "assistant"
+      ) {
+        if (
+          typeof message.content === "string" &&
+          message.content.trim()
+        ) {
+          apiMessages.push({
+            role: "assistant",
+            content:
+              message.content
+          });
+        }
+      }
+    }
+    /*
+      التأكد من وجود محتوى
+    */
+    if (!apiMessages.length) {
+      return res.status(400).json({
+        error:
+          "لم يتم العثور على محتوى صالح."
+      });
+    }
+    /*
+      LOG للتأكد من الصيغة
+    */
+    console.log(
+      "📨 API Messages:",
+      JSON.stringify(
+        apiMessages.map(message => ({
+          role: message.role,
+          contentTypes:
+            Array.isArray(message.content)
+              ? message.content.map(
+                  item => item.type
+                )
+              : "text"
+        }))
+      )
+    );
+    /* =========================
+       OPENAI
+      ========================== */
+    const completion =
+      await client.chat.completions.create({
+        model:
+          "gpt-5.6-luna",
+        messages: [
+          {
+            role: "system",
+            content: `
 أنت المساعد الرسمي لمنصة التطور چات.
 أجب بالعربية بشكل واضح ومفيد.
 استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
@@ -189,49 +267,42 @@ app.post(
 - اقرأ النص الموجود فيها إن أمكن.
 - أجب عن الأسئلة المتعلقة بالصورة.
 - لا تدّعي رؤية شيء غير واضح.
-- إذا كانت الصورة غير واضحة أخبر المستخدم بذلك.
-إذا كان السؤال عادياً:
-أجب بشكل مباشر وواضح.
-لا تدّعي تنفيذ أي إجراء لم تنفذه فعلياً.
-              `
-            },
-            ...apiMessages
-          ]
-        });
-      /* =========================
-         RESPONSE
-      ========================== */
-      const reply =
-        completion
-          ?.choices?.[0]
-          ?.message
-          ?.content
-        ||
-        "ما حصلت جواب نصي من النموذج.";
-      console.log(
-        "✅ تم استلام الرد من OpenAI"
-      );
-      return res.status(200).json({
-        reply
+- إذا كانت الصورة غير واضحة، أخبر المستخدم بذلك.
+لا تدّعي تنفيذ أفعال لم تنفذها فعلياً.
+            `
+          },
+          ...apiMessages
+        ]
       });
-    } catch (error) {
-      console.error(
-        "❌ OpenAI ERROR:"
-      );
-      console.error(
-        error
-      );
-      const errorMessage =
-        error?.error?.message ||
-        error?.message ||
-        "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.";
-      return res.status(500).json({
-        error:
-          errorMessage
-      });
-    }
+    /* =========================
+       RESPONSE
+    ========================== */
+    const reply =
+      completion?.choices?.[0]?.message?.content ||
+      "ما حصلت جواب نصي من النموذج.";
+    console.log(
+      "✅ OpenAI Response received"
+    );
+    return res.status(200).json({
+      reply
+    });
+  } catch (error) {
+    console.error(
+      "❌ OPENAI ERROR:"
+    );
+    console.error(
+      error
+    );
+    const errorMessage =
+      error?.error?.message ||
+      error?.message ||
+      "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.";
+    return res.status(500).json({
+      error:
+        errorMessage
+    });
   }
-);
+});
 /* =========================
    START SERVER
 ========================= */
