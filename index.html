@@ -90,8 +90,7 @@
       justify-content: center;
       font-size: 31px;
       font-weight: 800;
-      box-shadow:
-        0 10px 30px rgba(100,90,255,.18);
+      box-shadow: 0 10px 30px rgba(100,90,255,.18);
     }
 
     .brand-info h1 {
@@ -157,10 +156,7 @@
       width: 100%;
       max-width: 900px;
       margin: auto;
-      padding:
-        35px
-        20px
-        190px;
+      padding: 35px 20px 180px;
     }
 
     /* =========================
@@ -169,10 +165,7 @@
 
     .welcome {
       text-align: center;
-      padding:
-        70px
-        10px
-        30px;
+      padding: 70px 10px 30px;
     }
 
     .welcome-logo {
@@ -180,16 +173,13 @@
       height: 110px;
       border-radius: 32px;
       background: var(--gradient);
-      margin:
-        0 auto
-        28px;
+      margin: 0 auto 28px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 55px;
       font-weight: 800;
-      box-shadow:
-        0 20px 60px rgba(100,90,255,.18);
+      box-shadow: 0 20px 60px rgba(100,90,255,.18);
     }
 
     .welcome h2 {
@@ -245,9 +235,7 @@
 
     .bubble {
       max-width: 75%;
-      padding:
-        15px
-        19px;
+      padding: 15px 19px;
       border-radius: 20px;
       background: var(--panel2);
       border: 1px solid var(--border);
@@ -261,25 +249,29 @@
       background: #111a30;
     }
 
-    /* =========================
-       MESSAGE IMAGE
-    ========================== */
+    /* صورة داخل الرسالة */
 
     .message-image {
       display: block;
-      max-width: 320px;
-      max-height: 320px;
-      width: auto;
-      height: auto;
-      border-radius: 16px;
-      margin-top: 10px;
-      border: 1px solid rgba(255,255,255,.10);
+      width: 100%;
+      max-width: 360px;
+      max-height: 420px;
       object-fit: contain;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,.08);
     }
 
-    .message-text {
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
+    .message-file {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.04);
+      color: #dbe1ef;
+      font-size: 14px;
     }
 
     /* =========================
@@ -292,9 +284,7 @@
       margin: 0 auto 10px;
       padding: 10px;
       background: rgba(13,18,34,.96);
-      border:
-        1px solid
-        rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.10);
       border-radius: 17px;
     }
 
@@ -355,8 +345,8 @@
     ========================== */
 
     .attachment-image {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 11px;
       object-fit: cover;
       display: none;
@@ -378,8 +368,7 @@
       height: 7px;
       border-radius: 50%;
       background: #8b5cf6;
-      animation:
-        bounce 1s infinite;
+      animation: bounce 1s infinite;
     }
 
     .typing span:nth-child(2) {
@@ -391,9 +380,7 @@
     }
 
     @keyframes bounce {
-      0%,
-      60%,
-      100% {
+      0%, 60%, 100% {
         transform: translateY(0);
       }
 
@@ -411,10 +398,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding:
-        18px
-        20px
-        25px;
+      padding: 18px 20px 25px;
       background:
         linear-gradient(
           transparent,
@@ -427,16 +411,13 @@
       max-width: 900px;
       margin: auto;
       background: var(--panel);
-      border:
-        1px solid
-        rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.12);
       border-radius: 25px;
       padding: 10px;
       display: flex;
       align-items: flex-end;
       gap: 8px;
-      box-shadow:
-        0 -5px 30px rgba(0,0,0,.15);
+      box-shadow: 0 -5px 30px rgba(0,0,0,.15);
     }
 
     /* =========================
@@ -472,6 +453,10 @@
       display: none;
     }
 
+    /* =========================
+       TEXTAREA
+    ========================== */
+
     textarea {
       flex: 1;
       resize: none;
@@ -483,14 +468,16 @@
       line-height: 1.6;
       min-height: 52px;
       max-height: 150px;
-      padding:
-        13px
-        12px;
+      padding: 13px 12px;
     }
 
     textarea::placeholder {
       color: #69738b;
     }
+
+    /* =========================
+       SEND
+    ========================== */
 
     .send {
       width: 54px;
@@ -502,6 +489,19 @@
       font-size: 26px;
       cursor: pointer;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .2s ease;
+    }
+
+    .send:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(139,92,246,.25);
+    }
+
+    .send:active:not(:disabled) {
+      transform: scale(.94);
     }
 
     .send:disabled {
@@ -537,30 +537,22 @@
       width: 330px;
       max-width: 88vw;
       background: #0b1020;
-      border-left:
-        1px solid
-        var(--border);
+      border-left: 1px solid var(--border);
       z-index: 301;
-      transform:
-        translateX(100%);
+      transform: translateX(100%);
       transition: .28s ease;
       display: flex;
       flex-direction: column;
     }
 
     .side-panel.active {
-      transform:
-        translateX(0);
+      transform: translateX(0);
     }
 
     .side-header {
       height: 82px;
-      padding:
-        16px
-        18px;
-      border-bottom:
-        1px solid
-        var(--border);
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -573,9 +565,7 @@
     .close-menu {
       width: 42px;
       height: 42px;
-      border:
-        1px solid
-        var(--border);
+      border: 1px solid var(--border);
       border-radius: 12px;
       background: transparent;
       color: white;
@@ -586,12 +576,9 @@
     .side-new {
       margin: 16px;
       padding: 14px;
-      border:
-        1px solid
-        rgba(139,92,246,.35);
+      border: 1px solid rgba(139,92,246,.35);
       border-radius: 15px;
-      background:
-        rgba(139,92,246,.08);
+      background: rgba(139,92,246,.08);
       color: white;
       cursor: pointer;
       font-size: 15px;
@@ -601,29 +588,24 @@
     .conversation-list {
       flex: 1;
       overflow-y: auto;
-      padding:
-        0 12px 20px;
+      padding: 0 12px 20px;
     }
 
     .conversation-empty {
       color: var(--muted);
       text-align: center;
-      padding:
-        40px 20px;
+      padding: 40px 20px;
       line-height: 1.8;
       font-size: 14px;
     }
 
     .conversation-item {
       width: 100%;
-      border:
-        1px solid
-        transparent;
+      border: 1px solid transparent;
       background: transparent;
       color: white;
       border-radius: 14px;
-      padding:
-        13px 12px;
+      padding: 13px 12px;
       margin-bottom: 7px;
       cursor: pointer;
       display: flex;
@@ -634,17 +616,13 @@
     }
 
     .conversation-item:hover {
-      background:
-        rgba(255,255,255,.04);
-      border-color:
-        var(--border);
+      background: rgba(255,255,255,.04);
+      border-color: var(--border);
     }
 
     .conversation-item.active {
-      background:
-        rgba(139,92,246,.10);
-      border-color:
-        rgba(139,92,246,.25);
+      background: rgba(139,92,246,.10);
+      border-color: rgba(139,92,246,.25);
     }
 
     .conversation-title {
@@ -670,8 +648,7 @@
 
     .delete-conversation:hover {
       color: #ff6b81;
-      background:
-        rgba(255,107,129,.08);
+      background: rgba(255,107,129,.08);
     }
 
     /* =========================
@@ -682,9 +659,7 @@
 
       header {
         height: 82px;
-        padding:
-          12px
-          16px;
+        padding: 12px 16px;
       }
 
       .brand {
@@ -712,8 +687,7 @@
 
       .new-chat {
         height: 44px;
-        padding:
-          0 11px;
+        padding: 0 11px;
         font-size: 12px;
         border-radius: 13px;
       }
@@ -726,10 +700,7 @@
       }
 
       .chat {
-        padding:
-          20px
-          12px
-          180px;
+        padding: 20px 12px 175px;
       }
 
       .welcome {
@@ -762,16 +733,8 @@
         min-width: 44px;
       }
 
-      .message-image {
-        max-width: 240px;
-        max-height: 240px;
-      }
-
       .input-area {
-        padding:
-          14px
-          14px
-          22px;
+        padding: 14px 14px 22px;
       }
 
       .input-box {
@@ -787,13 +750,16 @@
       .side-panel {
         width: 310px;
       }
+
+      .message-image {
+        max-width: 260px;
+      }
     }
 
     @media (max-width: 380px) {
 
       .new-chat {
-        padding:
-          0 8px;
+        padding: 0 8px;
         font-size: 11px;
       }
 
@@ -818,6 +784,11 @@
       .attach-button {
         width: 40px;
       }
+
+      .send {
+        width: 50px;
+        height: 50px;
+      }
     }
   </style>
 </head>
@@ -826,9 +797,7 @@
 
 <div class="app">
 
-  <!-- =========================
-       HEADER
-  ========================== -->
+  <!-- HEADER -->
 
   <header>
 
@@ -873,18 +842,16 @@
 
   </header>
 
-  <!-- =========================
-       CHAT
-  ========================== -->
+
+  <!-- CHAT -->
 
   <main
     class="chat"
     id="chat"
   ></main>
 
-  <!-- =========================
-       INPUT AREA
-  ========================== -->
+
+  <!-- INPUT -->
 
   <div class="input-area">
 
@@ -932,25 +899,32 @@
 
     </div>
 
-    <!-- INPUT BOX -->
 
     <div class="input-box">
+
+      <!-- FILE INPUT -->
 
       <input
         type="file"
         id="fileInput"
         accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.csv"
-        onchange="handleFileSelect(event)"
       >
 
+
+      <!-- ATTACH BUTTON -->
+
       <button
+        type="button"
         class="attach-button"
-        onclick="openFilePicker()"
+        id="attachButton"
         aria-label="إضافة مرفق"
         title="إضافة مرفق"
       >
         📎
       </button>
+
+
+      <!-- TEXT -->
 
       <textarea
         id="messageInput"
@@ -958,10 +932,14 @@
         rows="1"
       ></textarea>
 
+
+      <!-- SEND -->
+
       <button
+        type="button"
         class="send"
         id="sendButton"
-        onclick="sendMessage()"
+        aria-label="إرسال"
       >
         ↑
       </button>
@@ -972,15 +950,14 @@
 
 </div>
 
-<!-- =========================
-     SIDE MENU
-========================== -->
+
+<!-- SIDE MENU -->
 
 <div
   class="side-overlay"
   id="sideOverlay"
-  onclick="closeMenu()"
 ></div>
+
 
 <aside
   class="side-panel"
@@ -995,19 +972,21 @@
 
     <button
       class="close-menu"
-      onclick="closeMenu()"
+      id="closeMenu"
     >
       ×
     </button>
 
   </div>
 
+
   <button
     class="side-new"
-    onclick="newChat(); closeMenu();"
+    id="sideNewChat"
   >
     ＋ محادثة جديدة
   </button>
+
 
   <div
     class="conversation-list"
@@ -1015,6 +994,7 @@
   ></div>
 
 </aside>
+
 
 <script>
 
@@ -1031,46 +1011,41 @@
   const sendButton =
     document.getElementById("sendButton");
 
+  const attachButton =
+    document.getElementById("attachButton");
+
+  const fileInput =
+    document.getElementById("fileInput");
+
+  const attachmentPreview =
+    document.getElementById("attachmentPreview");
+
+  const attachmentName =
+    document.getElementById("attachmentName");
+
+  const attachmentSize =
+    document.getElementById("attachmentSize");
+
+  const attachmentImage =
+    document.getElementById("attachmentImage");
+
+  const attachmentIcon =
+    document.getElementById("attachmentIcon");
+
   const sidePanel =
     document.getElementById("sidePanel");
 
   const sideOverlay =
     document.getElementById("sideOverlay");
 
+  const closeMenuButton =
+    document.getElementById("closeMenu");
+
+  const sideNewChat =
+    document.getElementById("sideNewChat");
+
   const conversationList =
-    document.getElementById(
-      "conversationList"
-    );
-
-  const fileInput =
-    document.getElementById(
-      "fileInput"
-    );
-
-  const attachmentPreview =
-    document.getElementById(
-      "attachmentPreview"
-    );
-
-  const attachmentName =
-    document.getElementById(
-      "attachmentName"
-    );
-
-  const attachmentSize =
-    document.getElementById(
-      "attachmentSize"
-    );
-
-  const attachmentImage =
-    document.getElementById(
-      "attachmentImage"
-    );
-
-  const attachmentIcon =
-    document.getElementById(
-      "attachmentIcon"
-    );
+    document.getElementById("conversationList");
 
 
   /* =========================
@@ -1084,18 +1059,28 @@
     "altatawur_active_conversation";
 
 
-  let conversations =
-    JSON.parse(
-      localStorage.getItem(
-        STORAGE_KEY
-      ) || "[]"
-    );
+  let conversations = [];
+
+  try {
+
+    conversations =
+      JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+      );
+
+    if (!Array.isArray(conversations)) {
+      conversations = [];
+    }
+
+  } catch (error) {
+
+    conversations = [];
+
+  }
 
 
   let activeConversationId =
-    localStorage.getItem(
-      ACTIVE_KEY
-    ) || null;
+    localStorage.getItem(ACTIVE_KEY) || null;
 
 
   /* =========================
@@ -1106,6 +1091,8 @@
 
   let selectedFileData = null;
 
+  let isSending = false;
+
 
   /* =========================
      SAVE
@@ -1113,21 +1100,28 @@
 
   function saveConversations() {
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(
-        conversations
-      )
-    );
+    try {
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(conversations)
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Storage Error:",
+        error
+      );
+
+    }
 
   }
 
 
   function saveActiveId() {
 
-    if (
-      activeConversationId
-    ) {
+    if (activeConversationId) {
 
       localStorage.setItem(
         ACTIVE_KEY,
@@ -1191,21 +1185,16 @@
         </div>
 
         <h2>
-
           أهلاً بك في
-
           <span>
             التطور چات
           </span>
-
         </h2>
 
         <p>
-
           مساعدك الذكي للإجابة عن الأسئلة،
           شرح المواضيع، كتابة النصوص
           وتوليد الأفكار.
-
         </p>
 
       </section>
@@ -1222,22 +1211,18 @@
   function addMessage(
     role,
     text,
-    image = null
+    attachment = null
   ) {
 
     const message =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     message.className =
       `message ${role}`;
 
 
     const avatar =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     avatar.className =
       "avatar";
@@ -1249,52 +1234,78 @@
 
 
     const bubble =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     bubble.className =
       "bubble";
 
 
+    /*
+      صورة مرفقة
+    */
+
+    if (
+      attachment &&
+      attachment.type === "image" &&
+      attachment.data
+    ) {
+
+      const img =
+        document.createElement("img");
+
+      img.className =
+        "message-image";
+
+      img.src =
+        attachment.data;
+
+      img.alt =
+        attachment.name || "صورة";
+
+      bubble.appendChild(img);
+
+    }
+
+
+    /*
+      ملف مرفق غير صورة
+    */
+
+    if (
+      attachment &&
+      attachment.type !== "image"
+    ) {
+
+      const fileBox =
+        document.createElement("div");
+
+      fileBox.className =
+        "message-file";
+
+      fileBox.innerHTML =
+        `📎 ${escapeHtml(
+          attachment.name || "ملف مرفق"
+        )}`;
+
+      bubble.appendChild(fileBox);
+
+    }
+
+
+    /*
+      النص
+    */
+
     if (text) {
 
       const textElement =
-        document.createElement(
-          "div"
-        );
-
-      textElement.className =
-        "message-text";
+        document.createElement("div");
 
       textElement.textContent =
         text;
 
       bubble.appendChild(
         textElement
-      );
-
-    }
-
-
-    if (image) {
-
-      const imageElement =
-        document.createElement(
-          "img"
-        );
-
-      imageElement.className =
-        "message-image";
-
-      imageElement.src =
-        image;
-
-      imageElement.alt =
-        "الصورة المرفقة";
-
-      bubble.appendChild(
-        imageElement
       );
 
     }
@@ -1330,6 +1341,22 @@
 
 
   /* =========================
+     ESCAPE HTML
+  ========================== */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================
      RENDER CONVERSATION
   ========================== */
 
@@ -1341,6 +1368,7 @@
 
     if (
       !conversation ||
+      !conversation.messages ||
       !conversation.messages.length
     ) {
 
@@ -1359,8 +1387,8 @@
 
         addMessage(
           message.role,
-          message.content,
-          message.image || null
+          message.content || "",
+          message.attachment || null
         );
 
       }
@@ -1375,17 +1403,14 @@
 
   function renderConversationList() {
 
-    conversationList.innerHTML =
-      "";
+    conversationList.innerHTML = "";
 
 
     if (!conversations.length) {
 
       conversationList.innerHTML = `
 
-        <div
-          class="conversation-empty"
-        >
+        <div class="conversation-empty">
 
           ما عندك محادثات محفوظة حالياً.
 
@@ -1410,10 +1435,7 @@
         conversation => {
 
           const item =
-            document.createElement(
-              "div"
-            );
-
+            document.createElement("div");
 
           item.className =
             "conversation-item" +
@@ -1426,14 +1448,10 @@
 
 
           const title =
-            document.createElement(
-              "div"
-            );
-
+            document.createElement("div");
 
           title.className =
             "conversation-title";
-
 
           title.textContent =
             conversation.title ||
@@ -1441,14 +1459,10 @@
 
 
           const deleteButton =
-            document.createElement(
-              "button"
-            );
-
+            document.createElement("button");
 
           deleteButton.className =
             "delete-conversation";
-
 
           deleteButton.textContent =
             "🗑";
@@ -1466,9 +1480,7 @@
             };
 
 
-          item.appendChild(
-            title
-          );
+          item.appendChild(title);
 
           item.appendChild(
             deleteButton
@@ -1558,7 +1570,8 @@
     renderConversationList();
 
 
-    input.value = "";
+    input.value =
+      "";
 
     input.style.height =
       "52px";
@@ -1585,13 +1598,10 @@
 
 
     if (
-      activeConversationId ===
-      id
+      activeConversationId === id
     ) {
 
-      if (
-        conversations.length
-      ) {
+      if (conversations.length) {
 
         activeConversationId =
           conversations[
@@ -1626,9 +1636,7 @@
   function addTyping() {
 
     const message =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     message.className =
       "message assistant";
@@ -1638,9 +1646,7 @@
 
 
     const avatar =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     avatar.className =
       "avatar";
@@ -1650,9 +1656,7 @@
 
 
     const bubble =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     bubble.className =
       "bubble";
@@ -1704,7 +1708,6 @@
         "typingMessage"
       );
 
-
     if (typing) {
 
       typing.remove();
@@ -1718,15 +1721,28 @@
      FILE PICKER
   ========================== */
 
-  function openFilePicker() {
+  attachButton.addEventListener(
+    "click",
+    function(event) {
 
-    fileInput.click();
+      event.preventDefault();
 
-  }
+      event.stopPropagation();
+
+      fileInput.click();
+
+    }
+  );
+
+
+  fileInput.addEventListener(
+    "change",
+    handleFileSelect
+  );
 
 
   /* =========================
-     FORMAT FILE SIZE
+     FILE SIZE
   ========================== */
 
   function formatFileSize(bytes) {
@@ -1737,33 +1753,36 @@
 
     }
 
-
-    if (
-      bytes <
-      1024 * 1024
-    ) {
+    if (bytes < 1024 * 1024) {
 
       return (
-        (bytes / 1024)
-          .toFixed(1) +
+        (bytes / 1024).toFixed(1) +
         " KB"
       );
 
     }
 
+    if (bytes < 1024 * 1024 * 1024) {
+
+      return (
+        (bytes / (1024 * 1024))
+          .toFixed(1) +
+        " MB"
+      );
+
+    }
 
     return (
-      (bytes /
-        (1024 * 1024))
+      (bytes / (1024 * 1024 * 1024))
         .toFixed(1) +
-      " MB"
+      " GB"
     );
 
   }
 
 
   /* =========================
-     READ FILE AS DATA URL
+     READ FILE
   ========================== */
 
   function readFileAsDataURL(file) {
@@ -1776,25 +1795,17 @@
 
 
         reader.onload =
-          () => {
-
-            resolve(
-              reader.result
-            );
-
-          };
+          () => resolve(
+            reader.result
+          );
 
 
         reader.onerror =
-          () => {
-
-            reject(
-              new Error(
-                "تعذر قراءة الصورة."
-              )
-            );
-
-          };
+          () => reject(
+            new Error(
+              "تعذر قراءة الملف."
+            )
+          );
 
 
         reader.readAsDataURL(
@@ -1808,12 +1819,122 @@
 
 
   /* =========================
+     RESIZE IMAGE
+  ========================== */
+
+  async function resizeImage(
+    file,
+    maxSize = 1600,
+    quality = 0.82
+  ) {
+
+    const dataUrl =
+      await readFileAsDataURL(file);
+
+
+    return new Promise(
+      (resolve, reject) => {
+
+        const img =
+          new Image();
+
+
+        img.onload =
+          function() {
+
+            let width =
+              img.width;
+
+            let height =
+              img.height;
+
+
+            if (
+              width > maxSize ||
+              height > maxSize
+            ) {
+
+              const ratio =
+                Math.min(
+                  maxSize / width,
+                  maxSize / height
+                );
+
+              width =
+                Math.round(
+                  width * ratio
+                );
+
+              height =
+                Math.round(
+                  height * ratio
+                );
+
+            }
+
+
+            const canvas =
+              document.createElement(
+                "canvas"
+              );
+
+
+            canvas.width =
+              width;
+
+            canvas.height =
+              height;
+
+
+            const ctx =
+              canvas.getContext(
+                "2d"
+              );
+
+
+            ctx.drawImage(
+              img,
+              0,
+              0,
+              width,
+              height
+            );
+
+
+            const output =
+              canvas.toDataURL(
+                "image/jpeg",
+                quality
+              );
+
+
+            resolve(output);
+
+          };
+
+
+        img.onerror =
+          () => reject(
+            new Error(
+              "تعذر معالجة الصورة."
+            )
+          );
+
+
+        img.src =
+          dataUrl;
+
+      }
+    );
+
+  }
+
+
+  /* =========================
      HANDLE FILE
   ========================== */
 
-  async function handleFileSelect(
-    event
-  ) {
+  async function handleFileSelect(event) {
 
     const file =
       event.target.files[0];
@@ -1827,98 +1948,171 @@
 
 
     /*
-      نسمح حالياً بالصور فقط
-      لأن إرسال PDF والملفات الأخرى
-      يحتاج معالجة إضافية في السيرفر.
-    */
-
-    if (
-      !file.type.startsWith(
-        "image/"
-      )
-    ) {
-
-      alert(
-        "حالياً إرسال المرفقات مدعوم للصور فقط."
-      );
-
-      fileInput.value =
-        "";
-
-      return;
-
-    }
-
-
-    /*
-      الحد الأقصى 10MB
+      حد أقصى أولي
     */
 
     if (
       file.size >
-      10 * 1024 * 1024
+      20 * 1024 * 1024
     ) {
 
       alert(
-        "حجم الصورة أكبر من 10MB."
+        "حجم الملف أكبر من 20MB."
       );
 
-      fileInput.value =
-        "";
+      removeAttachment();
 
       return;
 
     }
 
 
-    try {
-
-      selectedFile =
-        file;
+    selectedFile =
+      file;
 
 
-      selectedFileData =
-        await readFileAsDataURL(
-          file
-        );
+    attachmentName.textContent =
+      file.name;
 
 
-      attachmentName.textContent =
-        file.name;
-
-
-      attachmentSize.textContent =
-        formatFileSize(
-          file.size
-        );
-
-
-      attachmentPreview.classList.add(
-        "active"
+    attachmentSize.textContent =
+      formatFileSize(
+        file.size
       );
 
 
-      attachmentImage.src =
-        selectedFileData;
+    attachmentPreview.classList.add(
+      "active"
+    );
+
+
+    /*
+      صورة
+    */
+
+    if (
+      file.type.startsWith("image/")
+    ) {
+
+      try {
+
+        const compressedImage =
+          await resizeImage(
+            file
+          );
+
+
+        selectedFileData = {
+
+          type:
+            "image",
+
+          name:
+            file.name,
+
+          mime:
+            "image/jpeg",
+
+          data:
+            compressedImage
+
+        };
+
+
+        attachmentImage.src =
+          compressedImage;
+
+
+        attachmentImage.style.display =
+          "block";
+
+
+        attachmentIcon.style.display =
+          "none";
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "تعذر تجهيز الصورة."
+        );
+
+        removeAttachment();
+
+      }
+
+
+    } else {
+
+      /*
+        الملفات غير الصور
+      */
+
+      try {
+
+        const data =
+          await readFileAsDataURL(
+            file
+          );
+
+
+        selectedFileData = {
+
+          type:
+            "file",
+
+          name:
+            file.name,
+
+          mime:
+            file.type ||
+            "application/octet-stream",
+
+          data:
+            data
+
+        };
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "تعذر قراءة الملف."
+        );
+
+        removeAttachment();
+
+        return;
+
+      }
 
 
       attachmentImage.style.display =
-        "block";
-
-
-      attachmentIcon.style.display =
         "none";
 
 
-    } catch (error) {
+      attachmentIcon.style.display =
+        "flex";
 
-      console.error(error);
 
-      alert(
-        "تعذر قراءة الصورة."
-      );
+      if (
+        file.type ===
+        "application/pdf"
+      ) {
 
-      removeAttachment();
+        attachmentIcon.textContent =
+          "📄";
+
+      } else {
+
+        attachmentIcon.textContent =
+          "📎";
+
+      }
 
     }
 
@@ -1980,13 +2174,19 @@
 
   async function sendMessage() {
 
+    if (isSending) {
+
+      return;
+
+    }
+
+
     const text =
       input.value.trim();
 
 
     /*
-      لازم يكون نص
-      أو صورة
+      لازم نص أو مرفق
     */
 
     if (
@@ -1999,22 +2199,11 @@
     }
 
 
-    if (
-      sendButton.disabled
-    ) {
-
-      return;
-
-    }
-
-
     /*
       إنشاء محادثة تلقائياً
     */
 
-    if (
-      !activeConversationId
-    ) {
+    if (!activeConversationId) {
 
       const newConversation = {
 
@@ -2025,9 +2214,13 @@
           text
             ? text.slice(0, 35)
             : (
-                selectedFile?.name ||
-                "صورة"
-              ).slice(0, 35),
+              selectedFile
+                ? selectedFile.name.slice(
+                    0,
+                    35
+                  )
+                : "محادثة جديدة"
+            ),
 
         messages:
           [],
@@ -2064,40 +2257,23 @@
 
 
     /*
-      نحتفظ بنسخة من الصورة
-      قبل مسح المرفق.
+      تجهيز رسالة المستخدم
     */
 
-    const imageData =
-      selectedFileData;
-
-
-    const fileName =
-      selectedFile?.name ||
-      "";
-
-
-    /*
-      النص الذي يظهر للمستخدم
-    */
-
-    let messageText =
+    const messageText =
       text;
 
 
-    if (
-      imageData &&
-      !messageText
-    ) {
-
-      messageText =
-        `📷 ${fileName}`;
-
-    }
+    const attachment =
+      selectedFileData
+        ? {
+            ...selectedFileData
+          }
+        : null;
 
 
     /*
-      الرسالة التي نخزنها
+      حفظ الرسالة محلياً
     */
 
     conversation.messages.push({
@@ -2108,8 +2284,8 @@
       content:
         messageText,
 
-      image:
-        imageData || null
+      attachment:
+        attachment
 
     });
 
@@ -2119,15 +2295,22 @@
     */
 
     if (
-      conversation.messages.length ===
-      1
+      conversation.messages.length === 1
     ) {
 
+      const titleText =
+        messageText ||
+        (
+          attachment
+            ? attachment.name
+            : "محادثة جديدة"
+        );
+
+
       conversation.title =
-        messageText.length > 35
-          ? messageText.slice(0, 35) +
-            "..."
-          : messageText;
+        titleText.length > 35
+          ? titleText.slice(0, 35) + "..."
+          : titleText;
 
     }
 
@@ -2138,13 +2321,13 @@
 
 
     /*
-      عرض الرسالة مباشرة
+      عرض الرسالة
     */
 
     addMessage(
       "user",
       messageText,
-      imageData || null
+      attachment
     );
 
 
@@ -2152,7 +2335,8 @@
       تنظيف الإدخال
     */
 
-    input.value = "";
+    input.value =
+      "";
 
     input.style.height =
       "52px";
@@ -2161,8 +2345,18 @@
     removeAttachment();
 
 
+    /*
+      حالة الإرسال
+    */
+
+    isSending =
+      true;
+
     sendButton.disabled =
       true;
+
+    sendButton.textContent =
+      "…";
 
 
     addTyping();
@@ -2171,9 +2365,87 @@
     try {
 
       /*
-        إرسال كامل المحادثة
-        إلى السيرفر
+        نرسل آخر الرسائل
+        إلى السيرفر.
+
+        يتم أخذ آخر 30 رسالة
+        حتى لا يكبر الطلب بلا حدود.
       */
+
+      const apiMessages =
+        conversation.messages
+          .slice(-30)
+          .map(message => {
+
+            /*
+              إذا توجد صورة
+            */
+
+            if (
+              message.attachment &&
+              message.attachment.type === "image"
+            ) {
+
+              const content = [];
+
+
+              if (message.content) {
+
+                content.push({
+
+                  type:
+                    "input_text",
+
+                  text:
+                    message.content
+
+                });
+
+              }
+
+
+              content.push({
+
+                type:
+                  "input_image",
+
+                image_url:
+                  message.attachment.data
+
+              });
+
+
+              return {
+
+                role:
+                  message.role,
+
+                content:
+                  content
+
+              };
+
+            }
+
+
+            /*
+              الرسائل العادية
+            */
+
+            return {
+
+              role:
+                message.role,
+
+              content:
+                String(
+                  message.content || ""
+                )
+
+            };
+
+          });
+
 
       const response =
         await fetch(
@@ -2194,7 +2466,7 @@
               JSON.stringify({
 
                 messages:
-                  conversation.messages
+                  apiMessages
 
               })
 
@@ -2202,24 +2474,29 @@
         );
 
 
-      /*
-        محاولة قراءة JSON
-      */
+      let data = null;
 
-      const data =
-        await response.json();
+
+      try {
+
+        data =
+          await response.json();
+
+      } catch {
+
+        data = {};
+
+      }
 
 
       removeTyping();
 
 
-      if (
-        !response.ok
-      ) {
+      if (!response.ok) {
 
         throw new Error(
           data.error ||
-          "حدث خطأ."
+          "حدث خطأ من الخادم."
         );
 
       }
@@ -2229,10 +2506,6 @@
         data.reply ||
         "ما حصلت جواب.";
 
-
-      /*
-        حفظ رد الذكاء الاصطناعي
-      */
 
       conversation.messages.push({
 
@@ -2248,10 +2521,6 @@
       saveConversations();
 
 
-      /*
-        عرض الرد
-      */
-
       addMessage(
         "assistant",
         reply
@@ -2264,29 +2533,52 @@
 
 
       console.error(
-        "Chat Error:",
+        "Send Error:",
         error
       );
 
 
       addMessage(
-
         "assistant",
-
-        "عذراً، صار خطأ بالاتصال بالخادم. حاول مرة ثانية."
-
+        "عذراً، صار خطأ بالاتصال بالخادم.\n\n" +
+        (
+          error?.message ||
+          "حاول مرة ثانية."
+        )
       );
 
     } finally {
 
+      isSending =
+        false;
+
       sendButton.disabled =
         false;
+
+      sendButton.textContent =
+        "↑";
 
       input.focus();
 
     }
 
   }
+
+
+  /* =========================
+     SEND BUTTON
+  ========================== */
+
+  sendButton.addEventListener(
+    "click",
+    function(event) {
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+  );
 
 
   /* =========================
@@ -2317,6 +2609,50 @@
     );
 
   }
+
+
+  window.toggleMenu =
+    toggleMenu;
+
+
+  window.closeMenu =
+    closeMenu;
+
+
+  sideOverlay.addEventListener(
+    "click",
+    closeMenu
+  );
+
+
+  closeMenuButton.addEventListener(
+    "click",
+    closeMenu
+  );
+
+
+  sideNewChat.addEventListener(
+    "click",
+    function() {
+
+      newChat();
+
+      closeMenu();
+
+    }
+  );
+
+
+  /* =========================
+     NEW CHAT HEADER
+  ========================== */
+
+  document
+    .querySelector(".new-chat")
+    .addEventListener(
+      "click",
+      newChat
+    );
 
 
   /* =========================
@@ -2370,9 +2706,7 @@
 
   function startApp() {
 
-    if (
-      !conversations.length
-    ) {
+    if (!conversations.length) {
 
       activeConversationId =
         null;
