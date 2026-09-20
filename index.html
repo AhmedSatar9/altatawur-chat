@@ -7,6 +7,7 @@
   <title>التطور چات</title>
 
   <style>
+
     :root {
       --bg: #070912;
       --panel: #0d1222;
@@ -28,11 +29,10 @@
     html,
     body {
       min-height: 100%;
+      background: var(--bg);
     }
 
     body {
-      min-height: 100vh;
-      background: var(--bg);
       color: var(--text);
       font-family:
         -apple-system,
@@ -47,22 +47,22 @@
       font-family: inherit;
     }
 
-    button {
-      -webkit-tap-highlight-color: transparent;
-    }
-
     .app {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* ================= HEADER ================= */
+    /* =========================
+       HEADER
+    ========================= */
 
     header {
       height: 92px;
-      padding: 18px 24px;
+      padding: 14px 24px;
+
       border-bottom: 1px solid var(--border);
+
       background: rgba(13,18,34,.94);
 
       display: flex;
@@ -83,6 +83,7 @@
     .logo {
       width: 58px;
       height: 58px;
+
       border-radius: 17px;
 
       background: var(--gradient);
@@ -108,52 +109,69 @@
       font-size: 14px;
     }
 
+    /* =========================
+       HEADER ACTIONS
+    ========================= */
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+    }
+
+    .new-chat {
+      height: 48px;
+
+      padding: 0 16px;
+
+      border-radius: 14px;
+
+      border: 1px solid var(--border);
+
+      background: transparent;
+
+      color: var(--muted);
+
+      font-size: 15px;
+
+      cursor: pointer;
+
+      white-space: nowrap;
+
+      transition: .2s ease;
+    }
+
+    .new-chat:hover {
+      color: white;
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+    }
+
     .menu {
       width: 48px;
       height: 48px;
 
       border: 1px solid var(--border);
+
       background: transparent;
 
       border-radius: 14px;
 
       color: white;
+
       font-size: 25px;
 
       cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* ================= NEW CHAT ================= */
-
-    .clear {
-      position: fixed;
-
-      top: 23px;
-      left: 24px;
-
-      z-index: 200;
-
-      background: rgba(13,18,34,.85);
-
-      border: 1px solid var(--border);
-
-      color: var(--muted);
-
-      border-radius: 13px;
-
-      padding: 11px 15px;
-
-      cursor: pointer;
-
-      transition: .2s;
-    }
-
-    .clear:hover {
-      color: white;
-      border-color: rgba(255,255,255,.2);
-    }
-
-    /* ================= CHAT ================= */
+    /* =========================
+       CHAT
+    ========================= */
 
     .chat {
       flex: 1;
@@ -166,10 +184,12 @@
       padding:
         35px
         20px
-        170px;
+        160px;
     }
 
-    /* ================= WELCOME ================= */
+    /* =========================
+       WELCOME
+    ========================= */
 
     .welcome {
       text-align: center;
@@ -227,7 +247,9 @@
       margin: auto;
     }
 
-    /* ================= MESSAGE ================= */
+    /* =========================
+       MESSAGES
+    ========================= */
 
     .message {
       display: flex;
@@ -258,6 +280,7 @@
       justify-content: center;
 
       font-weight: bold;
+
       font-size: 20px;
     }
 
@@ -291,7 +314,9 @@
       background: #111a30;
     }
 
-    /* ================= TYPING ================= */
+    /* =========================
+       TYPING
+    ========================= */
 
     .typing {
       display: flex;
@@ -307,9 +332,10 @@
 
       border-radius: 50%;
 
-      background: var(--purple);
+      background: #8b5cf6;
 
-      animation: bounce 1s infinite;
+      animation:
+        bounce 1s infinite;
     }
 
     .typing span:nth-child(2) {
@@ -333,7 +359,9 @@
       }
     }
 
-    /* ================= INPUT ================= */
+    /* =========================
+       INPUT AREA
+    ========================= */
 
     .input-area {
       position: fixed;
@@ -353,7 +381,7 @@
           rgba(7,9,18,.96) 35%
         );
 
-      z-index: 150;
+      z-index: 200;
     }
 
     .input-box {
@@ -378,8 +406,7 @@
       gap: 10px;
 
       box-shadow:
-        0 -5px 30px
-        rgba(0,0,0,.15);
+        0 -5px 30px rgba(0,0,0,.15);
     }
 
     textarea {
@@ -437,7 +464,9 @@
       cursor: not-allowed;
     }
 
-    /* ================= MOBILE ================= */
+    /* =========================
+       MOBILE
+    ========================= */
 
     @media (max-width: 600px) {
 
@@ -445,8 +474,12 @@
         height: 82px;
 
         padding:
-          14px
+          12px
           16px;
+      }
+
+      .brand {
+        gap: 10px;
       }
 
       .logo {
@@ -454,26 +487,47 @@
         height: 50px;
 
         border-radius: 15px;
+
+        font-size: 27px;
       }
 
       .brand-info h1 {
         font-size: 21px;
       }
 
-      .menu {
-        width: 44px;
-        height: 44px;
+      .status {
+        font-size: 13px;
       }
 
-      .clear {
-        top: 17px;
-        left: 16px;
+      .header-actions {
+        gap: 7px;
+      }
+
+      .new-chat {
+        height: 44px;
+
+        padding:
+          0 11px;
 
         font-size: 12px;
 
+        border-radius: 13px;
+      }
+
+      .menu {
+        width: 44px;
+        height: 44px;
+
+        border-radius: 13px;
+
+        font-size: 23px;
+      }
+
+      .chat {
         padding:
-          10px
-          12px;
+          20px
+          12px
+          155px;
       }
 
       .welcome {
@@ -485,6 +539,8 @@
         height: 90px;
 
         font-size: 45px;
+
+        border-radius: 28px;
       }
 
       .welcome h2 {
@@ -501,22 +557,54 @@
         font-size: 15px;
       }
 
-      .chat {
-        padding-left: 12px;
-        padding-right: 12px;
+      .avatar {
+        width: 44px;
+        height: 44px;
+
+        min-width: 44px;
       }
 
       .input-area {
         padding:
-          12px
-          12px
-          18px;
+          14px
+          14px
+          22px;
       }
 
       .input-box {
-        border-radius: 22px;
+        border-radius: 23px;
       }
     }
+
+    /* شاشات الآيفون الصغيرة جداً */
+
+    @media (max-width: 380px) {
+
+      .new-chat {
+        padding: 0 8px;
+
+        font-size: 11px;
+      }
+
+      .brand-info h1 {
+        font-size: 18px;
+      }
+
+      .status {
+        font-size: 12px;
+      }
+
+      .logo {
+        width: 46px;
+        height: 46px;
+      }
+
+      .menu {
+        width: 42px;
+        height: 42px;
+      }
+    }
+
   </style>
 </head>
 
@@ -524,7 +612,9 @@
 
 <div class="app">
 
-  <!-- HEADER -->
+  <!-- =========================
+       HEADER
+  ========================== -->
 
   <header>
 
@@ -548,29 +638,34 @@
 
     </div>
 
-    <button
-      class="menu"
-      type="button"
-      aria-label="القائمة"
-    >
-      ☰
-    </button>
+
+    <!-- أزرار الهيدر -->
+
+    <div class="header-actions">
+
+      <button
+        class="new-chat"
+        onclick="newChat()"
+      >
+        + محادثة جديدة
+      </button>
+
+      <button
+        class="menu"
+        onclick="toggleMenu()"
+        aria-label="القائمة"
+      >
+        ☰
+      </button>
+
+    </div>
 
   </header>
 
 
-  <!-- NEW CHAT -->
-
-  <button
-    class="clear"
-    type="button"
-    onclick="newChat()"
-  >
-    + محادثة جديدة
-  </button>
-
-
-  <!-- CHAT -->
+  <!-- =========================
+       CHAT
+  ========================== -->
 
   <main
     class="chat"
@@ -604,7 +699,9 @@
   </main>
 
 
-  <!-- INPUT -->
+  <!-- =========================
+       INPUT
+  ========================== -->
 
   <div class="input-area">
 
@@ -619,7 +716,6 @@
       <button
         class="send"
         id="sendButton"
-        type="button"
         onclick="sendMessage()"
       >
         ↑
@@ -634,8 +730,6 @@
 
 <script>
 
-  /* ================= ELEMENTS ================= */
-
   const chat =
     document.getElementById("chat");
 
@@ -646,12 +740,17 @@
     document.getElementById("sendButton");
 
 
-  /* ================= STORAGE ================= */
+  let messages =
+    JSON.parse(
+      localStorage.getItem(
+        "altatawur_chat"
+      ) || "[]"
+    );
 
-  let messages = JSON.parse(
-    localStorage.getItem("altatawur_chat") || "[]"
-  );
 
+  /* =========================
+     SAVE
+  ========================== */
 
   function saveMessages() {
 
@@ -663,7 +762,9 @@
   }
 
 
-  /* ================= WELCOME ================= */
+  /* =========================
+     WELCOME
+  ========================== */
 
   function showWelcome() {
 
@@ -695,12 +796,11 @@
   }
 
 
-  /* ================= MESSAGE ================= */
+  /* =========================
+     ADD MESSAGE
+  ========================== */
 
-  function addMessage(
-    role,
-    text
-  ) {
+  function addMessage(role, text) {
 
     const message =
       document.createElement("div");
@@ -739,8 +839,13 @@
 
 
     window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth"
+
+      top:
+        document.body.scrollHeight,
+
+      behavior:
+        "smooth"
+
     });
 
 
@@ -749,7 +854,9 @@
   }
 
 
-  /* ================= LOAD ================= */
+  /* =========================
+     LOAD MESSAGES
+  ========================== */
 
   function loadMessages() {
 
@@ -765,21 +872,21 @@
     chat.innerHTML = "";
 
 
-    messages.forEach(
-      message => {
+    messages.forEach(message => {
 
-        addMessage(
-          message.role,
-          message.content
-        );
+      addMessage(
+        message.role,
+        message.content
+      );
 
-      }
-    );
+    });
 
   }
 
 
-  /* ================= TYPING ================= */
+  /* =========================
+     TYPING
+  ========================== */
 
   function addTyping() {
 
@@ -831,12 +938,21 @@
 
 
     window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth"
+
+      top:
+        document.body.scrollHeight,
+
+      behavior:
+        "smooth"
+
     });
 
   }
 
+
+  /* =========================
+     REMOVE TYPING
+  ========================== */
 
   function removeTyping() {
 
@@ -854,7 +970,9 @@
   }
 
 
-  /* ================= SEND ================= */
+  /* =========================
+     SEND MESSAGE
+  ========================== */
 
   async function sendMessage() {
 
@@ -874,9 +992,11 @@
 
     messages.push({
 
-      role: "user",
+      role:
+        "user",
 
-      content: text
+      content:
+        text
 
     });
 
@@ -910,11 +1030,14 @@
           "/api/chat",
           {
 
-            method: "POST",
+            method:
+              "POST",
 
             headers: {
+
               "Content-Type":
                 "application/json"
+
             },
 
             body:
@@ -951,9 +1074,11 @@
 
       messages.push({
 
-        role: "assistant",
+        role:
+          "assistant",
 
-        content: reply
+        content:
+          reply
 
       });
 
@@ -978,11 +1103,7 @@
       );
 
 
-      console.error(
-        "Chat Error:",
-        error
-      );
-
+      console.error(error);
 
     } finally {
 
@@ -996,7 +1117,9 @@
   }
 
 
-  /* ================= NEW CHAT ================= */
+  /* =========================
+     NEW CHAT
+  ========================== */
 
   function newChat() {
 
@@ -1006,14 +1129,36 @@
       "altatawur_chat"
     );
 
+
     showWelcome();
+
 
     input.focus();
 
   }
 
 
-  /* ================= TEXTAREA ================= */
+  /* =========================
+     MENU
+  ========================== */
+
+  function toggleMenu() {
+
+    /*
+      القائمة سنضيف لها وظائف
+      بالخطوة القادمة.
+    */
+
+    console.log(
+      "تم الضغط على القائمة"
+    );
+
+  }
+
+
+  /* =========================
+     TEXTAREA AUTO HEIGHT
+  ========================== */
 
   input.addEventListener(
     "input",
@@ -1033,7 +1178,9 @@
   );
 
 
-  /* ================= ENTER ================= */
+  /* =========================
+     ENTER TO SEND
+  ========================== */
 
   input.addEventListener(
     "keydown",
@@ -1054,7 +1201,9 @@
   );
 
 
-  /* ================= START ================= */
+  /* =========================
+     START
+  ========================== */
 
   loadMessages();
 
