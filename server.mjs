@@ -1,18 +1,26 @@
 import express from "express";
 import dotenv from "dotenv";
 import OpenAI from "openai";
+import path from "path";
+import { fileURLToPath } from "url";
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-app.use(
-  express.json({
-    limit: "25mb"
-  })
-);
-app.use(express.static("public"));
+app.use(express.json({ limit: "25mb" }));
+/* =========================
+   PUBLIC
+========================= */
+const publicPath = path.join(__dirname, "public");
+app.use(express.static(publicPath));
+/* الصفحة الرئيسية */
+app.get("/", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
 /* =========================
    CHAT API
 ========================= */
@@ -28,7 +36,7 @@ app.post("/api/chat", async (req, res) => {
       });
     }
     /* =========================
-       تحويل المحادثة
+       تجهيز المحادثة
     ========================= */
     const input = [];
     for (const message of messages.slice(-30)) {
@@ -47,11 +55,10 @@ app.post("/api/chat", async (req, res) => {
       });
     }
     /* =========================
-       إضافة الصورة أو الملف
+       إضافة صورة أو ملف
     ========================= */
     if (attachment) {
-      const lastMessage =
-        input[input.length - 1];
+      const lastMessage = input[input.length - 1];
       if (
         lastMessage &&
         lastMessage.role === "user"
@@ -68,8 +75,7 @@ app.post("/api/chat", async (req, res) => {
           }
           lastMessage.content.push({
             type: "input_image",
-            image_url: attachment.data,
-            detail: "auto"
+            image_url: attachment.data
           });
         }
         /* ملف */
@@ -97,18 +103,19 @@ app.post("/api/chat", async (req, res) => {
         model: "gpt-5.5",
         instructions:
           "أنت المساعد الرسمي لمنصة التطور چات. أجب بالعربية بشكل واضح ومفيد. استخدم اللهجة العراقية فقط عندما يطلب المستخدم ذلك. إذا أرسل المستخدم صورة أو ملفاً، حلله اعتماداً على محتواه الفعلي ولا تدّعي رؤية أو قراءة شيء غير موجود.",
-        input: input,
+        input,
         store: false
       });
     /* =========================
-       RESPONSE
+       إرسال الجواب
     ========================= */
     res.json({
       reply:
         response.output_text ||
         "ما حصلت جواب نصي من النموذج."
     });
-  } catch (error) {
+  }
+  catch (error) {
     console.error(
       "OPENAI ERROR:",
       error
@@ -120,13 +127,10 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 /* =========================
-   START SERVER
+   START
 ========================= */
-app.listen(
-  port,
-  () => {
-    console.log(
-      `التطور چات يعمل على http://localhost:${port}`
-    );
-  }
-);
+app.listen(port, () => {
+  console.log(
+    `التطور چات يعمل على http://localhost:${port}`
+  );
+});
