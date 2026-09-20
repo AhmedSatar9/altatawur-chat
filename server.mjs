@@ -3,134 +3,86 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import path from "path";
 import { fileURLToPath } from "url";
+
 dotenv.config();
+
 const app = express();
-const port = process.env.PORT || 3000;
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const port = process.env.PORT || 3000;
+
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-app.use(express.json({ limit: "25mb" }));
-/* =========================
-   PUBLIC
-========================= */
-const publicPath = path.join(__dirname, "public");
-app.use(express.static(publicPath));
+
+app.use(express.json({ limit: "2mb" }));
+
 /* الصفحة الرئيسية */
 app.get("/", (req, res) => {
-  res.sendFile(path.join(publicPath, "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
-/* =========================
-   CHAT API
-========================= */
+
+/* ملفات الموقع */
+app.use(express.static(__dirname));
+
+/* الذكاء الاصطناعي */
 app.post("/api/chat", async (req, res) => {
   try {
+
     const messages = Array.isArray(req.body.messages)
       ? req.body.messages
       : [];
-    const attachment = req.body.attachment || null;
+
     if (!messages.length) {
       return res.status(400).json({
         error: "لا توجد رسالة."
       });
     }
-    /* =========================
-       تجهيز المحادثة
-    ========================= */
-    const input = [];
-    for (const message of messages.slice(-30)) {
-      if (!message.content) continue;
-      input.push({
-        role:
-          message.role === "assistant"
-            ? "assistant"
-            : "user",
-        content: [
-          {
-            type: "input_text",
-            text: String(message.content)
-          }
-        ]
-      });
-    }
-    /* =========================
-       إضافة صورة أو ملف
-    ========================= */
-    if (attachment) {
-      const lastMessage = input[input.length - 1];
-      if (
-        lastMessage &&
-        lastMessage.role === "user"
-      ) {
-        /* صورة */
-        if (
-          attachment.type &&
-          attachment.type.startsWith("image/")
-        ) {
-          if (!attachment.data) {
-            return res.status(400).json({
-              error: "بيانات الصورة غير موجودة."
-            });
-          }
-          lastMessage.content.push({
-            type: "input_image",
-            image_url: attachment.data
-          });
-        }
-        /* ملف */
-        else {
-          if (!attachment.data) {
-            return res.status(400).json({
-              error: "بيانات الملف غير موجودة."
-            });
-          }
-          lastMessage.content.push({
-            type: "input_file",
-            filename:
-              attachment.name || "file",
-            file_data:
-              attachment.data
-          });
-        }
-      }
-    }
-    /* =========================
-       OPENAI
-    ========================= */
-    const response =
-      await client.responses.create({
-        model: "gpt-5.5",
-        instructions:
-          "أنت المساعد الرسمي لمنصة التطور چات. أجب بالعربية بشكل واضح ومفيد. استخدم اللهجة العراقية فقط عندما يطلب المستخدم ذلك. إذا أرسل المستخدم صورة أو ملفاً، حلله اعتماداً على محتواه الفعلي ولا تدّعي رؤية أو قراءة شيء غير موجود.",
-        input,
-        store: false
-      });
-    /* =========================
-       إرسال الجواب
-    ========================= */
+
+    const input = messages
+      .slice(-30)
+      .map(m => ({
+        role: m.role === "assistant"
+          ? "assistant"
+          : "user",
+
+        content: String(m.content || "")
+      }));
+
+    const response = await client.responses.create({
+
+      model: "gpt-5.5",
+
+      instructions:
+        "أنت المساعد الرسمي لمنصة التطور چات. أجب بالعربية بشكل واضح ومفيد، واستخدم اللهجة العراقية فقط عندما يطلب المستخدم ذلك. لا تدّعي تنفيذ أفعال لم تنفذها.",
+
+      input,
+
+      store: false
+    });
+
     res.json({
       reply:
         response.output_text ||
         "ما حصلت جواب نصي من النموذج."
     });
-  }
-  catch (error) {
-    console.error(
-      "OPENAI ERROR:",
-      error
-    );
+
+  } catch (error) {
+
+    console.error("OpenAI Error:", error);
+
     res.status(500).json({
       error:
         "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي."
     });
   }
 });
-/* =========================
-   START
-========================= */
+
+/* تشغيل السيرفر */
 app.listen(port, () => {
   console.log(
-    `التطور چات يعمل على http://localhost:${port}`
+    `التطور چات يعمل على المنفذ ${port}`
   );
 });
