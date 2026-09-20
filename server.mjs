@@ -17,8 +17,14 @@ const port = process.env.PORT || 3000;
    OPENAI
 ========================= */
 
+const apiKey = process.env.OPENAI_API_KEY;
+
+if (!apiKey) {
+  console.error("❌ OPENAI_API_KEY غير موجود في ملف .env");
+}
+
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey
 });
 
 /* =========================
@@ -27,7 +33,7 @@ const client = new OpenAI({
 
 app.use(
   express.json({
-    limit: "25mb"
+    limit: "30mb"
   })
 );
 
@@ -57,147 +63,280 @@ app.post("/api/chat", async (req, res) => {
 
   try {
 
+    /* =========================
+       CHECK API KEY
+    ========================== */
+
+    if (!apiKey) {
+
+      return res.status(500).json({
+        error:
+          "مفتاح OpenAI غير موجود في إعدادات السيرفر."
+      });
+
+    }
+
+
+    /* =========================
+       READ MESSAGES
+    ========================== */
+
     const messages =
       Array.isArray(req.body?.messages)
         ? req.body.messages
         : [];
 
+
     if (!messages.length) {
 
       return res.status(400).json({
-        error: "لا توجد رسالة."
+        error:
+          "لا توجد رسالة."
       });
 
     }
 
-    /*
-      نحافظ على آخر 30 رسالة
-      حتى لا يكبر حجم الطلب.
-    */
+
+    /* =========================
+       LAST 30 MESSAGES
+    ========================== */
 
     const recentMessages =
       messages.slice(-30);
 
-    /*
-      تحويل رسائل الموقع
-      إلى صيغة Responses API
-    */
 
-    const input =
-      recentMessages.map(message => {
+    /* =========================
+       CONVERT TO RESPONSES INPUT
+    ========================== */
 
-        /*
-          رسالة المستخدم
-        */
+    const input = [];
 
-        if (message.role === "user") {
 
-          /*
-            إذا كانت الرسالة تحتوي
-            على صورة
-          */
+    for (const message of recentMessages) {
 
-          if (
-            Array.isArray(message.content)
-          ) {
+      /*
+        =========================
+        USER MESSAGE
+        =========================
+      */
 
-            const content =
-              message.content
-                .map(item => {
-
-                  /*
-                    نص
-                  */
-
-                  if (
-                    item.type === "text"
-                  ) {
-
-                    return {
-                      type: "input_text",
-                      text:
-                        String(
-                          item.text || ""
-                        )
-                    };
-
-                  }
-
-                  /*
-                    صورة
-                  */
-
-                  if (
-                    item.type === "image_url"
-                  ) {
-
-                    return {
-                      type: "input_image",
-                      image_url:
-                        item.image_url
-                    };
-
-                  }
-
-                  return null;
-
-                })
-                .filter(Boolean);
-
-            return {
-              role: "user",
-              content
-            };
-          }
-
-          /*
-            رسالة مستخدم عادية
-          */
-
-          return {
-            role: "user",
-            content: [
-              {
-                type: "input_text",
-                text:
-                  String(
-                    message.content || ""
-                  )
-              }
-            ]
-          };
-        }
+      if (message.role === "user") {
 
         /*
-          رسائل المساعد السابقة
+          رسالة تحتوي على محتوى متعدد
+          نص + صورة
         */
 
         if (
-          message.role === "assistant"
+          Array.isArray(message.content)
         ) {
 
-          return {
-            role: "assistant",
-            content: [
-              {
-                type: "output_text",
-                text:
-                  String(
-                    message.content || ""
-                  )
+          const content = [];
+
+
+          for (
+            const item
+            of message.content
+          ) {
+
+            /*
+              TEXT
+            */
+
+            if (
+              item?.type === "input_text"
+            ) {
+
+              const text =
+                String(
+                  item.text || ""
+                ).trim();
+
+
+              if (text) {
+
+                content.push({
+
+                  type:
+                    "input_text",
+
+                  text
+
+                });
+
               }
-            ]
-          };
+
+            }
+
+
+            /*
+              IMAGE
+            */
+
+            else if (
+              item?.type === "input_image"
+            ) {
+
+              let imageUrl =
+                item.image_url;
+
+
+              /*
+                نتأكد أن الصورة
+                Data URL صحيحة
+              */
+
+              if (
+                typeof imageUrl === "string" &&
+                imageUrl.startsWith("data:image/")
+              ) {
+
+                content.push({
+
+                  type:
+                    "input_image",
+
+                  image_url:
+                    imageUrl
+
+                });
+
+              }
+
+            }
+
+          }
+
+
+          /*
+            لا نرسل رسالة فارغة
+          */
+
+          if (content.length > 0) {
+
+            input.push({
+
+              role:
+                "user",
+
+              content
+
+            });
+
+          }
 
         }
 
-        return null;
+        /*
+          USER MESSAGE عادية
+        */
 
-      }).filter(Boolean);
+        else {
+
+          const text =
+            String(
+              message.content || ""
+            ).trim();
+
+
+          if (text) {
+
+            input.push({
+
+              role:
+                "user",
+
+              content: [
+
+                {
+
+                  type:
+                    "input_text",
+
+                  text
+
+                }
+
+              ]
+
+            });
+
+          }
+
+        }
+
+      }
+
+
+      /*
+        =========================
+        ASSISTANT MESSAGE
+        =========================
+      */
+
+      else if (
+        message.role === "assistant"
+      ) {
+
+        const text =
+          String(
+            message.content || ""
+          ).trim();
+
+
+        if (text) {
+
+          input.push({
+
+            role:
+              "assistant",
+
+            content: [
+
+              {
+
+                type:
+                  "output_text",
+
+                text
+
+              }
+
+            ]
+
+          });
+
+        }
+
+      }
+
+    }
+
 
     /* =========================
-       OPENAI RESPONSE
+       CHECK INPUT
     ========================== */
+
+    if (!input.length) {
+
+      return res.status(400).json({
+
+        error:
+          "لم يتم العثور على محتوى صالح للإرسال."
+
+      });
+
+    }
+
+
+    /* =========================
+       OPENAI
+    ========================== */
+
+    console.log(
+      "📨 إرسال طلب إلى OpenAI..."
+    );
+
 
     const response =
       await client.responses.create({
@@ -212,52 +351,109 @@ app.post("/api/chat", async (req, res) => {
 أجب بالعربية بشكل واضح ومفيد.
 
 استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
-أو عندما تكون مناسبة للسياق.
+أو عندما يكون استخدامها مناسباً للسياق.
 
 إذا أرسل المستخدم صورة:
-- حلل الصورة بدقة.
-- صف محتواها عند الطلب.
-- اقرأ النص الموجود فيها إن أمكن.
-- أجب عن أسئلة المستخدم المتعلقة بالصورة.
-- لا تدّعي رؤية شيء غير واضح في الصورة.
 
-لا تدّعي تنفيذ أفعال لم تنفذها.
+- حلل الصورة بدقة.
+- أجب عن الأسئلة المتعلقة بالصورة.
+- صف محتوى الصورة عند الطلب.
+- اقرأ النصوص الظاهرة في الصورة عندما تكون واضحة.
+- إذا كان جزء من الصورة غير واضح، قل ذلك بوضوح.
+- لا تخمّن معلومات غير ظاهرة في الصورة.
+
+إذا أرسل المستخدم ملفاً أو معلومات، تعامل معها حسب المحتوى المتاح لك.
+
+لا تدّعي تنفيذ أي إجراء لم تنفذه فعلياً.
 `,
 
         input,
 
-        store: false
+        store:
+          false
 
       });
 
+
     /* =========================
-       RESPONSE TEXT
+       GET RESPONSE
     ========================== */
 
     const reply =
-      response.output_text ||
-      "ما حصلت جواب نصي من النموذج.";
+      response?.output_text ||
+      "";
+
+
+    if (!reply.trim()) {
+
+      console.error(
+        "OpenAI returned no text:",
+        response
+      );
+
+
+      return res.status(500).json({
+
+        error:
+          "تمت معالجة الطلب ولكن لم يصل رد نصي من الذكاء الاصطناعي."
+
+      });
+
+    }
+
+
+    /* =========================
+       SEND RESPONSE
+    ========================== */
+
+    console.log(
+      "✅ تم استلام رد OpenAI"
+    );
+
 
     return res.status(200).json({
-      reply
+
+      reply:
+        reply.trim()
+
     });
 
-  } catch (error) {
+  }
+
+
+  /* =========================
+     ERROR
+  ========================== */
+
+  catch (error) {
 
     console.error(
-      "OpenAI Error:",
+      "❌ OpenAI Error:",
       error
     );
 
+
+    /*
+      OpenAI API ERROR
+    */
+
+    const errorMessage =
+      error?.error?.message ||
+      error?.message ||
+      "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.";
+
+
     return res.status(500).json({
+
       error:
-        error?.message ||
-        "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي."
+        errorMessage
+
     });
 
   }
 
 });
+
 
 /* =========================
    START SERVER
@@ -268,7 +464,7 @@ app.listen(
   () => {
 
     console.log(
-      `التطور چات يعمل على المنفذ ${port}`
+      `🚀 التطور چات يعمل على المنفذ ${port}`
     );
 
   }
