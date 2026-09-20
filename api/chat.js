@@ -4,94 +4,45 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-/* =========================
-   SETTINGS
-========================= */
-
 const MAX_MESSAGES = 20;
 const MAX_TEXT_LENGTH = 12000;
 const MAX_IMAGE_LENGTH = 12 * 1024 * 1024;
 
-
-/* =========================
-   API HANDLER
-========================= */
-
 export default async function handler(req, res) {
 
-  /* =========================
-     METHOD
-  ========================== */
-
   if (req.method !== "POST") {
-
     return res.status(405).json({
       error: "Method Not Allowed"
     });
-
   }
-
 
   try {
 
-    /* =========================
-       API KEY
-    ========================== */
-
     if (!process.env.OPENAI_API_KEY) {
-
-      console.error(
-        "OPENAI_API_KEY is missing"
-      );
-
       return res.status(500).json({
-        error:
-          "مفتاح OpenAI غير موجود في إعدادات Vercel."
+        error: "مفتاح OpenAI غير موجود في إعدادات Vercel."
       });
-
     }
-
-
-    /* =========================
-       READ REQUEST
-    ========================== */
 
     const messages =
       Array.isArray(req.body?.messages)
         ? req.body.messages
         : [];
 
-
     if (!messages.length) {
-
       return res.status(400).json({
         error: "لا توجد رسائل."
       });
-
     }
-
-
-    /* =========================
-       LIMIT CONTEXT
-    ========================== */
 
     const recentMessages =
       messages.slice(-MAX_MESSAGES);
 
-
-    /* =========================
-       CONVERT MESSAGES
-    ========================== */
-
     const input = [];
-
 
     for (const message of recentMessages) {
 
-      if (!message) {
-        continue;
-      }
-
+      if (!message) continue;
 
       /* =========================
          USER
@@ -99,141 +50,76 @@ export default async function handler(req, res) {
 
       if (message.role === "user") {
 
-        /* رسالة متعددة المحتوى */
-
-        if (
-          Array.isArray(message.content)
-        ) {
+        if (Array.isArray(message.content)) {
 
           const content = [];
 
-
           for (const item of message.content) {
 
-            if (!item) {
-              continue;
-            }
+            if (!item) continue;
 
+            /* TEXT */
 
-            /* =========================
-               TEXT
-            ========================== */
-
-            if (
-              item.type === "input_text"
-            ) {
+            if (item.type === "input_text") {
 
               let text =
-                String(
-                  item.text || ""
-                );
+                String(item.text || "");
 
-
-              if (
-                text.length >
-                MAX_TEXT_LENGTH
-              ) {
-
+              if (text.length > MAX_TEXT_LENGTH) {
                 text =
-                  text.slice(
-                    0,
-                    MAX_TEXT_LENGTH
-                  );
-
+                  text.slice(0, MAX_TEXT_LENGTH);
               }
-
 
               if (text.trim()) {
 
                 content.push({
-
-                  type:
-                    "input_text",
-
+                  type: "input_text",
                   text
-
                 });
 
               }
 
               continue;
-
             }
 
+            /* IMAGE */
 
-            /* =========================
-               IMAGE
-            ========================== */
-
-            if (
-              item.type === "input_image"
-            ) {
+            if (item.type === "input_image") {
 
               const imageUrl =
-                String(
-                  item.image_url || ""
-                );
-
-
-              /*
-                نتأكد أن الصورة
-                Data URL حقيقية
-              */
+                String(item.image_url || "");
 
               if (
-                imageUrl.startsWith(
-                  "data:image/"
-                ) &&
-                imageUrl.length <=
-                  MAX_IMAGE_LENGTH
+                imageUrl.startsWith("data:image/") &&
+                imageUrl.length <= MAX_IMAGE_LENGTH
               ) {
 
                 content.push({
-
-                  type:
-                    "input_image",
-
-                  image_url:
-                    imageUrl,
-
-                  detail:
-                    "high"
-
+                  type: "input_image",
+                  image_url: imageUrl,
+                  detail: "high"
                 });
 
               }
 
               continue;
-
             }
 
+            /* OLD IMAGE FORMAT */
 
-            /*
-              دعم الصيغة القديمة
-              إذا وصلت من الواجهة
-            */
-
-            if (
-              item.type === "image_url"
-            ) {
+            if (item.type === "image_url") {
 
               let imageUrl = "";
 
-
               if (
-                typeof item.image_url ===
-                "string"
+                typeof item.image_url === "string"
               ) {
 
-                imageUrl =
-                  item.image_url;
+                imageUrl = item.image_url;
 
-              }
-
-              else if (
+              } else if (
                 item.image_url &&
-                typeof item.image_url.url ===
-                  "string"
+                typeof item.image_url.url === "string"
               ) {
 
                 imageUrl =
@@ -241,26 +127,15 @@ export default async function handler(req, res) {
 
               }
 
-
               if (
-                imageUrl.startsWith(
-                  "data:image/"
-                ) &&
-                imageUrl.length <=
-                  MAX_IMAGE_LENGTH
+                imageUrl.startsWith("data:image/") &&
+                imageUrl.length <= MAX_IMAGE_LENGTH
               ) {
 
                 content.push({
-
-                  type:
-                    "input_image",
-
-                  image_url:
-                    imageUrl,
-
-                  detail:
-                    "high"
-
+                  type: "input_image",
+                  image_url: imageUrl,
+                  detail: "high"
                 });
 
               }
@@ -269,128 +144,67 @@ export default async function handler(req, res) {
 
           }
 
-
           if (content.length) {
 
             input.push({
-
-              role:
-                "user",
-
+              role: "user",
               content
-
             });
 
           }
 
-
           continue;
-
         }
-
-
-        /* =========================
-           USER TEXT ONLY
-        ========================== */
 
         let text =
-          String(
-            message.content || ""
-          );
+          String(message.content || "");
 
-
-        if (
-          text.length >
-          MAX_TEXT_LENGTH
-        ) {
-
+        if (text.length > MAX_TEXT_LENGTH) {
           text =
-            text.slice(
-              0,
-              MAX_TEXT_LENGTH
-            );
-
+            text.slice(0, MAX_TEXT_LENGTH);
         }
-
 
         if (text.trim()) {
 
           input.push({
-
-            role:
-              "user",
-
+            role: "user",
             content: [
-
               {
-
-                type:
-                  "input_text",
-
+                type: "input_text",
                 text
-
               }
-
             ]
-
           });
 
         }
 
-
         continue;
-
       }
-
 
       /* =========================
          ASSISTANT
       ========================== */
 
-      if (
-        message.role === "assistant"
-      ) {
+      if (message.role === "assistant") {
 
         let text =
-          String(
-            message.content || ""
-          );
+          String(message.content || "");
 
-
-        if (
-          text.length >
-          MAX_TEXT_LENGTH
-        ) {
-
+        if (text.length > MAX_TEXT_LENGTH) {
           text =
-            text.slice(
-              0,
-              MAX_TEXT_LENGTH
-            );
-
+            text.slice(0, MAX_TEXT_LENGTH);
         }
-
 
         if (text.trim()) {
 
           input.push({
-
-            role:
-              "assistant",
-
+            role: "assistant",
             content: [
-
               {
-
-                type:
-                  "output_text",
-
+                type: "output_text",
                 text
-
               }
-
             ]
-
           });
 
         }
@@ -399,120 +213,139 @@ export default async function handler(req, res) {
 
     }
 
-
-    /* =========================
-       SAFETY CHECK
-    ========================== */
-
     if (!input.length) {
-
       return res.status(400).json({
-        error:
-          "لم يتم العثور على محتوى صالح."
+        error: "لم يتم العثور على محتوى صالح."
       });
-
     }
 
-
     /* =========================
-       AI INSTRUCTIONS
+       HEADERS
     ========================== */
 
-    const instructions = `
+    res.statusCode = 200;
+
+    res.setHeader(
+      "Content-Type",
+      "text/plain; charset=utf-8"
+    );
+
+    res.setHeader(
+      "Cache-Control",
+      "no-cache, no-transform"
+    );
+
+    res.setHeader(
+      "Connection",
+      "keep-alive"
+    );
+
+    /* =========================
+       AI
+    ========================== */
+
+    const stream =
+      await client.responses.create({
+
+        model: "gpt-5.6-luna",
+
+        instructions: `
 
 أنت المساعد الرسمي لمنصة "التطور چات".
 
-مهمتك تقديم إجابات دقيقة ومفيدة وواضحة.
+أجب بالعربية بشكل واضح ومفيد.
 
-اللغة:
-- استخدم العربية بشكل افتراضي.
-- استخدم اللهجة العراقية عندما يطلب المستخدم ذلك أو عندما تكون مناسبة للسياق.
-- لا تغيّر أسلوب المستخدم بلا داعٍ.
+استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
+أو عندما تكون مناسبة للسياق.
 
 السياق:
-- اعتبر الرسائل السابقة جزءاً من نفس المحادثة.
-- اربط الأسئلة الجديدة بالرسائل السابقة عندما يكون ذلك منطقياً.
-- إذا قال المستخدم "هذا" أو "هذه" أو "هو" أو "هي"، حاول ربطها بآخر موضوع واضح في المحادثة.
-- لا تفترض معلومات غير موجودة في المحادثة.
+- حافظ على سياق المحادثة السابقة.
+- اربط الأسئلة الجديدة بالرسائل السابقة.
+- افهم الإشارات مثل "هذا" و"هذه" و"هو" و"هي"
+  اعتماداً على سياق المحادثة.
 
-تحليل الصور:
-- عند وجود صورة، افحص الصورة بعناية قبل الإجابة.
-- ركز على التفاصيل المرئية المهمة للسؤال.
-- اقرأ النصوص الظاهرة في الصورة قدر الإمكان.
-- إذا طلب المستخدم التعرف على منتج أو شيء ظاهر بالصورة، صف ما يمكن استنتاجه من الصورة بدقة.
-- إذا طلب مقارنة أو تحليل تفاصيل، افحص الصورة كاملة وليس جزءاً واحداً فقط.
+الصور:
+- افحص الصورة بعناية.
+- اقرأ النصوص الموجودة فيها قدر الإمكان.
+- حلل التفاصيل المهمة للسؤال.
 - لا تخترع تفاصيل غير واضحة.
-- إذا كانت جودة الصورة لا تسمح بالتأكد من معلومة معينة، اذكر درجة عدم اليقين بوضوح.
-- لا تقل إنك لا تستطيع رؤية الصورة إذا كانت الصورة مرفقة وقابلة للتحليل.
-- لا تدّعي رؤية شيء غير موجود في الصورة.
+- إذا كانت الصورة غير واضحة، وضح ذلك.
+- لا تدّعي رؤية شيء غير موجود بالصورة.
 
 الدقة:
-- افهم السؤال أولاً ثم أجب مباشرة.
-- لا تكرر السؤال على المستخدم بلا حاجة.
-- إذا كانت هناك عدة نقاط، رتب الإجابة بشكل واضح.
-- لا تدّعي تنفيذ أي إجراء لم تنفذه فعلياً.
+- أجب مباشرة.
+- لا تكرر السؤال بلا حاجة.
+- لا تدّعي تنفيذ إجراء لم تنفذه.
 
-الخصوصية والأمان:
-- لا تطلب مفتاح OpenAI من المستخدم.
-- لا تكشف أي مفاتيح API أو أسرار موجودة في الخادم.
-`;
-
-
-    /* =========================
-       OPENAI
-    ========================== */
-
-    const response =
-      await client.responses.create({
-
-        model:
-          "gpt-5.6-luna",
-
-        instructions,
+`,
 
         input,
 
-        store:
-          false
+        store: false,
+
+        stream: true
 
       });
 
-
     /* =========================
-       RESPONSE
+       STREAM RESPONSE
     ========================== */
 
-    const reply =
-      response?.output_text?.trim() ||
-      "ما حصلت جواب نصي من النموذج.";
+    for await (const event of stream) {
 
+      if (
+        event.type ===
+        "response.output_text.delta"
+      ) {
 
-    return res.status(200).json({
+        const text =
+          event.delta || "";
 
-      reply
+        if (text) {
 
-    });
+          res.write(text);
 
+        }
+
+      }
+
+    }
+
+    res.end();
 
   } catch (error) {
 
     console.error(
-      "OpenAI Error:",
+      "OpenAI Streaming Error:",
       error
     );
 
-
     /*
-      لا نرسل تفاصيل تقنية
-      حساسة للمتصفح
+      إذا لم يبدأ إرسال الرد بعد
     */
 
-    return res.status(500).json({
+    if (!res.headersSent) {
 
-      error:
-        "حدث خطأ أثناء معالجة الطلب. حاول مرة ثانية."
+      return res.status(500).json({
+        error:
+          "حدث خطأ أثناء معالجة الطلب. حاول مرة ثانية."
+      });
 
-    });
+    }
+
+    /*
+      إذا كان الرد بدأ بالفعل
+    */
+
+    try {
+
+      res.write(
+        "\n\n[حدث خطأ أثناء إكمال الرد]"
+      );
+
+    } catch {}
+
+    res.end();
 
   }
 
