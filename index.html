@@ -1,1345 +1,1048 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>التطور چات</title>
-  <style>
-    :root {
-      --bg: #070912;
-      --panel: #0d1222;
-      --panel2: #11182a;
-      --border: rgba(255,255,255,.09);
-      --text: #f5f7ff;
-      --muted: #8d96aa;
-      --purple: #8b5cf6;
-      --cyan: #22d3ee;
-      --gradient: linear-gradient(135deg, #8b5cf6, #22d3ee);
-    }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      overflow-x: hidden;
-    }
-    button,
-    textarea {
-      font-family: inherit;
-    }
-    .app {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    /* HEADER */
-    header {
-      height: 92px;
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(13,18,34,.92);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .logo {
-      width: 58px;
-      height: 58px;
-      border-radius: 17px;
-      background: var(--gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 31px;
-      font-weight: 800;
-      box-shadow: 0 10px 30px rgba(100,90,255,.18);
-    }
-    .brand-info h1 {
-      font-size: 24px;
-      margin-bottom: 3px;
-    }
-    .status {
-      color: #6ee7b7;
-      font-size: 14px;
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .new-chat {
-      height: 48px;
-      padding: 0 17px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      border-radius: 14px;
-      font-size: 15px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .new-chat:hover {
-      color: white;
-      background: rgba(255,255,255,.04);
-    }
-    .menu {
-      width: 48px;
-      height: 48px;
-      border: 1px solid var(--border);
-      background: transparent;
-      border-radius: 14px;
-      color: white;
-      font-size: 25px;
-      cursor: pointer;
-    }
-    /* CHAT */
-    .chat {
-      flex: 1;
-      width: 100%;
-      max-width: 900px;
-      margin: auto;
-      padding: 35px 20px 180px;
-    }
-    .welcome {
-      text-align: center;
-      padding: 70px 10px 30px;
-    }
-    .welcome-logo {
-      width: 110px;
-      height: 110px;
-      border-radius: 32px;
-      background: var(--gradient);
-      margin: 0 auto 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 55px;
-      font-weight: 800;
-      box-shadow: 0 20px 60px rgba(100,90,255,.18);
-    }
-    .welcome h2 {
-      font-size: 38px;
-      margin-bottom: 15px;
-    }
-    .welcome h2 span {
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .welcome p {
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1.8;
-      max-width: 650px;
-      margin: auto;
-    }
-    .message {
-      display: flex;
-      gap: 12px;
-      margin: 25px 0;
-      align-items: flex-start;
-    }
-    .message.user {
-      flex-direction: row-reverse;
-    }
-    .avatar {
-      width: 46px;
-      height: 46px;
-      min-width: 46px;
-      border-radius: 14px;
-      background: var(--gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 20px;
-    }
-    .message.assistant .avatar {
-      background: #182137;
-    }
-    .bubble {
-      max-width: 75%;
-      padding: 15px 19px;
-      border-radius: 20px;
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      line-height: 1.8;
-      font-size: 16px;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
-    .message.user .bubble {
-      background: #111a30;
-    }
-    /* TYPING */
-    .typing {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-    }
-    .typing span {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #8b5cf6;
-      animation: bounce 1s infinite;
-    }
-    .typing span:nth-child(2) {
-      animation-delay: .15s;
-    }
-    .typing span:nth-child(3) {
-      animation-delay: .3s;
-    }
-    @keyframes bounce {
-      0%, 60%, 100% {
-        transform: translateY(0);
-      }
-      30% {
-        transform: translateY(-6px);
-      }
-    }
-    /* INPUT AREA */
-    .input-area {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 18px 20px 25px;
-      background: linear-gradient(
-        transparent,
-        rgba(7,9,18,.96) 35%
-      );
-      z-index: 20;
-    }
-    .input-box {
-      max-width: 900px;
-      margin: auto;
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 25px;
-      padding: 10px;
-      display: flex;
-      align-items: flex-end;
-      gap: 10px;
-      box-shadow: 0 -5px 30px rgba(0,0,0,.15);
-      position: relative;
-    }
-    textarea {
-      flex: 1;
-      resize: none;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: white;
-      font-size: 16px;
-      line-height: 1.6;
-      min-height: 52px;
-      max-height: 150px;
-      padding: 13px 12px;
-    }
-    textarea::placeholder {
-      color: #69738b;
-    }
-    /* ATTACH BUTTON */
-    .attach {
-      width: 50px;
-      height: 50px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: transparent;
-      color: #c5ccdc;
-      font-size: 23px;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: .2s;
-    }
-    .attach:hover {
-      color: white;
-      background: rgba(255,255,255,.05);
-      border-color: rgba(255,255,255,.16);
-    }
-    /* SEND */
-    .send {
-      width: 54px;
-      height: 54px;
-      border: none;
-      border-radius: 17px;
-      background: var(--gradient);
-      color: white;
-      font-size: 26px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .send:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-    /* ATTACHMENT PREVIEW */
-    .attachment-preview {
-      max-width: 900px;
-      margin: 0 auto 8px;
-      display: none;
-    }
-    .attachment-preview.active {
-      display: block;
-    }
-    .attachment-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: fit-content;
-      max-width: 100%;
-      padding: 9px 11px;
-      background: rgba(13,18,34,.98);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-    }
-    .attachment-image {
-      width: 58px;
-      height: 58px;
-      border-radius: 11px;
-      object-fit: cover;
-      display: none;
-    }
-    .attachment-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: #182137;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-    .attachment-info {
-      min-width: 0;
-      max-width: 210px;
-    }
-    .attachment-name {
-      font-size: 14px;
-      color: white;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .attachment-type {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 3px;
-    }
-    .remove-attachment {
-      width: 34px;
-      height: 34px;
-      border: none;
-      border-radius: 10px;
-      background: transparent;
-      color: #8d96aa;
-      cursor: pointer;
-      font-size: 18px;
-    }
-    .remove-attachment:hover {
-      color: #ff6b81;
-      background: rgba(255,107,129,.08);
-    }
-    /* SIDEBAR */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.55);
-      opacity: 0;
-      visibility: hidden;
-      transition: .25s;
-      z-index: 40;
-    }
-    .overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    .sidebar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 330px;
-      max-width: 88%;
-      height: 100vh;
-      background: #0b1020;
-      border-left: 1px solid var(--border);
-      transform: translateX(105%);
-      transition: transform .28s ease;
-      z-index: 50;
-      display: flex;
-      flex-direction: column;
-      box-shadow: -15px 0 50px rgba(0,0,0,.3);
-    }
-    .sidebar.active {
-      transform: translateX(0);
-    }
-    .sidebar-header {
-      height: 92px;
-      padding: 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .sidebar-title {
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .close-sidebar {
-      width: 42px;
-      height: 42px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: white;
-      border-radius: 12px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    .sidebar-new {
-      margin: 18px;
-      height: 50px;
-      border: none;
-      border-radius: 15px;
-      background: var(--gradient);
-      color: white;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .conversations {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 12px 20px;
-    }
-    .conversation {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px;
-      margin-bottom: 5px;
-      border-radius: 14px;
-      transition: .2s;
-    }
-    .conversation:hover {
-      background: rgba(255,255,255,.04);
-    }
-    .conversation.active {
-      background: rgba(139,92,246,.13);
-    }
-    .conversation-open {
-      flex: 1;
-      min-width: 0;
-      padding: 13px 12px;
-      border: none;
-      background: transparent;
-      color: #e8ebf5;
-      text-align: right;
-      cursor: pointer;
-      font-size: 14px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      border-radius: 10px;
-    }
-    .conversation-delete {
-      width: 38px;
-      height: 38px;
-      border: none;
-      background: transparent;
-      color: #727b90;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .conversation-delete:hover {
-      color: #ff6b81;
-      background: rgba(255,107,129,.08);
-    }
-    .empty-conversations {
-      color: var(--muted);
-      text-align: center;
-      padding: 35px 20px;
-      line-height: 1.8;
-      font-size: 14px;
-    }
-    /* MOBILE */
-    @media (max-width: 600px) {
-      header {
-        height: 82px;
-        padding: 14px 16px;
-      }
-      .logo {
-        width: 50px;
-        height: 50px;
-        border-radius: 15px;
-      }
-      .brand {
-        gap: 10px;
-      }
-      .brand-info h1 {
-        font-size: 21px;
-      }
-      .status {
-        font-size: 12px;
-      }
-      .header-actions {
-        gap: 7px;
-      }
-      .menu {
-        width: 44px;
-        height: 44px;
-        font-size: 23px;
-      }
-      .new-chat {
-        height: 44px;
-        padding: 0 12px;
-        font-size: 12px;
-      }
-      .welcome {
-        padding-top: 60px;
-      }
-      .welcome-logo {
-        width: 90px;
-        height: 90px;
-        font-size: 45px;
-      }
-      .welcome h2 {
-        font-size: 29px;
-      }
-      .welcome p {
-        font-size: 15px;
-      }
-      .bubble {
-        max-width: 82%;
-        font-size: 15px;
-      }
-      .chat {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-      .input-area {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-      .input-box {
-        gap: 6px;
-        padding: 8px;
-      }
-      .attach {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-      }
-      .send {
-        width: 50px;
-        height: 50px;
-        border-radius: 15px;
-      }
-      .attachment-preview {
-        margin-bottom: 7px;
-      }
-      .sidebar {
-        width: 310px;
-      }
-    }
-    @media (max-width: 390px) {
-      .brand-info h1 {
-        font-size: 18px;
-      }
-      .status {
-        font-size: 11px;
-      }
-      .new-chat {
-        padding: 0 9px;
-        font-size: 11px;
-      }
-      .menu {
-        width: 42px;
-      }
-      .attachment-info {
-        max-width: 150px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>التطور چات</title>
+<style>
+:root{
+--bg:#070912;
+--panel:#0d1222;
+--panel2:#11182a;
+--border:rgba(255,255,255,.09);
+--text:#f5f7ff;
+--muted:#8d96aa;
+--gradient:linear-gradient(135deg,#8b5cf6,#22d3ee);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+min-height:100vh;
+background:var(--bg);
+color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+button,textarea{font-family:inherit}
+header{
+height:82px;
+padding:14px 20px;
+border-bottom:1px solid var(--border);
+background:rgba(13,18,34,.95);
+display:flex;
+align-items:center;
+justify-content:space-between;
+position:sticky;
+top:0;
+z-index:10;
+}
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+}
+.logo,.welcome-logo{
+background:var(--gradient);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+box-shadow:0 10px 30px rgba(100,90,255,.18);
+}
+.logo{
+width:52px;
+height:52px;
+border-radius:15px;
+font-size:28px;
+}
+.brand h1{
+font-size:22px;
+}
+.status{
+font-size:12px;
+color:#6ee7b7;
+margin-top:2px;
+}
+.header-actions{
+display:flex;
+gap:8px;
+}
+button{
+cursor:pointer;
+}
+.new-chat,.menu{
+border:1px solid var(--border);
+background:transparent;
+color:white;
+border-radius:13px;
+}
+.new-chat{
+height:44px;
+padding:0 14px;
+color:#c5ccdc;
+}
+.menu{
+width:44px;
+height:44px;
+font-size:22px;
+}
+.chat{
+width:100%;
+max-width:900px;
+margin:auto;
+padding:35px 18px 180px;
+}
+.welcome{
+text-align:center;
+padding:65px 10px 30px;
+}
+.welcome-logo{
+width:105px;
+height:105px;
+margin:0 auto 25px;
+border-radius:30px;
+font-size:52px;
+}
+.welcome h2{
+font-size:36px;
+margin-bottom:12px;
+}
+.welcome h2 span{
+background:var(--gradient);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.welcome p{
+color:var(--muted);
+font-size:17px;
+line-height:1.8;
+max-width:650px;
+margin:auto;
+}
+.message{
+display:flex;
+gap:12px;
+margin:25px 0;
+align-items:flex-start;
+}
+.message.user{
+flex-direction:row-reverse;
+}
+.avatar{
+width:44px;
+height:44px;
+min-width:44px;
+border-radius:13px;
+background:var(--gradient);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+}
+.message.assistant .avatar{
+background:#182137;
+}
+.bubble{
+max-width:78%;
+padding:14px 18px;
+border-radius:20px;
+background:var(--panel2);
+border:1px solid var(--border);
+line-height:1.8;
+white-space:pre-wrap;
+overflow-wrap:anywhere;
+}
+.message.user .bubble{
+background:#111a30;
+}
+.input-area{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+padding:18px 15px 22px;
+background:linear-gradient(transparent,rgba(7,9,18,.97) 35%);
+z-index:20;
+}
+.input-box{
+max-width:900px;
+margin:auto;
+background:var(--panel);
+border:1px solid rgba(255,255,255,.12);
+border-radius:24px;
+padding:8px;
+display:flex;
+align-items:flex-end;
+gap:7px;
+}
+textarea{
+flex:1;
+resize:none;
+border:none;
+outline:none;
+background:transparent;
+color:white;
+font-size:16px;
+line-height:1.6;
+min-height:52px;
+max-height:150px;
+padding:13px 10px;
+}
+textarea::placeholder{
+color:#69738b;
+}
+.attach,.send{
+border:none;
+flex-shrink:0;
+color:white;
+}
+.attach{
+width:48px;
+height:48px;
+border-radius:14px;
+background:transparent;
+border:1px solid var(--border);
+font-size:22px;
+}
+.send{
+width:52px;
+height:52px;
+border-radius:16px;
+background:var(--gradient);
+font-size:25px;
+}
+.send:disabled{
+opacity:.5;
+}
+.attachment-preview{
+max-width:900px;
+margin:0 auto 8px;
+display:none;
+}
+.attachment-preview.active{
+display:block;
+}
+.attachment-card{
+width:max-content;
+max-width:100%;
+display:flex;
+align-items:center;
+gap:10px;
+padding:8px 10px;
+background:#0d1222;
+border:1px solid var(--border);
+border-radius:15px;
+}
+.attachment-image{
+width:55px;
+height:55px;
+border-radius:10px;
+object-fit:cover;
+display:none;
+}
+.attachment-icon{
+width:50px;
+height:50px;
+border-radius:11px;
+background:#182137;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+}
+.attachment-info{
+max-width:220px;
+min-width:0;
+}
+.attachment-name{
+font-size:14px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+.attachment-type{
+font-size:12px;
+color:var(--muted);
+margin-top:3px;
+}
+.remove-attachment{
+width:34px;
+height:34px;
+border:none;
+background:transparent;
+color:#8d96aa;
+font-size:20px;
+border-radius:9px;
+}
+.typing{
+display:flex;
+gap:5px;
+}
+.typing span{
+width:7px;
+height:7px;
+border-radius:50%;
+background:#8b5cf6;
+animation:bounce 1s infinite;
+}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{
+0%,60%,100%{transform:translateY(0)}
+30%{transform:translateY(-6px)}
+}
+/* SIDEBAR */
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.55);
+opacity:0;
+visibility:hidden;
+z-index:40;
+transition:.25s;
+}
+.overlay.active{
+opacity:1;
+visibility:visible;
+}
+.sidebar{
+position:fixed;
+top:0;
+right:0;
+width:320px;
+max-width:88%;
+height:100vh;
+background:#0b1020;
+border-left:1px solid var(--border);
+transform:translateX(105%);
+transition:.28s;
+z-index:50;
+display:flex;
+flex-direction:column;
+}
+.sidebar.active{
+transform:translateX(0);
+}
+.sidebar-header{
+height:82px;
+padding:18px;
+border-bottom:1px solid var(--border);
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+.sidebar-title{
+font-size:20px;
+font-weight:bold;
+}
+.close-sidebar{
+width:42px;
+height:42px;
+border:1px solid var(--border);
+background:transparent;
+color:white;
+border-radius:12px;
+font-size:20px;
+}
+.sidebar-new{
+margin:16px;
+height:50px;
+border:none;
+border-radius:14px;
+background:var(--gradient);
+color:white;
+font-weight:bold;
+}
+.conversations{
+padding:0 12px;
+overflow-y:auto;
+}
+.conversation{
+display:flex;
+gap:5px;
+align-items:center;
+padding:5px;
+border-radius:13px;
+}
+.conversation.active{
+background:rgba(139,92,246,.13);
+}
+.conversation-open{
+flex:1;
+border:none;
+background:transparent;
+color:#e8ebf5;
+text-align:right;
+padding:12px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+.conversation-delete{
+width:38px;
+height:38px;
+border:none;
+background:transparent;
+color:#727b90;
+border-radius:10px;
+}
+.empty-conversations{
+text-align:center;
+color:var(--muted);
+padding:30px 15px;
+line-height:1.8;
+}
+@media(max-width:600px){
+header{
+padding:12px 14px;
+}
+.logo{
+width:48px;
+height:48px;
+}
+.brand h1{
+font-size:19px;
+}
+.new-chat{
+font-size:11px;
+padding:0 10px;
+}
+.chat{
+padding-left:10px;
+padding-right:10px;
+}
+.welcome h2{
+font-size:28px;
+}
+.welcome p{
+font-size:15px;
+}
+.bubble{
+max-width:84%;
+font-size:15px;
+}
+.input-area{
+padding-left:10px;
+padding-right:10px;
+}
+.attach{
+width:45px;
+height:45px;
+}
+.send{
+width:49px;
+height:49px;
+}
+}
+</style>
 </head>
 <body>
-<div class="app">
-  <header>
-    <div class="brand">
-      <div class="logo">ت</div>
-      <div class="brand-info">
-        <h1>التطور چات</h1>
-        <div class="status">● متصل الآن</div>
-      </div>
-    </div>
-    <div class="header-actions">
-      <button
-        class="new-chat"
-        onclick="newChat()"
-      >
-        + محادثة جديدة
-      </button>
-      <button
-        class="menu"
-        type="button"
-        onclick="openSidebar()"
-      >
-        ☰
-      </button>
-    </div>
-  </header>
-  <main class="chat" id="chat">
-    <section class="welcome" id="welcome">
-      <div class="welcome-logo">ت</div>
-      <h2>
-        أهلاً بك في <span>التطور چات</span>
-      </h2>
-      <p>
-        مساعدك الذكي للإجابة عن الأسئلة، شرح المواضيع،
-        كتابة النصوص وتوليد الأفكار.
-      </p>
-    </section>
-  </main>
-  <div class="input-area">
-    <!-- ATTACHMENT PREVIEW -->
-    <div
-      class="attachment-preview"
-      id="attachmentPreview"
-    >
-      <div class="attachment-card">
-        <img
-          class="attachment-image"
-          id="attachmentImage"
-          alt="معاينة"
-        >
-        <div
-          class="attachment-icon"
-          id="attachmentIcon"
-        >
-          📄
-        </div>
-        <div class="attachment-info">
-          <div
-            class="attachment-name"
-            id="attachmentName"
-          >
-            الملف
-          </div>
-          <div
-            class="attachment-type"
-            id="attachmentType"
-          >
-            مرفق
-          </div>
-        </div>
-        <button
-          class="remove-attachment"
-          type="button"
-          onclick="removeAttachment()"
-        >
-          ×
-        </button>
-      </div>
-    </div>
-    <div class="input-box">
-      <input
-        type="file"
-        id="fileInput"
-        hidden
-        accept="image/*,.pdf,.doc,.docx,.txt"
-        onchange="handleFile(event)"
-      >
-      <button
-        class="attach"
-        type="button"
-        onclick="document.getElementById('fileInput').click()"
-        aria-label="إرفاق ملف"
-      >
-        📎
-      </button>
-      <textarea
-        id="messageInput"
-        placeholder="اكتب رسالتك هنا..."
-        rows="1"
-      ></textarea>
-      <button
-        class="send"
-        id="sendButton"
-        onclick="sendMessage()"
-      >
-        ↑
-      </button>
-    </div>
-  </div>
+<header>
+<div class="brand">
+<div class="logo">ت</div>
+<div>
+<h1>التطور چات</h1>
+<div class="status">● متصل الآن</div>
+</div>
+</div>
+<div class="header-actions">
+<button class="new-chat" onclick="newChat()">
++ محادثة جديدة
+</button>
+<button class="menu" onclick="openSidebar()">
+☰
+</button>
+</div>
+</header>
+<main class="chat" id="chat">
+<section class="welcome">
+<div class="welcome-logo">ت</div>
+<h2>
+أهلاً بك في <span>التطور چات</span>
+</h2>
+<p>
+مساعدك الذكي للإجابة عن الأسئلة،
+شرح المواضيع، كتابة النصوص وتوليد الأفكار.
+</p>
+</section>
+</main>
+<div class="input-area">
+<div
+class="attachment-preview"
+id="attachmentPreview"
+>
+<div class="attachment-card">
+<img
+id="attachmentImage"
+class="attachment-image"
+>
+<div
+id="attachmentIcon"
+class="attachment-icon"
+>
+📄
+</div>
+<div class="attachment-info">
+<div
+id="attachmentName"
+class="attachment-name"
+>
+الملف
+</div>
+<div
+id="attachmentType"
+class="attachment-type"
+>
+مرفق
+</div>
+</div>
+<button
+class="remove-attachment"
+onclick="removeAttachment()"
+>
+×
+</button>
+</div>
+</div>
+<div class="input-box">
+<input
+type="file"
+id="fileInput"
+hidden
+accept="image/*,.pdf,.doc,.docx,.txt"
+onchange="handleFile(event)"
+>
+<button
+class="attach"
+onclick="document.getElementById('fileInput').click()"
+>
+📎
+</button>
+<textarea
+id="messageInput"
+placeholder="اكتب رسالتك هنا..."
+rows="1"
+></textarea>
+<button
+class="send"
+id="sendButton"
+onclick="sendMessage()"
+>
+↑
+</button>
+</div>
 </div>
 <!-- SIDEBAR -->
 <div
-  class="overlay"
-  id="overlay"
-  onclick="closeSidebar()"
+class="overlay"
+id="overlay"
+onclick="closeSidebar()"
 ></div>
 <aside
-  class="sidebar"
-  id="sidebar"
+class="sidebar"
+id="sidebar"
 >
-  <div class="sidebar-header">
-    <div class="sidebar-title">
-      محادثاتك
-    </div>
-    <button
-      class="close-sidebar"
-      onclick="closeSidebar()"
-    >
-      ×
-    </button>
-  </div>
-  <button
-    class="sidebar-new"
-    onclick="newChat()"
-  >
-    + محادثة جديدة
-  </button>
-  <div
-    class="conversations"
-    id="conversations"
-  ></div>
+<div class="sidebar-header">
+<div class="sidebar-title">
+محادثاتك
+</div>
+<button
+class="close-sidebar"
+onclick="closeSidebar()"
+>
+×
+</button>
+</div>
+<button
+class="sidebar-new"
+onclick="newChat()"
+>
++ محادثة جديدة
+</button>
+<div
+class="conversations"
+id="conversations"
+></div>
 </aside>
 <script>
-  const chat =
-    document.getElementById("chat");
-  const input =
-    document.getElementById("messageInput");
-  const sendButton =
-    document.getElementById("sendButton");
-  const sidebar =
-    document.getElementById("sidebar");
-  const overlay =
-    document.getElementById("overlay");
-  const conversations =
-    document.getElementById("conversations");
-  const fileInput =
-    document.getElementById("fileInput");
-  const attachmentPreview =
-    document.getElementById("attachmentPreview");
-  const attachmentImage =
-    document.getElementById("attachmentImage");
-  const attachmentIcon =
-    document.getElementById("attachmentIcon");
-  const attachmentName =
-    document.getElementById("attachmentName");
-  const attachmentType =
-    document.getElementById("attachmentType");
-  /* =========================
-     CHAT DATA
-  ========================= */
-  let chats =
-    JSON.parse(
-      localStorage.getItem(
-        "altatawur_chats"
-      ) || "[]"
-    );
-  let currentChatId =
-    localStorage.getItem(
-      "altatawur_current_chat"
-    ) || null;
-  /* =========================
-     ATTACHMENT DATA
-  ========================= */
-  let selectedFile = null;
-  /* =========================
-     FILE SELECTION
-  ========================= */
-  function handleFile(event) {
-    const file =
-      event.target.files[0];
-    if (!file) {
-      return;
-    }
-    selectedFile = file;
-    attachmentPreview.classList.add(
-      "active"
-    );
-    attachmentName.textContent =
-      file.name;
-    attachmentType.textContent =
-      formatFileSize(file.size);
-    if (
-      file.type.startsWith("image/")
-    ) {
-      const url =
-        URL.createObjectURL(file);
-      attachmentImage.src = url;
-      attachmentImage.style.display =
-        "block";
-      attachmentIcon.style.display =
-        "none";
-    } else {
-      attachmentImage.style.display =
-        "none";
-      attachmentIcon.style.display =
-        "flex";
-      if (
-        file.type === "application/pdf"
-      ) {
-        attachmentIcon.textContent =
-          "📕";
-      } else if (
-        file.name.endsWith(".doc") ||
-        file.name.endsWith(".docx")
-      ) {
-        attachmentIcon.textContent =
-          "📝";
-      } else {
-        attachmentIcon.textContent =
-          "📄";
-      }
-    }
-  }
-  function formatFileSize(bytes) {
-    if (bytes < 1024) {
-      return bytes + " B";
-    }
-    if (bytes < 1024 * 1024) {
-      return (
-        (bytes / 1024).toFixed(1) +
-        " KB"
-      );
-    }
-    return (
-      (bytes / (1024 * 1024)).toFixed(1) +
-      " MB"
-    );
-  }
-  function removeAttachment() {
-    selectedFile = null;
-    fileInput.value = "";
-    attachmentPreview.classList.remove(
-      "active"
-    );
-    attachmentImage.src = "";
-  }
-  /* =========================
-     CHAT STORAGE
-  ========================= */
-  function saveChats() {
-    localStorage.setItem(
-      "altatawur_chats",
-      JSON.stringify(chats)
-    );
-    if (currentChatId) {
-      localStorage.setItem(
-        "altatawur_current_chat",
-        currentChatId
-      );
-    }
-  }
-  function createChat() {
-    const chatObject = {
-      id: Date.now().toString(),
-      title: "محادثة جديدة",
-      messages: []
-    };
-    chats.unshift(
-      chatObject
-    );
-    currentChatId =
-      chatObject.id;
-    saveChats();
-    renderConversations();
-    return chatObject;
-  }
-  function getCurrentChat() {
-    return chats.find(
-      chat => chat.id === currentChatId
-    );
-  }
-  /* =========================
-     WELCOME
-  ========================= */
-  function showWelcome() {
-    chat.innerHTML = `
-      <section
-        class="welcome"
-        id="welcome"
-      >
-        <div class="welcome-logo">
-          ت
-        </div>
-        <h2>
-          أهلاً بك في
-          <span>التطور چات</span>
-        </h2>
-        <p>
-          مساعدك الذكي للإجابة عن الأسئلة،
-          شرح المواضيع، كتابة النصوص وتوليد الأفكار.
-        </p>
-      </section>
-    `;
-  }
-  /* =========================
-     ADD MESSAGE
-  ========================= */
-  function addMessage(
-    role,
-    text
-  ) {
-    const message =
-      document.createElement("div");
-    message.className =
-      `message ${role}`;
-    const avatar =
-      document.createElement("div");
-    avatar.className =
-      "avatar";
-    avatar.textContent =
-      role === "user"
-        ? "أ"
-        : "ت";
-    const bubble =
-      document.createElement("div");
-    bubble.className =
-      "bubble";
-    bubble.textContent =
-      text;
-    message.appendChild(
-      avatar
-    );
-    message.appendChild(
-      bubble
-    );
-    chat.appendChild(
-      message
-    );
-    window.scrollTo({
-      top:
-        document.body.scrollHeight,
-      behavior:
-        "smooth"
-    });
-    return message;
-  }
-  /* =========================
-     LOAD CHAT
-  ========================= */
-  function loadChat(
-    chatId
-  ) {
-    const selected =
-      chats.find(
-        c => c.id === chatId
-      );
-    if (!selected) {
-      showWelcome();
-      return;
-    }
-    currentChatId =
-      selected.id;
-    saveChats();
-    chat.innerHTML = "";
-    if (
-      !selected.messages.length
-    ) {
-      showWelcome();
-    } else {
-      selected.messages.forEach(
-        message => {
-          addMessage(
-            message.role,
-            message.content
-          );
-        }
-      );
-    }
-    renderConversations();
-  }
-  /* =========================
-     RENDER SIDEBAR
-  ========================= */
-  function renderConversations() {
-    conversations.innerHTML = "";
-    if (!chats.length) {
-      conversations.innerHTML = `
-        <div class="empty-conversations">
-          ما عندك محادثات محفوظة حالياً.
-          <br>
-          ابدأ محادثة جديدة من الزر بالأعلى.
-        </div>
-      `;
-      return;
-    }
-    chats.forEach(
-      item => {
-        const row =
-          document.createElement(
-            "div"
-          );
-        row.className =
-          "conversation" +
-          (
-            item.id === currentChatId
-              ? " active"
-              : ""
-          );
-        const openButton =
-          document.createElement(
-            "button"
-          );
-        openButton.className =
-          "conversation-open";
-        openButton.textContent =
-          item.title ||
-          "محادثة جديدة";
-        openButton.onclick =
-          function() {
-            loadChat(
-              item.id
-            );
-            closeSidebar();
-          };
-        const deleteButton =
-          document.createElement(
-            "button"
-          );
-        deleteButton.className =
-          "conversation-delete";
-        deleteButton.textContent =
-          "🗑";
-        deleteButton.onclick =
-          function(event) {
-            event.stopPropagation();
-            deleteChat(
-              item.id
-            );
-          };
-        row.appendChild(
-          openButton
-        );
-        row.appendChild(
-          deleteButton
-        );
-        conversations.appendChild(
-          row
-        );
-      }
-    );
-  }
-  /* =========================
-     DELETE CHAT
-  ========================= */
-  function deleteChat(
-    chatId
-  ) {
-    chats =
-      chats.filter(
-        chat => chat.id !== chatId
-      );
-    if (
-      currentChatId === chatId
-    ) {
-      if (chats.length) {
-        currentChatId =
-          chats[0].id;
-        loadChat(
-          currentChatId
-        );
-      } else {
-        currentChatId =
-          null;
-        localStorage.removeItem(
-          "altatawur_current_chat"
-        );
-        showWelcome();
-      }
-    }
-    saveChats();
-    renderConversations();
-  }
-  /* =========================
-     NEW CHAT
-  ========================= */
-  function newChat() {
-    createChat();
-    showWelcome();
-    input.value = "";
-    input.style.height =
-      "52px";
-    removeAttachment();
-    closeSidebar();
-    input.focus();
-  }
-  /* =========================
-     TYPING
-  ========================= */
-  function addTyping() {
-    const message =
-      document.createElement(
-        "div"
-      );
-    message.className =
-      "message assistant";
-    message.id =
-      "typingMessage";
-    const avatar =
-      document.createElement(
-        "div"
-      );
-    avatar.className =
-      "avatar";
-    avatar.textContent =
-      "ت";
-    const bubble =
-      document.createElement(
-        "div"
-      );
-    bubble.className =
-      "bubble";
-    bubble.innerHTML = `
-      <div class="typing">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    `;
-    message.appendChild(
-      avatar
-    );
-    message.appendChild(
-      bubble
-    );
-    chat.appendChild(
-      message
-    );
-    window.scrollTo({
-      top:
-        document.body.scrollHeight,
-      behavior:
-        "smooth"
-    });
-  }
-  function removeTyping() {
-    const typing =
-      document.getElementById(
-        "typingMessage"
-      );
-    if (typing) {
-      typing.remove();
-    }
-  }
-  /* =========================
-     SEND MESSAGE
-  ========================= */
-  async function sendMessage() {
-    const text =
-      input.value.trim();
-    if (
-      !text ||
-      sendButton.disabled
-    ) {
-      return;
-    }
-    if (!currentChatId) {
-      createChat();
-    }
-    const current =
-      getCurrentChat();
-    if (!current) {
-      return;
-    }
-    if (
-      current.messages.length === 0
-    ) {
-      current.title =
-        text.length > 32
-          ? text.substring(0, 32) + "..."
-          : text;
-    }
-    current.messages.push({
-      role: "user",
-      content: text
-    });
-    saveChats();
-    renderConversations();
-    addMessage(
-      "user",
-      text
-    );
-    /*
-      المرفق حالياً لا يتم إرساله
-      للـAI. سيتم ربطه بالـBackend
-      في الخطوة التالية.
-    */
-    removeAttachment();
-    input.value = "";
-    input.style.height =
-      "52px";
-    sendButton.disabled =
-      true;
-    addTyping();
-    try {
-      const response =
-        await fetch(
-          "/api/chat",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-            body:
-              JSON.stringify({
-                messages:
-                  current.messages
-              })
-          }
-        );
-      const data =
-        await response.json();
-      removeTyping();
-      if (!response.ok) {
-        throw new Error(
-          data.error ||
-          "حدث خطأ."
-        );
-      }
-      const reply =
-        data.reply ||
-        "ما حصلت جواب.";
-      current.messages.push({
-        role: "assistant",
-        content: reply
-      });
-      saveChats();
-      addMessage(
-        "assistant",
-        reply
-      );
-    } catch (error) {
-      removeTyping();
-      addMessage(
-        "assistant",
-        "عذراً، صار خطأ بالاتصال بالخادم. حاول مرة ثانية."
-      );
-      console.error(
-        error
-      );
-    } finally {
-      sendButton.disabled =
-        false;
-      input.focus();
-    }
-  }
-  /* =========================
-     SIDEBAR
-  ========================= */
-  function openSidebar() {
-    sidebar.classList.add(
-      "active"
-    );
-    overlay.classList.add(
-      "active"
-    );
-    renderConversations();
-  }
-  function closeSidebar() {
-    sidebar.classList.remove(
-      "active"
-    );
-    overlay.classList.remove(
-      "active"
-    );
-  }
-  /* =========================
-     TEXTAREA
-  ========================= */
-  input.addEventListener(
-    "input",
-    function() {
-      this.style.height =
-        "52px";
-      this.style.height =
-        Math.min(
-          this.scrollHeight,
-          150
-        ) + "px";
-    }
-  );
-  input.addEventListener(
-    "keydown",
-    function(event) {
-      if (
-        event.key === "Enter" &&
-        !event.shiftKey
-      ) {
-        event.preventDefault();
-        sendMessage();
-      }
-    }
-  );
-  /* =========================
-     INITIALIZATION
-  ========================= */
-  function initialize() {
-    const oldMessages =
-      JSON.parse(
-        localStorage.getItem(
-          "altatawur_chat"
-        ) || "[]"
-      );
-    if (
-      !chats.length &&
-      oldMessages.length
-    ) {
-      const oldChat = {
-        id:
-          Date.now().toString(),
-        title:
-          oldMessages[0]?.content ||
-          "محادثة قديمة",
-        messages:
-          oldMessages
-      };
-      chats.push(
-        oldChat
-      );
-      currentChatId =
-        oldChat.id;
-      localStorage.removeItem(
-        "altatawur_chat"
-      );
-      saveChats();
-    }
-    if (
-      !currentChatId &&
-      chats.length
-    ) {
-      currentChatId =
-        chats[0].id;
-    }
-    if (currentChatId) {
-      loadChat(
-        currentChatId
-      );
-    } else {
-      showWelcome();
-    }
-    renderConversations();
-  }
-  initialize();
+const chat=document.getElementById("chat");
+const input=document.getElementById("messageInput");
+const sendButton=document.getElementById("sendButton");
+const fileInput=document.getElementById("fileInput");
+const attachmentPreview=document.getElementById("attachmentPreview");
+const attachmentImage=document.getElementById("attachmentImage");
+const attachmentIcon=document.getElementById("attachmentIcon");
+const attachmentName=document.getElementById("attachmentName");
+const attachmentType=document.getElementById("attachmentType");
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("overlay");
+const conversations=document.getElementById("conversations");
+/* =========================
+   CHAT DATA
+========================= */
+let chats=JSON.parse(
+localStorage.getItem("altatawur_chats")||"[]"
+);
+let currentChatId=
+localStorage.getItem("altatawur_current_chat")||null;
+/* =========================
+   ATTACHMENT
+========================= */
+let selectedFile=null;
+/* =========================
+   FILE SELECT
+========================= */
+function handleFile(event){
+const file=event.target.files[0];
+if(!file)return;
+selectedFile=file;
+attachmentPreview.classList.add("active");
+attachmentName.textContent=file.name;
+attachmentType.textContent=
+formatFileSize(file.size);
+if(file.type.startsWith("image/")){
+const url=URL.createObjectURL(file);
+attachmentImage.src=url;
+attachmentImage.style.display="block";
+attachmentIcon.style.display="none";
+}else{
+attachmentImage.style.display="none";
+attachmentIcon.style.display="flex";
+if(file.type==="application/pdf"){
+attachmentIcon.textContent="📕";
+}else if(
+file.name.endsWith(".doc")||
+file.name.endsWith(".docx")
+){
+attachmentIcon.textContent="📝";
+}else{
+attachmentIcon.textContent="📄";
+}
+}
+}
+/* =========================
+   FILE TO BASE64
+========================= */
+function fileToBase64(file){
+return new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=()=>{
+resolve({
+name:file.name,
+type:file.type,
+data:reader.result
+});
+};
+reader.onerror=()=>{
+reject(
+new Error("تعذر قراءة الملف.")
+);
+};
+reader.readAsDataURL(file);
+});
+}
+/* =========================
+   FILE SIZE
+========================= */
+function formatFileSize(bytes){
+if(bytes<1024)
+return bytes+" B";
+if(bytes<1024*1024)
+return (bytes/1024).toFixed(1)+" KB";
+return (bytes/(1024*1024)).toFixed(1)+" MB";
+}
+/* =========================
+   REMOVE FILE
+========================= */
+function removeAttachment(){
+selectedFile=null;
+fileInput.value="";
+attachmentPreview.classList.remove("active");
+attachmentImage.src="";
+}
+/* =========================
+   CHAT STORAGE
+========================= */
+function saveChats(){
+localStorage.setItem(
+"altatawur_chats",
+JSON.stringify(chats)
+);
+if(currentChatId){
+localStorage.setItem(
+"altatawur_current_chat",
+currentChatId
+);
+}
+}
+/* =========================
+   CREATE CHAT
+========================= */
+function createChat(){
+const newChatObject={
+id:Date.now().toString(),
+title:"محادثة جديدة",
+messages:[]
+};
+chats.unshift(newChatObject);
+currentChatId=newChatObject.id;
+saveChats();
+renderConversations();
+return newChatObject;
+}
+/* =========================
+   CURRENT CHAT
+========================= */
+function getCurrentChat(){
+return chats.find(
+item=>item.id===currentChatId
+);
+}
+/* =========================
+   MESSAGE
+========================= */
+function addMessage(role,text){
+const message=document.createElement("div");
+message.className=
+"message "+role;
+const avatar=document.createElement("div");
+avatar.className="avatar";
+avatar.textContent=
+role==="user"?"أ":"ت";
+const bubble=document.createElement("div");
+bubble.className="bubble";
+bubble.textContent=text;
+message.appendChild(avatar);
+message.appendChild(bubble);
+chat.appendChild(message);
+window.scrollTo({
+top:document.body.scrollHeight,
+behavior:"smooth"
+});
+}
+/* =========================
+   LOAD CHAT
+========================= */
+function loadChat(id){
+const selected=
+chats.find(item=>item.id===id);
+if(!selected){
+showWelcome();
+return;
+}
+currentChatId=selected.id;
+chat.innerHTML="";
+if(!selected.messages.length){
+showWelcome();
+}else{
+selected.messages.forEach(message=>{
+addMessage(
+message.role,
+message.content
+);
+});
+}
+saveChats();
+renderConversations();
+}
+/* =========================
+   WELCOME
+========================= */
+function showWelcome(){
+chat.innerHTML=`
+<section class="welcome">
+<div class="welcome-logo">
+ت
+</div>
+<h2>
+أهلاً بك في <span>التطور چات</span>
+</h2>
+<p>
+مساعدك الذكي للإجابة عن الأسئلة،
+شرح المواضيع، كتابة النصوص وتوليد الأفكار.
+</p>
+</section>
+`;
+}
+/* =========================
+   SIDEBAR
+========================= */
+function renderConversations(){
+conversations.innerHTML="";
+if(!chats.length){
+conversations.innerHTML=`
+<div class="empty-conversations">
+ما عندك محادثات محفوظة حالياً.
+<br>
+ابدأ محادثة جديدة.
+</div>
+`;
+return;
+}
+chats.forEach(item=>{
+const row=document.createElement("div");
+row.className=
+"conversation"+
+(
+item.id===currentChatId
+?" active"
+:""
+);
+const open=document.createElement("button");
+open.className="conversation-open";
+open.textContent=
+item.title||"محادثة جديدة";
+open.onclick=()=>{
+loadChat(item.id);
+closeSidebar();
+};
+const del=document.createElement("button");
+del.className="conversation-delete";
+del.textContent="🗑";
+del.onclick=(event)=>{
+event.stopPropagation();
+deleteChat(item.id);
+};
+row.appendChild(open);
+row.appendChild(del);
+conversations.appendChild(row);
+});
+}
+/* =========================
+   DELETE CHAT
+========================= */
+function deleteChat(id){
+chats=chats.filter(
+item=>item.id!==id
+);
+if(currentChatId===id){
+if(chats.length){
+currentChatId=chats[0].id;
+loadChat(currentChatId);
+}else{
+currentChatId=null;
+localStorage.removeItem(
+"altatawur_current_chat"
+);
+showWelcome();
+}
+}
+saveChats();
+renderConversations();
+}
+/* =========================
+   NEW CHAT
+========================= */
+function newChat(){
+createChat();
+showWelcome();
+input.value="";
+input.style.height="52px";
+removeAttachment();
+closeSidebar();
+input.focus();
+}
+/* =========================
+   TYPING
+========================= */
+function addTyping(){
+const message=document.createElement("div");
+message.className="message assistant";
+message.id="typingMessage";
+const avatar=document.createElement("div");
+avatar.className="avatar";
+avatar.textContent="ت";
+const bubble=document.createElement("div");
+bubble.className="bubble";
+bubble.innerHTML=`
+<div class="typing">
+<span></span>
+<span></span>
+<span></span>
+</div>
+`;
+message.appendChild(avatar);
+message.appendChild(bubble);
+chat.appendChild(message);
+window.scrollTo({
+top:document.body.scrollHeight,
+behavior:"smooth"
+});
+}
+function removeTyping(){
+const typing=
+document.getElementById("typingMessage");
+if(typing)
+typing.remove();
+}
+/* =========================
+   SEND MESSAGE
+========================= */
+async function sendMessage(){
+const text=input.value.trim();
+if(
+(!text&&!selectedFile)||
+sendButton.disabled
+){
+return;
+}
+/* إنشاء محادثة إذا ما موجودة */
+if(!currentChatId){
+createChat();
+}
+const current=getCurrentChat();
+if(!current)return;
+/* عنوان المحادثة */
+if(current.messages.length===0){
+current.title=
+text
+?
+(
+text.length>32
+?text.substring(0,32)+"..."
+:text
+)
+:
+"محادثة مع مرفق";
+}
+/* تحويل المرفق */
+let attachment=null;
+if(selectedFile){
+try{
+attachment=
+await fileToBase64(selectedFile);
+}catch(error){
+alert("تعذر قراءة الملف.");
+return;
+}
+}
+/* حفظ رسالة المستخدم */
+const userText=
+text||
+"حلل هذا المرفق.";
+current.messages.push({
+role:"user",
+content:userText
+});
+saveChats();
+renderConversations();
+addMessage(
+"user",
+selectedFile
+?
+"📎 "+selectedFile.name+
+(
+text
+?"\n"+text
+:""
+)
+:
+text
+);
+input.value="";
+input.style.height="52px";
+sendButton.disabled=true;
+addTyping();
+try{
+const response=
+await fetch(
+"/api/chat",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+messages:current.messages,
+attachment:attachment
+})
+}
+);
+const data=
+await response.json();
+removeTyping();
+if(!response.ok){
+throw new Error(
+data.error||
+"حدث خطأ."
+);
+}
+const reply=
+data.reply||
+"ما حصلت جواب.";
+current.messages.push({
+role:"assistant",
+content:reply
+});
+saveChats();
+addMessage(
+"assistant",
+reply
+);
+}catch(error){
+console.error(error);
+removeTyping();
+addMessage(
+"assistant",
+"عذراً، صار خطأ أثناء معالجة الرسالة أو المرفق."
+);
+}finally{
+sendButton.disabled=false;
+removeAttachment();
+input.focus();
+}
+}
+/* =========================
+   SIDEBAR OPEN/CLOSE
+========================= */
+function openSidebar(){
+sidebar.classList.add("active");
+overlay.classList.add("active");
+renderConversations();
+}
+function closeSidebar(){
+sidebar.classList.remove("active");
+overlay.classList.remove("active");
+}
+/* =========================
+   TEXTAREA
+========================= */
+input.addEventListener(
+"input",
+function(){
+this.style.height="52px";
+this.style.height=
+Math.min(
+this.scrollHeight,
+150
+)+"px";
+}
+);
+input.addEventListener(
+"keydown",
+function(event){
+if(
+event.key==="Enter"&&
+!event.shiftKey
+){
+event.preventDefault();
+sendMessage();
+}
+}
+);
+/* =========================
+   START
+========================= */
+function initialize(){
+if(!currentChatId&&chats.length){
+currentChatId=chats[0].id;
+}
+if(currentChatId){
+loadChat(currentChatId);
+}else{
+showWelcome();
+}
+renderConversations();
+}
+initialize();
 </script>
 </body>
 </html>
