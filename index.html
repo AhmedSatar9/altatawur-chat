@@ -37,7 +37,8 @@
       overflow-x: hidden;
     }
     button,
-    textarea {
+    textarea,
+    input {
       font-family: inherit;
     }
     button {
@@ -112,10 +113,8 @@
     }
     .new-chat:hover {
       color: white;
-      border-color:
-        rgba(255,255,255,.18);
-      background:
-        rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
     }
     .menu {
       width: 48px;
@@ -129,11 +128,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: .2s ease;
-    }
-    .menu:hover {
-      background:
-        rgba(255,255,255,.05);
     }
     /* =========================
        CHAT
@@ -146,7 +140,7 @@
       padding:
         35px
         20px
-        160px;
+        180px;
     }
     /* =========================
        WELCOME
@@ -234,6 +228,76 @@
       background: #111a30;
     }
     /* =========================
+       ATTACHMENT PREVIEW
+    ========================== */
+    .attachment-preview {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto 10px;
+      padding: 10px;
+      background: rgba(13,18,34,.96);
+      border:
+        1px solid
+        rgba(255,255,255,.10);
+      border-radius: 17px;
+    }
+    .attachment-preview.active {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .attachment-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(139,92,246,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+    .attachment-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .attachment-name {
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .attachment-size {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .remove-attachment {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #8d96aa;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .remove-attachment:hover {
+      color: #ff6b81;
+      background: rgba(255,107,129,.08);
+    }
+    /* =========================
+       IMAGE PREVIEW
+    ========================== */
+    .attachment-image {
+      width: 48px;
+      height: 48px;
+      border-radius: 11px;
+      object-fit: cover;
+      display: none;
+      flex-shrink: 0;
+    }
+    /* =========================
        TYPING
     ========================== */
     .typing {
@@ -295,9 +359,37 @@
       padding: 10px;
       display: flex;
       align-items: flex-end;
-      gap: 10px;
+      gap: 8px;
       box-shadow:
         0 -5px 30px rgba(0,0,0,.15);
+    }
+    /* =========================
+       ATTACH BUTTON
+    ========================== */
+    .attach-button {
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 16px;
+      background: transparent;
+      color: #aab2c5;
+      font-size: 24px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .2s ease;
+    }
+    .attach-button:hover {
+      color: white;
+      background: rgba(255,255,255,.06);
+    }
+    .attach-button:active {
+      transform: scale(.94);
+    }
+    #fileInput {
+      display: none;
     }
     textarea {
       flex: 1;
@@ -338,18 +430,12 @@
     .side-overlay {
       position: fixed;
       inset: 0;
-      background:
-        rgba(0,0,0,.60);
-      backdrop-filter:
-        blur(4px);
-      -webkit-backdrop-filter:
-        blur(4px);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(3px);
       z-index: 300;
       opacity: 0;
       visibility: hidden;
-      transition:
-        opacity .25s ease,
-        visibility .25s ease;
+      transition: .25s ease;
     }
     .side-overlay.active {
       opacity: 1;
@@ -360,245 +446,115 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: 350px;
-      max-width: 90vw;
-      background:
-        linear-gradient(
-          180deg,
-          #0d1325 0%,
-          #090e1c 100%
-        );
+      width: 330px;
+      max-width: 88vw;
+      background: #0b1020;
       border-left:
-        1px solid var(--border);
+        1px solid
+        var(--border);
       z-index: 301;
       transform:
         translateX(100%);
-      transition:
-        transform .28s cubic-bezier(.4,0,.2,1);
+      transition: .28s ease;
       display: flex;
       flex-direction: column;
-      box-shadow:
-        -20px 0 60px rgba(0,0,0,.25);
     }
     .side-panel.active {
       transform:
         translateX(0);
     }
-    /* SIDE HEADER */
     .side-header {
-      min-height: 82px;
+      height: 82px;
       padding:
         16px
         18px;
       border-bottom:
-        1px solid var(--border);
+        1px solid
+        var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .side-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .side-title-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 11px;
-      background:
-        rgba(139,92,246,.12);
-      border:
-        1px solid
-        rgba(139,92,246,.22);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
     .side-header h3 {
       font-size: 20px;
-    }
-    .conversation-count {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 2px;
     }
     .close-menu {
       width: 42px;
       height: 42px;
       border:
-        1px solid var(--border);
+        1px solid
+        var(--border);
       border-radius: 12px;
       background: transparent;
       color: white;
       font-size: 22px;
       cursor: pointer;
-      transition: .2s ease;
     }
-    .close-menu:hover {
-      background:
-        rgba(255,255,255,.05);
-    }
-    /* NEW CHAT */
     .side-new {
-      margin:
-        16px 16px 12px;
+      margin: 16px;
       padding: 14px;
       border:
         1px solid
         rgba(139,92,246,.35);
       border-radius: 15px;
       background:
-        linear-gradient(
-          135deg,
-          rgba(139,92,246,.13),
-          rgba(34,211,238,.06)
-        );
+        rgba(139,92,246,.08);
       color: white;
       cursor: pointer;
       font-size: 15px;
       text-align: center;
-      transition: .2s ease;
-      box-shadow:
-        0 8px 25px rgba(100,80,255,.08);
     }
-    .side-new:hover {
-      border-color:
-        rgba(139,92,246,.55);
-      background:
-        linear-gradient(
-          135deg,
-          rgba(139,92,246,.18),
-          rgba(34,211,238,.09)
-        );
-    }
-    .side-new:active {
-      transform: scale(.98);
-    }
-    /* SECTION TITLE */
-    .history-title {
-      padding:
-        8px 18px 10px;
-      color:
-        #707b93;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .3px;
-    }
-    /* CONVERSATION LIST */
     .conversation-list {
       flex: 1;
       overflow-y: auto;
       padding:
-        0 12px 24px;
-      scrollbar-width: thin;
-      scrollbar-color:
-        #252d42
-        transparent;
-    }
-    .conversation-list::-webkit-scrollbar {
-      width: 5px;
-    }
-    .conversation-list::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .conversation-list::-webkit-scrollbar-thumb {
-      background: #252d42;
-      border-radius: 10px;
+        0 12px 20px;
     }
     .conversation-empty {
       color: var(--muted);
       text-align: center;
       padding:
-        45px 20px;
-      line-height: 1.9;
+        40px 20px;
+      line-height: 1.8;
       font-size: 14px;
     }
-    /* CONVERSATION ITEM */
     .conversation-item {
       width: 100%;
       border:
-        1px solid transparent;
+        1px solid
+        transparent;
       background: transparent;
       color: white;
       border-radius: 14px;
       padding:
-        10px 10px;
-      margin-bottom: 6px;
+        13px 12px;
+      margin-bottom: 7px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 10px;
       text-align: right;
-      transition:
-        background .18s ease,
-        border .18s ease,
-        transform .18s ease;
+      transition: .2s ease;
     }
     .conversation-item:hover {
       background:
-        rgba(255,255,255,.045);
+        rgba(255,255,255,.04);
       border-color:
         var(--border);
     }
     .conversation-item.active {
       background:
-        linear-gradient(
-          90deg,
-          rgba(139,92,246,.14),
-          rgba(34,211,238,.045)
-        );
+        rgba(139,92,246,.10);
       border-color:
-        rgba(139,92,246,.24);
-    }
-    .conversation-icon {
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
-      border-radius: 10px;
-      background:
-        rgba(255,255,255,.045);
-      color:
-        #aab3c8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-    }
-    .conversation-item.active
-    .conversation-icon {
-      background:
-        rgba(139,92,246,.18);
-      color:
-        #c4b5fd;
-    }
-    .conversation-info {
-      flex: 1;
-      min-width: 0;
+        rgba(139,92,246,.25);
     }
     .conversation-title {
+      flex: 1;
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       font-size: 14px;
-      line-height: 1.5;
-      color: #f1f3fa;
-    }
-    .conversation-meta {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 2px;
-      color:
-        #667087;
-      font-size: 10px;
-    }
-    .conversation-active-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background:
-        #22d3ee;
     }
     .delete-conversation {
       width: 32px;
@@ -607,25 +563,14 @@
       border: none;
       border-radius: 9px;
       background: transparent;
-      color:
-        #667087;
+      color: #788198;
       cursor: pointer;
-      font-size: 15px;
-      opacity: .65;
-      transition:
-        color .18s ease,
-        background .18s ease,
-        opacity .18s ease;
-    }
-    .conversation-item:hover
-    .delete-conversation {
-      opacity: 1;
+      font-size: 16px;
     }
     .delete-conversation:hover {
-      color:
-        #ff7185;
+      color: #ff6b81;
       background:
-        rgba(255,107,129,.09);
+        rgba(255,107,129,.08);
     }
     /* =========================
        MOBILE
@@ -672,7 +617,7 @@
         padding:
           20px
           12px
-          155px;
+          175px;
       }
       .welcome {
         padding-top: 60px;
@@ -707,12 +652,13 @@
       .input-box {
         border-radius: 23px;
       }
-      .side-panel {
-        width: 320px;
-        max-width: 88vw;
+      .attach-button {
+        width: 45px;
+        height: 52px;
+        font-size: 22px;
       }
-      .side-header {
-        min-height: 76px;
+      .side-panel {
+        width: 310px;
       }
     }
     @media (max-width: 380px) {
@@ -734,6 +680,9 @@
       .menu {
         width: 42px;
         height: 42px;
+      }
+      .attach-button {
+        width: 40px;
       }
     }
   </style>
@@ -775,11 +724,60 @@
   <main
     class="chat"
     id="chat"
-  >
-  </main>
+  ></main>
   <!-- INPUT -->
   <div class="input-area">
+    <!-- ATTACHMENT PREVIEW -->
+    <div
+      class="attachment-preview"
+      id="attachmentPreview"
+    >
+      <img
+        class="attachment-image"
+        id="attachmentImage"
+        alt=""
+      >
+      <div
+        class="attachment-icon"
+        id="attachmentIcon"
+      >
+        📎
+      </div>
+      <div class="attachment-info">
+        <div
+          class="attachment-name"
+          id="attachmentName"
+        ></div>
+        <div
+          class="attachment-size"
+          id="attachmentSize"
+        ></div>
+      </div>
+      <button
+        class="remove-attachment"
+        onclick="removeAttachment()"
+        aria-label="إزالة المرفق"
+      >
+        ×
+      </button>
+    </div>
     <div class="input-box">
+      <!-- FILE INPUT -->
+      <input
+        type="file"
+        id="fileInput"
+        accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.csv"
+        onchange="handleFileSelect(event)"
+      >
+      <!-- ATTACH BUTTON -->
+      <button
+        class="attach-button"
+        onclick="openFilePicker()"
+        aria-label="إضافة مرفق"
+        title="إضافة مرفق"
+      >
+        📎
+      </button>
       <textarea
         id="messageInput"
         placeholder="اكتب رسالتك هنا..."
@@ -806,26 +804,12 @@
   id="sidePanel"
 >
   <div class="side-header">
-    <div class="side-title">
-      <div class="side-title-icon">
-        ☰
-      </div>
-      <div>
-        <h3>
-          محادثاتي
-        </h3>
-        <div
-          class="conversation-count"
-          id="conversationCount"
-        >
-          0 محادثة
-        </div>
-      </div>
-    </div>
+    <h3>
+      محادثاتي
+    </h3>
     <button
       class="close-menu"
       onclick="closeMenu()"
-      aria-label="إغلاق"
     >
       ×
     </button>
@@ -836,9 +820,6 @@
   >
     ＋ محادثة جديدة
   </button>
-  <div class="history-title">
-    سجل المحادثات
-  </div>
   <div
     class="conversation-list"
     id="conversationList"
@@ -859,9 +840,33 @@
   const sideOverlay =
     document.getElementById("sideOverlay");
   const conversationList =
-    document.getElementById("conversationList");
-  const conversationCount =
-    document.getElementById("conversationCount");
+    document.getElementById(
+      "conversationList"
+    );
+  const fileInput =
+    document.getElementById(
+      "fileInput"
+    );
+  const attachmentPreview =
+    document.getElementById(
+      "attachmentPreview"
+    );
+  const attachmentName =
+    document.getElementById(
+      "attachmentName"
+    );
+  const attachmentSize =
+    document.getElementById(
+      "attachmentSize"
+    );
+  const attachmentImage =
+    document.getElementById(
+      "attachmentImage"
+    );
+  const attachmentIcon =
+    document.getElementById(
+      "attachmentIcon"
+    );
   /* =========================
      STORAGE
   ========================== */
@@ -880,6 +885,10 @@
       ACTIVE_KEY
     ) || null;
   /* =========================
+     CURRENT ATTACHMENT
+  ========================== */
+  let selectedFile = null;
+  /* =========================
      SAVE
   ========================== */
   function saveConversations() {
@@ -891,7 +900,9 @@
     );
   }
   function saveActiveId() {
-    if (activeConversationId) {
+    if (
+      activeConversationId
+    ) {
       localStorage.setItem(
         ACTIVE_KEY,
         activeConversationId
@@ -906,12 +917,10 @@
      CREATE ID
   ========================== */
   function createId() {
-    return (
-      Date.now().toString() +
+    return Date.now().toString() +
       Math.random()
         .toString(36)
-        .slice(2)
-    );
+        .slice(2);
   }
   /* =========================
      CURRENT CONVERSATION
@@ -921,39 +930,6 @@
       conversation =>
         conversation.id ===
         activeConversationId
-    );
-  }
-  /* =========================
-     FORMAT DATE
-  ========================== */
-  function formatConversationDate(
-    timestamp
-  ) {
-    if (!timestamp) {
-      return "الآن";
-    }
-    const date =
-      new Date(timestamp);
-    const now =
-      new Date();
-    const sameDay =
-      date.toDateString() ===
-      now.toDateString();
-    if (sameDay) {
-      return date.toLocaleTimeString(
-        "ar-IQ",
-        {
-          hour: "2-digit",
-          minute: "2-digit"
-        }
-      );
-    }
-    return date.toLocaleDateString(
-      "ar-IQ",
-      {
-        day: "numeric",
-        month: "short"
-      }
     );
   }
   /* =========================
@@ -1035,7 +1011,6 @@
       getActiveConversation();
     if (
       !conversation ||
-      !conversation.messages ||
       !conversation.messages.length
     ) {
       showWelcome();
@@ -1055,16 +1030,13 @@
      RENDER LIST
   ========================== */
   function renderConversationList() {
-    conversationList.innerHTML = "";
-    conversationCount.textContent =
-      `${conversations.length} ${
-        conversations.length === 1
-          ? "محادثة"
-          : "محادثات"
-      }`;
+    conversationList.innerHTML =
+      "";
     if (!conversations.length) {
       conversationList.innerHTML = `
-        <div class="conversation-empty">
+        <div
+          class="conversation-empty"
+        >
           ما عندك محادثات محفوظة حالياً.
           <br>
           ابدأ محادثة جديدة
@@ -1073,137 +1045,69 @@
       `;
       return;
     }
-    const sorted =
-      conversations
-        .slice()
-        .sort(
-          (
-            a,
-            b
-          ) =>
-            (
-              b.updatedAt ||
-              b.createdAt ||
-              0
-            ) -
-            (
-              a.updatedAt ||
-              a.createdAt ||
-              0
-            )
-        );
-    sorted.forEach(
-      conversation => {
-        const item =
-          document.createElement(
-            "div"
-          );
-        item.className =
-          "conversation-item" +
-          (
-            conversation.id ===
-            activeConversationId
-              ? " active"
-              : ""
-          );
-        const icon =
-          document.createElement(
-            "div"
-          );
-        icon.className =
-          "conversation-icon";
-        icon.textContent =
-          "💬";
-        const info =
-          document.createElement(
-            "div"
-          );
-        info.className =
-          "conversation-info";
-        const title =
-          document.createElement(
-            "div"
-          );
-        title.className =
-          "conversation-title";
-        title.textContent =
-          conversation.title ||
-          "محادثة جديدة";
-        const meta =
-          document.createElement(
-            "div"
-          );
-        meta.className =
-          "conversation-meta";
-        if (
-          conversation.id ===
-          activeConversationId
-        ) {
-          meta.innerHTML = `
-            <span
-              class="conversation-active-dot"
-            ></span>
-            مفتوحة الآن
-          `;
-        } else {
-          meta.textContent =
-            formatConversationDate(
-              conversation.updatedAt ||
-              conversation.createdAt
+    conversations
+      .slice()
+      .reverse()
+      .forEach(
+        conversation => {
+          const item =
+            document.createElement(
+              "div"
             );
+          item.className =
+            "conversation-item" +
+            (
+              conversation.id ===
+              activeConversationId
+                ? " active"
+                : ""
+            );
+          const title =
+            document.createElement(
+              "div"
+            );
+          title.className =
+            "conversation-title";
+          title.textContent =
+            conversation.title ||
+            "محادثة جديدة";
+          const deleteButton =
+            document.createElement(
+              "button"
+            );
+          deleteButton.className =
+            "delete-conversation";
+          deleteButton.textContent =
+            "🗑";
+          deleteButton.onclick =
+            function(event) {
+              event.stopPropagation();
+              deleteConversation(
+                conversation.id
+              );
+            };
+          item.appendChild(
+            title
+          );
+          item.appendChild(
+            deleteButton
+          );
+          item.onclick =
+            function() {
+              openConversation(
+                conversation.id
+              );
+            };
+          conversationList.appendChild(
+            item
+          );
         }
-        info.appendChild(
-          title
-        );
-        info.appendChild(
-          meta
-        );
-        const deleteButton =
-          document.createElement(
-            "button"
-          );
-        deleteButton.className =
-          "delete-conversation";
-        deleteButton.textContent =
-          "🗑";
-        deleteButton.setAttribute(
-          "aria-label",
-          "حذف المحادثة"
-        );
-        deleteButton.onclick =
-          function(event) {
-            event.stopPropagation();
-            deleteConversation(
-              conversation.id
-            );
-          };
-        item.appendChild(
-          icon
-        );
-        item.appendChild(
-          info
-        );
-        item.appendChild(
-          deleteButton
-        );
-        item.onclick =
-          function() {
-            openConversation(
-              conversation.id
-            );
-          };
-        conversationList.appendChild(
-          item
-        );
-      }
-    );
+      );
   }
   /* =========================
      OPEN CONVERSATION
   ========================== */
-  function openConversation(
-    id
-  ) {
+  function openConversation(id) {
     activeConversationId =
       id;
     saveActiveId();
@@ -1224,8 +1128,6 @@
       messages:
         [],
       createdAt:
-        Date.now(),
-      updatedAt:
         Date.now()
     };
     conversations.push(
@@ -1240,60 +1142,29 @@
     input.value = "";
     input.style.height =
       "52px";
+    removeAttachment();
     input.focus();
   }
   /* =========================
      DELETE CONVERSATION
   ========================== */
-  function deleteConversation(
-    id
-  ) {
-    const conversation =
-      conversations.find(
-        item =>
-          item.id === id
-      );
-    if (!conversation) {
-      return;
-    }
-    const confirmed =
-      window.confirm(
-        `حذف محادثة "${conversation.title || "محادثة جديدة"}"؟`
-      );
-    if (!confirmed) {
-      return;
-    }
+  function deleteConversation(id) {
     conversations =
       conversations.filter(
-        item =>
-          item.id !== id
+        conversation =>
+          conversation.id !== id
       );
     if (
       activeConversationId ===
       id
     ) {
-      if (conversations.length) {
-        const latest =
-          conversations
-            .slice()
-            .sort(
-              (
-                a,
-                b
-              ) =>
-                (
-                  b.updatedAt ||
-                  b.createdAt ||
-                  0
-                ) -
-                (
-                  a.updatedAt ||
-                  a.createdAt ||
-                  0
-                )
-            )[0];
+      if (
+        conversations.length
+      ) {
         activeConversationId =
-          latest.id;
+          conversations[
+            conversations.length - 1
+          ].id;
       } else {
         activeConversationId =
           null;
@@ -1366,35 +1237,182 @@
     }
   }
   /* =========================
+     OPEN FILE PICKER
+  ========================== */
+  function openFilePicker() {
+    fileInput.click();
+  }
+  /* =========================
+     FORMAT FILE SIZE
+  ========================== */
+  function formatFileSize(
+    bytes
+  ) {
+    if (bytes < 1024) {
+      return bytes + " B";
+    }
+    if (
+      bytes <
+      1024 * 1024
+    ) {
+      return (
+        (bytes / 1024)
+          .toFixed(1) +
+        " KB"
+      );
+    }
+    return (
+      (bytes /
+        (1024 * 1024))
+        .toFixed(1) +
+      " MB"
+    );
+  }
+  /* =========================
+     HANDLE FILE
+  ========================== */
+  function handleFileSelect(
+    event
+  ) {
+    const file =
+      event.target.files[0];
+    if (!file) {
+      return;
+    }
+    /*
+      حد أقصى مؤقت للواجهة:
+      20MB
+    */
+    if (
+      file.size >
+      20 * 1024 * 1024
+    ) {
+      alert(
+        "حجم الملف أكبر من 20MB."
+      );
+      fileInput.value =
+        "";
+      return;
+    }
+    selectedFile =
+      file;
+    attachmentName.textContent =
+      file.name;
+    attachmentSize.textContent =
+      formatFileSize(
+        file.size
+      );
+    attachmentPreview.classList.add(
+      "active"
+    );
+    /*
+      إذا الملف صورة،
+      نعرض صورة مصغرة.
+    */
+    if (
+      file.type.startsWith(
+        "image/"
+      )
+    ) {
+      const reader =
+        new FileReader();
+      reader.onload =
+        function(e) {
+          attachmentImage.src =
+            e.target.result;
+          attachmentImage.style.display =
+            "block";
+          attachmentIcon.style.display =
+            "none";
+        };
+      reader.readAsDataURL(
+        file
+      );
+    } else {
+      attachmentImage.style.display =
+        "none";
+      attachmentIcon.style.display =
+        "flex";
+      /*
+        أيقونة مختلفة للـ PDF
+      */
+      if (
+        file.type ===
+        "application/pdf"
+      ) {
+        attachmentIcon.textContent =
+          "📄";
+      } else {
+        attachmentIcon.textContent =
+          "📎";
+      }
+    }
+  }
+  /* =========================
+     REMOVE ATTACHMENT
+  ========================== */
+  function removeAttachment() {
+    selectedFile =
+      null;
+    fileInput.value =
+      "";
+    attachmentPreview.classList.remove(
+      "active"
+    );
+    attachmentImage.src =
+      "";
+    attachmentImage.style.display =
+      "none";
+    attachmentIcon.style.display =
+      "flex";
+    attachmentIcon.textContent =
+      "📎";
+    attachmentName.textContent =
+      "";
+    attachmentSize.textContent =
+      "";
+  }
+  /* =========================
      SEND MESSAGE
   ========================== */
   async function sendMessage() {
     const text =
       input.value.trim();
+    /*
+      لازم يكون عندنا نص
+      أو مرفق.
+    */
     if (
-      !text ||
+      !text &&
+      !selectedFile
+    ) {
+      return;
+    }
+    if (
       sendButton.disabled
     ) {
       return;
     }
     /*
-      إذا ماكو محادثة،
-      ننشئ وحدة تلقائياً.
+      إذا ماكو محادثة حالياً،
+      نسوي وحدة تلقائياً.
     */
-    if (!activeConversationId) {
+    if (
+      !activeConversationId
+    ) {
       const newConversation = {
         id:
           createId(),
         title:
-          text.slice(
-            0,
-            35
-          ),
+          text
+            ? text.slice(0, 35)
+            : selectedFile.name.slice(
+                0,
+                35
+              ),
         messages:
           [],
         createdAt:
-          Date.now(),
-        updatedAt:
           Date.now()
       };
       conversations.push(
@@ -1409,37 +1427,54 @@
     if (!conversation) {
       return;
     }
-    /* إضافة رسالة المستخدم */
+    /*
+      في هذه المرحلة المرفق
+      لا يتم إرساله للـ API بعد.
+      سيتم ربطه فعلياً
+      في المرحلة القادمة.
+    */
+    let messageText =
+      text;
+    if (
+      selectedFile
+    ) {
+      const attachmentText =
+        `📎 مرفق: ${selectedFile.name}`;
+      if (messageText) {
+        messageText +=
+          "\n\n" +
+          attachmentText;
+      } else {
+        messageText =
+          attachmentText;
+      }
+    }
     conversation.messages.push({
       role:
         "user",
       content:
-        text
+        messageText
     });
-    /* عنوان المحادثة */
     if (
       conversation.messages.length ===
       1
     ) {
       conversation.title =
-        text.length > 35
-          ? text.slice(
-              0,
-              35
-            ) + "..."
-          : text;
+        messageText.length > 35
+          ? messageText.slice(0, 35) +
+            "..."
+          : messageText;
     }
-    conversation.updatedAt =
-      Date.now();
     saveConversations();
     renderConversationList();
     addMessage(
       "user",
-      text
+      messageText
     );
     input.value = "";
     input.style.height =
       "52px";
+    removeAttachment();
     sendButton.disabled =
       true;
     addTyping();
@@ -1464,7 +1499,9 @@
       const data =
         await response.json();
       removeTyping();
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         throw new Error(
           data.error ||
           "حدث خطأ."
@@ -1479,10 +1516,7 @@
         content:
           reply
       });
-      conversation.updatedAt =
-        Date.now();
       saveConversations();
-      renderConversationList();
       addMessage(
         "assistant",
         reply
@@ -1522,19 +1556,6 @@
     );
   }
   /* =========================
-     ESC CLOSE
-  ========================== */
-  document.addEventListener(
-    "keydown",
-    function(event) {
-      if (
-        event.key === "Escape"
-      ) {
-        closeMenu();
-      }
-    }
-  );
-  /* =========================
      TEXTAREA AUTO HEIGHT
   ========================== */
   input.addEventListener(
@@ -1568,10 +1589,6 @@
      START
   ========================== */
   function startApp() {
-    /*
-      إذا ماكو محادثات،
-      نعرض البداية.
-    */
     if (
       !conversations.length
     ) {
@@ -1579,36 +1596,14 @@
         null;
       saveActiveId();
       showWelcome();
-    }
-    /*
-      إذا توجد محادثات،
-      نفتح المحادثة الحالية.
-    */
-    else {
-      const active =
+    } else {
+      let active =
         getActiveConversation();
       if (!active) {
-        const latest =
-          conversations
-            .slice()
-            .sort(
-              (
-                a,
-                b
-              ) =>
-                (
-                  b.updatedAt ||
-                  b.createdAt ||
-                  0
-                ) -
-                (
-                  a.updatedAt ||
-                  a.createdAt ||
-                  0
-                )
-            )[0];
         activeConversationId =
-          latest.id;
+          conversations[
+            conversations.length - 1
+          ].id;
         saveActiveId();
       }
       renderConversation();
