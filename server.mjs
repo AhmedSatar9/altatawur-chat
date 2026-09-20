@@ -1,44 +1,73 @@
 import express from "express";
 import dotenv from "dotenv";
 import OpenAI from "openai";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
-if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "ضع_مفتاحك_هنا") {
-  console.warn("ضع OPENAI_API_KEY داخل ملف .env قبل التشغيل.");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (!process.env.OPENAI_API_KEY) {
+  console.warn("تحذير: OPENAI_API_KEY غير موجود.");
 }
 
 const app = express();
 const port = process.env.PORT || 3000;
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 app.use(express.json({ limit: "2mb" }));
-app.use(express.static("public"));
+
+// عرض index.html الموجود في المجلد الرئيسي
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// ملفات الموقع الأخرى إن وجدت
+app.use(express.static(__dirname));
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const messages = Array.isArray(req.body.messages) ? req.body.messages : [];
-    if (!messages.length) return res.status(400).json({ error: "لا توجد رسالة." });
+    const messages = Array.isArray(req.body.messages)
+      ? req.body.messages
+      : [];
 
-    const input = messages.slice(-30).map(m => ({
+    if (!messages.length) {
+      return res.status(400).json({
+        error: "لا توجد رسالة."
+      });
+    }
+
+    const input = messages.slice(-30).map((m) => ({
       role: m.role === "assistant" ? "assistant" : "user",
       content: String(m.content || "")
     }));
 
     const response = await client.responses.create({
-      model: "gpt-5.5",
-      instructions: "أنت المساعد الرسمي لمنصة التطور چات. أجب بالعربية بشكل واضح ومفيد، واستخدم اللهجة العراقية فقط عندما يطلب المستخدم ذلك. لا تدّعي تنفيذ أفعال لم تنفذها.",
+      model: "gpt-5.6-luna",
+      instructions:
+        "أنت المساعد الرسمي لمنصة التطور چات. أجب بالعربية بشكل واضح ومفيد، واستخدم اللهجة العراقية فقط عندما يطلب المستخدم ذلك. لا تدّعي تنفيذ أفعال لم تنفذها.",
       input,
       store: false
     });
 
-    res.json({ reply: response.output_text || "ما حصلت جواب نصي من النموذج." });
+    res.json({
+      reply: response.output_text || "ما حصلت جواب نصي من النموذج."
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي." });
+    console.error("OpenAI Error:", error);
+
+    res.status(500).json({
+      error: "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي."
+    });
   }
 });
 
 app.listen(port, () => {
-  console.log(`التطور چات يعمل على http://localhost:${port}`);
+  console.log(`التطور چات يعمل على المنفذ ${port}`);
 });
