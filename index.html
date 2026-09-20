@@ -55,8 +55,10 @@
     header {
       height: 92px;
       padding: 14px 24px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(13,18,34,.94);
+      border-bottom:
+        1px solid var(--border);
+      background:
+        rgba(13,18,34,.94);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -80,7 +82,8 @@
       font-size: 31px;
       font-weight: 800;
       box-shadow:
-        0 10px 30px rgba(100,90,255,.18);
+        0 10px 30px
+        rgba(100,90,255,.18);
     }
     .brand-info h1 {
       font-size: 24px;
@@ -103,7 +106,8 @@
       height: 48px;
       padding: 0 16px;
       border-radius: 14px;
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
       background: transparent;
       color: var(--muted);
       font-size: 15px;
@@ -113,13 +117,16 @@
     }
     .new-chat:hover {
       color: white;
-      border-color: rgba(255,255,255,.18);
-      background: rgba(255,255,255,.04);
+      border-color:
+        rgba(255,255,255,.18);
+      background:
+        rgba(255,255,255,.04);
     }
     .menu {
       width: 48px;
       height: 48px;
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
       background: transparent;
       border-radius: 14px;
       color: white;
@@ -166,7 +173,8 @@
       font-size: 55px;
       font-weight: 800;
       box-shadow:
-        0 20px 60px rgba(100,90,255,.18);
+        0 20px 60px
+        rgba(100,90,255,.18);
     }
     .welcome h2 {
       font-size: 38px;
@@ -218,7 +226,8 @@
         19px;
       border-radius: 20px;
       background: var(--panel2);
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
       line-height: 1.8;
       font-size: 16px;
       white-space: pre-wrap;
@@ -228,74 +237,18 @@
       background: #111a30;
     }
     /* =========================
-       ATTACHMENT PREVIEW
+       USER IMAGE
     ========================== */
-    .attachment-preview {
-      display: none;
-      max-width: 900px;
-      margin: 0 auto 10px;
-      padding: 10px;
-      background: rgba(13,18,34,.96);
+    .message-image {
+      display: block;
+      max-width: 300px;
+      max-height: 300px;
+      border-radius: 15px;
+      margin-bottom: 10px;
+      object-fit: cover;
       border:
         1px solid
-        rgba(255,255,255,.10);
-      border-radius: 17px;
-    }
-    .attachment-preview.active {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .attachment-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: rgba(139,92,246,.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 21px;
-      flex-shrink: 0;
-    }
-    .attachment-info {
-      min-width: 0;
-      flex: 1;
-    }
-    .attachment-name {
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .attachment-size {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
-    }
-    .remove-attachment {
-      width: 34px;
-      height: 34px;
-      border: none;
-      border-radius: 10px;
-      background: transparent;
-      color: #8d96aa;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    .remove-attachment:hover {
-      color: #ff6b81;
-      background: rgba(255,107,129,.08);
-    }
-    /* =========================
-       IMAGE PREVIEW
-    ========================== */
-    .attachment-image {
-      width: 48px;
-      height: 48px;
-      border-radius: 11px;
-      object-fit: cover;
-      display: none;
-      flex-shrink: 0;
+        rgba(255,255,255,.1);
     }
     /* =========================
        TYPING
@@ -323,10 +276,12 @@
       0%,
       60%,
       100% {
-        transform: translateY(0);
+        transform:
+          translateY(0);
       }
       30% {
-        transform: translateY(-6px);
+        transform:
+          translateY(-6px);
       }
     }
     /* =========================
@@ -361,7 +316,80 @@
       align-items: flex-end;
       gap: 8px;
       box-shadow:
-        0 -5px 30px rgba(0,0,0,.15);
+        0 -5px 30px
+        rgba(0,0,0,.15);
+    }
+    /* =========================
+       ATTACHMENT PREVIEW
+    ========================== */
+    .attachment-preview {
+      display: none;
+      max-width: 900px;
+      margin:
+        0 auto
+        10px;
+      padding: 10px;
+      background:
+        rgba(13,18,34,.96);
+      border:
+        1px solid
+        rgba(255,255,255,.10);
+      border-radius: 17px;
+    }
+    .attachment-preview.active {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .attachment-image {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: none;
+      flex-shrink: 0;
+    }
+    .attachment-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background:
+        rgba(139,92,246,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .attachment-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .attachment-name {
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .attachment-size {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .remove-attachment {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #8d96aa;
+      font-size: 21px;
+      cursor: pointer;
+    }
+    .remove-attachment:hover {
+      color: #ff6b81;
+      background:
+        rgba(255,107,129,.08);
     }
     /* =========================
        ATTACH BUTTON
@@ -383,14 +411,19 @@
     }
     .attach-button:hover {
       color: white;
-      background: rgba(255,255,255,.06);
+      background:
+        rgba(255,255,255,.06);
     }
     .attach-button:active {
-      transform: scale(.94);
+      transform:
+        scale(.94);
     }
     #fileInput {
       display: none;
     }
+    /* =========================
+       TEXTAREA
+    ========================== */
     textarea {
       flex: 1;
       resize: none;
@@ -409,6 +442,9 @@
     textarea::placeholder {
       color: #69738b;
     }
+    /* =========================
+       SEND
+    ========================== */
     .send {
       width: 54px;
       height: 54px;
@@ -430,8 +466,10 @@
     .side-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(3px);
+      background:
+        rgba(0,0,0,.55);
+      backdrop-filter:
+        blur(3px);
       z-index: 300;
       opacity: 0;
       visibility: hidden;
@@ -450,8 +488,7 @@
       max-width: 88vw;
       background: #0b1020;
       border-left:
-        1px solid
-        var(--border);
+        1px solid var(--border);
       z-index: 301;
       transform:
         translateX(100%);
@@ -469,8 +506,7 @@
         16px
         18px;
       border-bottom:
-        1px solid
-        var(--border);
+        1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -482,8 +518,7 @@
       width: 42px;
       height: 42px;
       border:
-        1px solid
-        var(--border);
+        1px solid var(--border);
       border-radius: 12px;
       background: transparent;
       color: white;
@@ -521,8 +556,7 @@
     .conversation-item {
       width: 100%;
       border:
-        1px solid
-        transparent;
+        1px solid transparent;
       background: transparent;
       color: white;
       border-radius: 14px;
@@ -660,6 +694,10 @@
       .side-panel {
         width: 310px;
       }
+      .message-image {
+        max-width: 220px;
+        max-height: 220px;
+      }
     }
     @media (max-width: 380px) {
       .new-chat {
@@ -735,7 +773,7 @@
       <img
         class="attachment-image"
         id="attachmentImage"
-        alt=""
+        alt="معاينة المرفق"
       >
       <div
         class="attachment-icon"
@@ -761,28 +799,31 @@
         ×
       </button>
     </div>
+    <!-- INPUT BOX -->
     <div class="input-box">
       <!-- FILE INPUT -->
       <input
         type="file"
         id="fileInput"
-        accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.csv"
+        accept="image/*"
         onchange="handleFileSelect(event)"
       >
       <!-- ATTACH BUTTON -->
       <button
         class="attach-button"
         onclick="openFilePicker()"
-        aria-label="إضافة مرفق"
-        title="إضافة مرفق"
+        aria-label="إضافة صورة"
+        title="إضافة صورة"
       >
         📎
       </button>
+      <!-- TEXT -->
       <textarea
         id="messageInput"
         placeholder="اكتب رسالتك هنا..."
         rows="1"
       ></textarea>
+      <!-- SEND -->
       <button
         class="send"
         id="sendButton"
@@ -830,15 +871,25 @@
      ELEMENTS
   ========================== */
   const chat =
-    document.getElementById("chat");
+    document.getElementById(
+      "chat"
+    );
   const input =
-    document.getElementById("messageInput");
+    document.getElementById(
+      "messageInput"
+    );
   const sendButton =
-    document.getElementById("sendButton");
+    document.getElementById(
+      "sendButton"
+    );
   const sidePanel =
-    document.getElementById("sidePanel");
+    document.getElementById(
+      "sidePanel"
+    );
   const sideOverlay =
-    document.getElementById("sideOverlay");
+    document.getElementById(
+      "sideOverlay"
+    );
   const conversationList =
     document.getElementById(
       "conversationList"
@@ -888,6 +939,7 @@
      CURRENT ATTACHMENT
   ========================== */
   let selectedFile = null;
+  let selectedFileData = null;
   /* =========================
      SAVE
   ========================== */
@@ -917,10 +969,12 @@
      CREATE ID
   ========================== */
   function createId() {
-    return Date.now().toString() +
+    return (
+      Date.now().toString() +
       Math.random()
         .toString(36)
-        .slice(2);
+        .slice(2)
+    );
   }
   /* =========================
      CURRENT CONVERSATION
@@ -960,7 +1014,8 @@
   ========================== */
   function addMessage(
     role,
-    text
+    text,
+    imageData = null
   ) {
     const message =
       document.createElement(
@@ -984,8 +1039,42 @@
       );
     bubble.className =
       "bubble";
-    bubble.textContent =
-      text;
+    /*
+      إذا توجد صورة
+    */
+    if (
+      imageData
+    ) {
+      const image =
+        document.createElement(
+          "img"
+        );
+      image.className =
+        "message-image";
+      image.src =
+        imageData;
+      image.alt =
+        "الصورة المرفقة";
+      bubble.appendChild(
+        image
+      );
+    }
+    /*
+      النص
+    */
+    if (
+      text
+    ) {
+      const textElement =
+        document.createElement(
+          "div"
+        );
+      textElement.textContent =
+        text;
+      bubble.appendChild(
+        textElement
+      );
+    }
     message.appendChild(
       avatar
     );
@@ -1021,7 +1110,8 @@
       message => {
         addMessage(
           message.role,
-          message.content
+          message.content,
+          message.image || null
         );
       }
     );
@@ -1032,11 +1122,11 @@
   function renderConversationList() {
     conversationList.innerHTML =
       "";
-    if (!conversations.length) {
+    if (
+      !conversations.length
+    ) {
       conversationList.innerHTML = `
-        <div
-          class="conversation-empty"
-        >
+        <div class="conversation-empty">
           ما عندك محادثات محفوظة حالياً.
           <br>
           ابدأ محادثة جديدة
@@ -1107,7 +1197,9 @@
   /* =========================
      OPEN CONVERSATION
   ========================== */
-  function openConversation(id) {
+  function openConversation(
+    id
+  ) {
     activeConversationId =
       id;
     saveActiveId();
@@ -1146,9 +1238,11 @@
     input.focus();
   }
   /* =========================
-     DELETE CONVERSATION
+     DELETE
   ========================== */
-  function deleteConversation(id) {
+  function deleteConversation(
+    id
+  ) {
     conversations =
       conversations.filter(
         conversation =>
@@ -1176,7 +1270,7 @@
     renderConversationList();
   }
   /* =========================
-     ADD TYPING
+     TYPING
   ========================== */
   function addTyping() {
     const message =
@@ -1224,9 +1318,6 @@
         "smooth"
     });
   }
-  /* =========================
-     REMOVE TYPING
-  ========================== */
   function removeTyping() {
     const typing =
       document.getElementById(
@@ -1237,34 +1328,43 @@
     }
   }
   /* =========================
-     OPEN FILE PICKER
+     FILE PICKER
   ========================== */
   function openFilePicker() {
     fileInput.click();
   }
   /* =========================
-     FORMAT FILE SIZE
+     FILE SIZE
   ========================== */
   function formatFileSize(
     bytes
   ) {
-    if (bytes < 1024) {
-      return bytes + " B";
+    if (
+      bytes <
+      1024
+    ) {
+      return (
+        bytes +
+        " B"
+      );
     }
     if (
       bytes <
       1024 * 1024
     ) {
       return (
-        (bytes / 1024)
-          .toFixed(1) +
+        (
+          bytes /
+          1024
+        ).toFixed(1) +
         " KB"
       );
     }
     return (
-      (bytes /
-        (1024 * 1024))
-        .toFixed(1) +
+      (
+        bytes /
+        (1024 * 1024)
+      ).toFixed(1) +
       " MB"
     );
   }
@@ -1280,15 +1380,29 @@
       return;
     }
     /*
-      حد أقصى مؤقت للواجهة:
-      20MB
+      صور فقط حالياً
+    */
+    if (
+      !file.type.startsWith(
+        "image/"
+      )
+    ) {
+      alert(
+        "حالياً التطور چات يدعم إرسال الصور. دعم PDF والملفات سنضيفه بالمرحلة القادمة."
+      );
+      fileInput.value =
+        "";
+      return;
+    }
+    /*
+      الحد الأقصى
     */
     if (
       file.size >
       20 * 1024 * 1024
     ) {
       alert(
-        "حجم الملف أكبر من 20MB."
+        "حجم الصورة أكبر من 20MB."
       );
       fileInput.value =
         "";
@@ -1306,53 +1420,39 @@
       "active"
     );
     /*
-      إذا الملف صورة،
-      نعرض صورة مصغرة.
+      تحويل الصورة إلى Base64
     */
-    if (
-      file.type.startsWith(
-        "image/"
-      )
-    ) {
-      const reader =
-        new FileReader();
-      reader.onload =
-        function(e) {
-          attachmentImage.src =
-            e.target.result;
-          attachmentImage.style.display =
-            "block";
-          attachmentIcon.style.display =
-            "none";
-        };
-      reader.readAsDataURL(
-        file
-      );
-    } else {
-      attachmentImage.style.display =
-        "none";
-      attachmentIcon.style.display =
-        "flex";
-      /*
-        أيقونة مختلفة للـ PDF
-      */
-      if (
-        file.type ===
-        "application/pdf"
-      ) {
-        attachmentIcon.textContent =
-          "📄";
-      } else {
-        attachmentIcon.textContent =
-          "📎";
-      }
-    }
+    const reader =
+      new FileReader();
+    reader.onload =
+      function(e) {
+        selectedFileData =
+          e.target.result;
+        attachmentImage.src =
+          selectedFileData;
+        attachmentImage.style.display =
+          "block";
+        attachmentIcon.style.display =
+          "none";
+      };
+    reader.onerror =
+      function() {
+        alert(
+          "تعذر قراءة الصورة."
+        );
+        removeAttachment();
+      };
+    reader.readAsDataURL(
+      file
+    );
   }
   /* =========================
      REMOVE ATTACHMENT
   ========================== */
   function removeAttachment() {
     selectedFile =
+      null;
+    selectedFileData =
       null;
     fileInput.value =
       "";
@@ -1379,8 +1479,7 @@
     const text =
       input.value.trim();
     /*
-      لازم يكون عندنا نص
-      أو مرفق.
+      لازم نص أو صورة
     */
     if (
       !text &&
@@ -1394,8 +1493,7 @@
       return;
     }
     /*
-      إذا ماكو محادثة حالياً،
-      نسوي وحدة تلقائياً.
+      إنشاء محادثة
     */
     if (
       !activeConversationId
@@ -1428,50 +1526,66 @@
       return;
     }
     /*
-      في هذه المرحلة المرفق
-      لا يتم إرساله للـ API بعد.
-      سيتم ربطه فعلياً
-      في المرحلة القادمة.
+      النص الذي سيظهر للمستخدم
     */
-    let messageText =
-      text;
-    if (
-      selectedFile
-    ) {
-      const attachmentText =
-        `📎 مرفق: ${selectedFile.name}`;
-      if (messageText) {
-        messageText +=
-          "\n\n" +
-          attachmentText;
-      } else {
-        messageText =
-          attachmentText;
-      }
-    }
+    const displayText =
+      text ||
+      "ما محتوى هذه الصورة؟";
+    /*
+      حفظ الرسالة محلياً
+    */
     conversation.messages.push({
       role:
         "user",
       content:
-        messageText
+        displayText,
+      image:
+        selectedFileData || null
     });
+    /*
+      عنوان المحادثة
+    */
     if (
       conversation.messages.length ===
       1
     ) {
       conversation.title =
-        messageText.length > 35
-          ? messageText.slice(0, 35) +
-            "..."
-          : messageText;
+        displayText.length > 35
+          ? displayText.slice(
+              0,
+              35
+            ) + "..."
+          : displayText;
     }
     saveConversations();
     renderConversationList();
+    /*
+      عرض الرسالة فوراً
+    */
     addMessage(
       "user",
-      messageText
+      displayText,
+      selectedFileData
     );
-    input.value = "";
+    /*
+      تجهيز البيانات
+    */
+    const attachment =
+      selectedFileData
+        ? {
+            name:
+              selectedFile.name,
+            type:
+              selectedFile.type,
+            data:
+              selectedFileData
+          }
+        : null;
+    /*
+      تنظيف الإدخال
+    */
+    input.value =
+      "";
     input.style.height =
       "52px";
     removeAttachment();
@@ -1492,7 +1606,16 @@
             body:
               JSON.stringify({
                 messages:
-                  conversation.messages
+                  conversation.messages.map(
+                    message => ({
+                      role:
+                        message.role,
+                      content:
+                        message.content
+                    })
+                  ),
+                attachment:
+                  attachment
               })
           }
         );
@@ -1510,6 +1633,9 @@
       const reply =
         data.reply ||
         "ما حصلت جواب.";
+      /*
+        حفظ رد الذكاء الاصطناعي
+      */
       conversation.messages.push({
         role:
           "assistant",
@@ -1521,7 +1647,9 @@
         "assistant",
         reply
       );
-    } catch (error) {
+    } catch (
+      error
+    ) {
       removeTyping();
       addMessage(
         "assistant",
@@ -1556,7 +1684,7 @@
     );
   }
   /* =========================
-     TEXTAREA AUTO HEIGHT
+     TEXTAREA
   ========================== */
   input.addEventListener(
     "input",
@@ -1571,7 +1699,7 @@
     }
   );
   /* =========================
-     ENTER TO SEND
+     ENTER
   ========================== */
   input.addEventListener(
     "keydown",
