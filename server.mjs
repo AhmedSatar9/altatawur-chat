@@ -3,193 +3,169 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import path from "path";
 import { fileURLToPath } from "url";
+
 dotenv.config();
+
 const app = express();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const port = process.env.PORT || 3000;
-/* =========================
-   OPENAI
-========================= */
-if (!process.env.OPENAI_API_KEY) {
-  console.error("❌ OPENAI_API_KEY غير موجود في ملف .env");
-}
+
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
+
 /* =========================
-   MIDDLEWARE
+   إعدادات الموقع
 ========================= */
+
 app.use(
   express.json({
-    limit: "25mb"
+    limit: "20mb"
   })
 );
-/* =========================
-   MAIN PAGE
-========================= */
+
+/* ملفات الموقع */
+app.use(express.static(__dirname));
+
+/* الصفحة الرئيسية */
 app.get("/", (req, res) => {
   res.sendFile(
     path.join(__dirname, "index.html")
   );
 });
+
 /* =========================
-   STATIC FILES
+   CHAT API
 ========================= */
-app.use(
-  express.static(__dirname)
-);
-/* =========================
-   AI CHAT
-========================= */
+
 app.post("/api/chat", async (req, res) => {
   try {
-    /* التأكد من مفتاح OpenAI */
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
-        error:
-          "مفتاح OpenAI غير موجود في إعدادات السيرفر."
-      });
-    }
-    /* =========================
-       قراءة البيانات
-    ========================== */
-    const messages =
-      Array.isArray(req.body?.messages)
-        ? req.body.messages
-        : [];
+    const messages = Array.isArray(
+      req.body.messages
+    )
+      ? req.body.messages
+      : [];
+
     if (!messages.length) {
       return res.status(400).json({
-        error:
-          "لا توجد رسائل."
+        error: "لا توجد رسالة."
       });
     }
-    /* =========================
-       تحويل الرسائل
-    ========================== */
-    const input = messages
-      .slice(-30)
-      .map((message) => {
-        const role =
-          message.role === "assistant"
-            ? "assistant"
-            : "user";
-        return {
-          role,
-          content:
-            String(
+
+    /*
+      نأخذ آخر 30 رسالة فقط
+      حتى لا يكبر الطلب بشكل مبالغ فيه.
+    */
+
+    const lastMessages = messages.slice(-30);
+
+    const input = [];
+
+    for (const message of lastMessages) {
+
+      /*
+        رسالة تحتوي على نص فقط
+      */
+
+      if (
+        message.role === "user" ||
+        message.role === "assistant"
+      ) {
+
+        /*
+          إذا كانت الرسالة تحتوي على صورة
+          نرسلها كرابط Data URL
+        */
+
+        if (
+          message.image &&
+          typeof message.image === "string"
+        ) {
+
+          const content = [];
+
+          if (message.content) {
+            content.push({
+              type: "input_text",
+              text: String(
+                message.content
+              )
+            });
+          }
+
+          content.push({
+            type: "input_image",
+            image_url: message.image
+          });
+
+          input.push({
+            role:
+              message.role === "assistant"
+                ? "assistant"
+                : "user",
+
+            content
+          });
+
+        } else {
+
+          /*
+            رسالة نصية عادية
+          */
+
+          input.push({
+            role:
+              message.role === "assistant"
+                ? "assistant"
+                : "user",
+
+            content: String(
               message.content || ""
             )
-        };
-      });
-    /* =========================
-       المرفق
-    ========================== */
-    /*
-      الواجهة يمكنها إرسال مرفق
-      بهذا الشكل:
-      {
-        name: "image.jpg",
-        type: "image/jpeg",
-        data: "data:image/jpeg;base64,..."
-      }
-      حالياً نعالجه هنا
-      ونحوّله إلى input مناسب.
-    */
-    const attachment =
-      req.body?.attachment || null;
-    if (
-      attachment &&
-      attachment.data
-    ) {
-      const lastMessage =
-        input[input.length - 1];
-      /*
-        إذا كان المرفق صورة
-      */
-      if (
-        attachment.type &&
-        attachment.type.startsWith(
-          "image/"
-        )
-      ) {
-        if (
-          lastMessage &&
-          lastMessage.role === "user"
-        ) {
-          lastMessage.content = [
-            {
-              type:
-                "input_text",
-              text:
-                lastMessage.content ||
-                "حلل هذه الصورة."
-            },
-            {
-              type:
-                "input_image",
-              image_url:
-                attachment.data
-            }
-          ];
-        }
-      }
-      /*
-        الملفات غير الصور
-        نضيف معلوماتها حالياً
-        إلى الرسالة.
-      */
-      else {
-        if (
-          lastMessage &&
-          lastMessage.role === "user"
-        ) {
-          lastMessage.content =
-            `${lastMessage.content || ""}
-📎 المرفق:
-اسم الملف: ${
-              attachment.name || "ملف"
-            }
-نوع الملف: ${
-              attachment.type || "غير معروف"
-            }`;
+          });
         }
       }
     }
+
     /* =========================
-       OPENAI RESPONSES API
-    ========================== */
+       الاتصال بـ OpenAI
+    ========================= */
+
     const response =
       await client.responses.create({
-        model:
-          "gpt-5.5",
+
+        model: "gpt-5.5",
+
         instructions:
-          `
-أنت المساعد الرسمي لمنصة التطور چات.
-أجب بالعربية بشكل واضح ومفيد.
-استخدم اللهجة العراقية فقط عندما يطلب المستخدم ذلك.
-إذا أرسل المستخدم صورة، قم بتحليلها والإجابة عن طلبه اعتماداً على محتواها.
-إذا لم تكن متأكداً من معلومة، لا تخترعها.
-لا تدّعي تنفيذ أي إجراء لم تنفذه فعلياً.
-حافظ على إجابات مفيدة ومباشرة.
-`,
+          "أنت المساعد الرسمي لمنصة التطور چات. أجب بالعربية بشكل واضح ومفيد. استخدم اللهجة العراقية عندما يطلب المستخدم ذلك. إذا أرسل المستخدم صورة، حلل محتواها بدقة وأجب عن طلبه المتعلق بها. لا تدّعي تنفيذ أفعال لم تنفذها.",
+
         input,
+
         store: false
       });
+
     /* =========================
-       الرد
-    ========================== */
+       استخراج الرد
+    ========================= */
+
     const reply =
       response.output_text ||
       "ما حصلت جواب نصي من النموذج.";
+
     return res.status(200).json({
       reply
     });
+
   } catch (error) {
+
     console.error(
-      "❌ OpenAI Error:",
+      "OpenAI Error:",
       error
     );
+
     return res.status(500).json({
       error:
         error?.message ||
@@ -197,25 +173,13 @@ app.post("/api/chat", async (req, res) => {
     });
   }
 });
+
 /* =========================
-   404
+   تشغيل السيرفر
 ========================= */
-app.use(
-  (req, res) => {
-    res.status(404).json({
-      error:
-        "الصفحة أو المسار غير موجود."
-    });
-  }
-);
-/* =========================
-   START SERVER
-========================= */
-app.listen(
-  port,
-  () => {
-    console.log(
-      `🚀 التطور چات يعمل على المنفذ ${port}`
-    );
-  }
-);
+
+app.listen(port, () => {
+  console.log(
+    `التطور چات يعمل على المنفذ ${port}`
+  );
+});
