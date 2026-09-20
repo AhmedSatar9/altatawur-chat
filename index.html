@@ -40,6 +40,9 @@
     textarea {
       font-family: inherit;
     }
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
     .app {
       min-height: 100vh;
       display: flex;
@@ -109,8 +112,10 @@
     }
     .new-chat:hover {
       color: white;
-      border-color: rgba(255,255,255,.18);
-      background: rgba(255,255,255,.04);
+      border-color:
+        rgba(255,255,255,.18);
+      background:
+        rgba(255,255,255,.04);
     }
     .menu {
       width: 48px;
@@ -124,6 +129,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: .2s ease;
+    }
+    .menu:hover {
+      background:
+        rgba(255,255,255,.05);
     }
     /* =========================
        CHAT
@@ -328,12 +338,18 @@
     .side-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(3px);
+      background:
+        rgba(0,0,0,.60);
+      backdrop-filter:
+        blur(4px);
+      -webkit-backdrop-filter:
+        blur(4px);
       z-index: 300;
       opacity: 0;
       visibility: hidden;
-      transition: .25s ease;
+      transition:
+        opacity .25s ease,
+        visibility .25s ease;
     }
     .side-overlay.active {
       opacity: 1;
@@ -344,93 +360,245 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: 330px;
-      max-width: 88vw;
-      background: #0b1020;
-      border-left: 1px solid var(--border);
+      width: 350px;
+      max-width: 90vw;
+      background:
+        linear-gradient(
+          180deg,
+          #0d1325 0%,
+          #090e1c 100%
+        );
+      border-left:
+        1px solid var(--border);
       z-index: 301;
-      transform: translateX(100%);
-      transition: .28s ease;
+      transform:
+        translateX(100%);
+      transition:
+        transform .28s cubic-bezier(.4,0,.2,1);
       display: flex;
       flex-direction: column;
+      box-shadow:
+        -20px 0 60px rgba(0,0,0,.25);
     }
     .side-panel.active {
-      transform: translateX(0);
+      transform:
+        translateX(0);
     }
+    /* SIDE HEADER */
     .side-header {
-      height: 82px;
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--border);
+      min-height: 82px;
+      padding:
+        16px
+        18px;
+      border-bottom:
+        1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
+    .side-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .side-title-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background:
+        rgba(139,92,246,.12);
+      border:
+        1px solid
+        rgba(139,92,246,.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
     .side-header h3 {
       font-size: 20px;
+    }
+    .conversation-count {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
     }
     .close-menu {
       width: 42px;
       height: 42px;
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
       border-radius: 12px;
       background: transparent;
       color: white;
       font-size: 22px;
       cursor: pointer;
+      transition: .2s ease;
     }
+    .close-menu:hover {
+      background:
+        rgba(255,255,255,.05);
+    }
+    /* NEW CHAT */
     .side-new {
-      margin: 16px;
+      margin:
+        16px 16px 12px;
       padding: 14px;
-      border: 1px solid rgba(139,92,246,.35);
+      border:
+        1px solid
+        rgba(139,92,246,.35);
       border-radius: 15px;
-      background: rgba(139,92,246,.08);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(139,92,246,.13),
+          rgba(34,211,238,.06)
+        );
       color: white;
       cursor: pointer;
       font-size: 15px;
       text-align: center;
+      transition: .2s ease;
+      box-shadow:
+        0 8px 25px rgba(100,80,255,.08);
     }
+    .side-new:hover {
+      border-color:
+        rgba(139,92,246,.55);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(139,92,246,.18),
+          rgba(34,211,238,.09)
+        );
+    }
+    .side-new:active {
+      transform: scale(.98);
+    }
+    /* SECTION TITLE */
+    .history-title {
+      padding:
+        8px 18px 10px;
+      color:
+        #707b93;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
+    /* CONVERSATION LIST */
     .conversation-list {
       flex: 1;
       overflow-y: auto;
-      padding: 0 12px 20px;
+      padding:
+        0 12px 24px;
+      scrollbar-width: thin;
+      scrollbar-color:
+        #252d42
+        transparent;
+    }
+    .conversation-list::-webkit-scrollbar {
+      width: 5px;
+    }
+    .conversation-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .conversation-list::-webkit-scrollbar-thumb {
+      background: #252d42;
+      border-radius: 10px;
     }
     .conversation-empty {
       color: var(--muted);
       text-align: center;
-      padding: 40px 20px;
-      line-height: 1.8;
+      padding:
+        45px 20px;
+      line-height: 1.9;
       font-size: 14px;
     }
+    /* CONVERSATION ITEM */
     .conversation-item {
       width: 100%;
-      border: 1px solid transparent;
+      border:
+        1px solid transparent;
       background: transparent;
       color: white;
       border-radius: 14px;
-      padding: 13px 12px;
-      margin-bottom: 7px;
+      padding:
+        10px 10px;
+      margin-bottom: 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 10px;
       text-align: right;
-      transition: .2s ease;
+      transition:
+        background .18s ease,
+        border .18s ease,
+        transform .18s ease;
     }
     .conversation-item:hover {
-      background: rgba(255,255,255,.04);
-      border-color: var(--border);
+      background:
+        rgba(255,255,255,.045);
+      border-color:
+        var(--border);
     }
     .conversation-item.active {
-      background: rgba(139,92,246,.10);
-      border-color: rgba(139,92,246,.25);
+      background:
+        linear-gradient(
+          90deg,
+          rgba(139,92,246,.14),
+          rgba(34,211,238,.045)
+        );
+      border-color:
+        rgba(139,92,246,.24);
     }
-    .conversation-title {
+    .conversation-icon {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 10px;
+      background:
+        rgba(255,255,255,.045);
+      color:
+        #aab3c8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+    .conversation-item.active
+    .conversation-icon {
+      background:
+        rgba(139,92,246,.18);
+      color:
+        #c4b5fd;
+    }
+    .conversation-info {
       flex: 1;
       min-width: 0;
+    }
+    .conversation-title {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       font-size: 14px;
+      line-height: 1.5;
+      color: #f1f3fa;
+    }
+    .conversation-meta {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+      color:
+        #667087;
+      font-size: 10px;
+    }
+    .conversation-active-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background:
+        #22d3ee;
     }
     .delete-conversation {
       width: 32px;
@@ -439,13 +607,25 @@
       border: none;
       border-radius: 9px;
       background: transparent;
-      color: #788198;
+      color:
+        #667087;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
+      opacity: .65;
+      transition:
+        color .18s ease,
+        background .18s ease,
+        opacity .18s ease;
+    }
+    .conversation-item:hover
+    .delete-conversation {
+      opacity: 1;
     }
     .delete-conversation:hover {
-      color: #ff6b81;
-      background: rgba(255,107,129,.08);
+      color:
+        #ff7185;
+      background:
+        rgba(255,107,129,.09);
     }
     /* =========================
        MOBILE
@@ -528,12 +708,17 @@
         border-radius: 23px;
       }
       .side-panel {
-        width: 310px;
+        width: 320px;
+        max-width: 88vw;
+      }
+      .side-header {
+        min-height: 76px;
       }
     }
     @media (max-width: 380px) {
       .new-chat {
-        padding: 0 8px;
+        padding:
+          0 8px;
         font-size: 11px;
       }
       .brand-info h1 {
@@ -621,12 +806,26 @@
   id="sidePanel"
 >
   <div class="side-header">
-    <h3>
-      محادثاتي
-    </h3>
+    <div class="side-title">
+      <div class="side-title-icon">
+        ☰
+      </div>
+      <div>
+        <h3>
+          محادثاتي
+        </h3>
+        <div
+          class="conversation-count"
+          id="conversationCount"
+        >
+          0 محادثة
+        </div>
+      </div>
+    </div>
     <button
       class="close-menu"
       onclick="closeMenu()"
+      aria-label="إغلاق"
     >
       ×
     </button>
@@ -637,6 +836,9 @@
   >
     ＋ محادثة جديدة
   </button>
+  <div class="history-title">
+    سجل المحادثات
+  </div>
   <div
     class="conversation-list"
     id="conversationList"
@@ -658,6 +860,8 @@
     document.getElementById("sideOverlay");
   const conversationList =
     document.getElementById("conversationList");
+  const conversationCount =
+    document.getElementById("conversationCount");
   /* =========================
      STORAGE
   ========================== */
@@ -667,17 +871,23 @@
     "altatawur_active_conversation";
   let conversations =
     JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "[]"
+      localStorage.getItem(
+        STORAGE_KEY
+      ) || "[]"
     );
   let activeConversationId =
-    localStorage.getItem(ACTIVE_KEY) || null;
+    localStorage.getItem(
+      ACTIVE_KEY
+    ) || null;
   /* =========================
      SAVE
   ========================== */
   function saveConversations() {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(conversations)
+      JSON.stringify(
+        conversations
+      )
     );
   }
   function saveActiveId() {
@@ -696,10 +906,12 @@
      CREATE ID
   ========================== */
   function createId() {
-    return Date.now().toString() +
+    return (
+      Date.now().toString() +
       Math.random()
         .toString(36)
-        .slice(2);
+        .slice(2)
+    );
   }
   /* =========================
      CURRENT CONVERSATION
@@ -707,7 +919,41 @@
   function getActiveConversation() {
     return conversations.find(
       conversation =>
-        conversation.id === activeConversationId
+        conversation.id ===
+        activeConversationId
+    );
+  }
+  /* =========================
+     FORMAT DATE
+  ========================== */
+  function formatConversationDate(
+    timestamp
+  ) {
+    if (!timestamp) {
+      return "الآن";
+    }
+    const date =
+      new Date(timestamp);
+    const now =
+      new Date();
+    const sameDay =
+      date.toDateString() ===
+      now.toDateString();
+    if (sameDay) {
+      return date.toLocaleTimeString(
+        "ar-IQ",
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
+    }
+    return date.toLocaleDateString(
+      "ar-IQ",
+      {
+        day: "numeric",
+        month: "short"
+      }
     );
   }
   /* =========================
@@ -736,13 +982,20 @@
   /* =========================
      ADD MESSAGE
   ========================== */
-  function addMessage(role, text) {
+  function addMessage(
+    role,
+    text
+  ) {
     const message =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
     message.className =
       `message ${role}`;
     const avatar =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
     avatar.className =
       "avatar";
     avatar.textContent =
@@ -750,14 +1003,22 @@
         ? "أ"
         : "ت";
     const bubble =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
     bubble.className =
       "bubble";
     bubble.textContent =
       text;
-    message.appendChild(avatar);
-    message.appendChild(bubble);
-    chat.appendChild(message);
+    message.appendChild(
+      avatar
+    );
+    message.appendChild(
+      bubble
+    );
+    chat.appendChild(
+      message
+    );
     window.scrollTo({
       top:
         document.body.scrollHeight,
@@ -774,6 +1035,7 @@
       getActiveConversation();
     if (
       !conversation ||
+      !conversation.messages ||
       !conversation.messages.length
     ) {
       showWelcome();
@@ -794,42 +1056,120 @@
   ========================== */
   function renderConversationList() {
     conversationList.innerHTML = "";
+    conversationCount.textContent =
+      `${conversations.length} ${
+        conversations.length === 1
+          ? "محادثة"
+          : "محادثات"
+      }`;
     if (!conversations.length) {
       conversationList.innerHTML = `
         <div class="conversation-empty">
           ما عندك محادثات محفوظة حالياً.
           <br>
-          ابدأ محادثة جديدة من الزر أعلاه.
+          ابدأ محادثة جديدة
+          من الزر أعلاه.
         </div>
       `;
       return;
     }
-    conversations
-      .slice()
-      .reverse()
-      .forEach(conversation => {
+    const sorted =
+      conversations
+        .slice()
+        .sort(
+          (
+            a,
+            b
+          ) =>
+            (
+              b.updatedAt ||
+              b.createdAt ||
+              0
+            ) -
+            (
+              a.updatedAt ||
+              a.createdAt ||
+              0
+            )
+        );
+    sorted.forEach(
+      conversation => {
         const item =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
         item.className =
           "conversation-item" +
           (
-            conversation.id === activeConversationId
+            conversation.id ===
+            activeConversationId
               ? " active"
               : ""
           );
+        const icon =
+          document.createElement(
+            "div"
+          );
+        icon.className =
+          "conversation-icon";
+        icon.textContent =
+          "💬";
+        const info =
+          document.createElement(
+            "div"
+          );
+        info.className =
+          "conversation-info";
         const title =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
         title.className =
           "conversation-title";
         title.textContent =
           conversation.title ||
           "محادثة جديدة";
+        const meta =
+          document.createElement(
+            "div"
+          );
+        meta.className =
+          "conversation-meta";
+        if (
+          conversation.id ===
+          activeConversationId
+        ) {
+          meta.innerHTML = `
+            <span
+              class="conversation-active-dot"
+            ></span>
+            مفتوحة الآن
+          `;
+        } else {
+          meta.textContent =
+            formatConversationDate(
+              conversation.updatedAt ||
+              conversation.createdAt
+            );
+        }
+        info.appendChild(
+          title
+        );
+        info.appendChild(
+          meta
+        );
         const deleteButton =
-          document.createElement("button");
+          document.createElement(
+            "button"
+          );
         deleteButton.className =
           "delete-conversation";
         deleteButton.textContent =
           "🗑";
+        deleteButton.setAttribute(
+          "aria-label",
+          "حذف المحادثة"
+        );
         deleteButton.onclick =
           function(event) {
             event.stopPropagation();
@@ -837,22 +1177,35 @@
               conversation.id
             );
           };
-        item.appendChild(title);
-        item.appendChild(deleteButton);
+        item.appendChild(
+          icon
+        );
+        item.appendChild(
+          info
+        );
+        item.appendChild(
+          deleteButton
+        );
         item.onclick =
           function() {
             openConversation(
               conversation.id
             );
           };
-        conversationList.appendChild(item);
-      });
+        conversationList.appendChild(
+          item
+        );
+      }
+    );
   }
   /* =========================
      OPEN CONVERSATION
   ========================== */
-  function openConversation(id) {
-    activeConversationId = id;
+  function openConversation(
+    id
+  ) {
+    activeConversationId =
+      id;
     saveActiveId();
     renderConversation();
     renderConversationList();
@@ -871,6 +1224,8 @@
       messages:
         [],
       createdAt:
+        Date.now(),
+      updatedAt:
         Date.now()
     };
     conversations.push(
@@ -890,22 +1245,58 @@
   /* =========================
      DELETE CONVERSATION
   ========================== */
-  function deleteConversation(id) {
+  function deleteConversation(
+    id
+  ) {
+    const conversation =
+      conversations.find(
+        item =>
+          item.id === id
+      );
+    if (!conversation) {
+      return;
+    }
+    const confirmed =
+      window.confirm(
+        `حذف محادثة "${conversation.title || "محادثة جديدة"}"؟`
+      );
+    if (!confirmed) {
+      return;
+    }
     conversations =
       conversations.filter(
-        conversation =>
-          conversation.id !== id
+        item =>
+          item.id !== id
       );
     if (
-      activeConversationId === id
+      activeConversationId ===
+      id
     ) {
       if (conversations.length) {
+        const latest =
+          conversations
+            .slice()
+            .sort(
+              (
+                a,
+                b
+              ) =>
+                (
+                  b.updatedAt ||
+                  b.createdAt ||
+                  0
+                ) -
+                (
+                  a.updatedAt ||
+                  a.createdAt ||
+                  0
+                )
+            )[0];
         activeConversationId =
-          conversations[
-            conversations.length - 1
-          ].id;
+          latest.id;
       } else {
-        activeConversationId = null;
+        activeConversationId =
+          null;
       }
     }
     saveConversations();
@@ -918,19 +1309,25 @@
   ========================== */
   function addTyping() {
     const message =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
     message.className =
       "message assistant";
     message.id =
       "typingMessage";
     const avatar =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
     avatar.className =
       "avatar";
     avatar.textContent =
       "ت";
     const bubble =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
     bubble.className =
       "bubble";
     bubble.innerHTML = `
@@ -940,9 +1337,15 @@
         <span></span>
       </div>
     `;
-    message.appendChild(avatar);
-    message.appendChild(bubble);
-    chat.appendChild(message);
+    message.appendChild(
+      avatar
+    );
+    message.appendChild(
+      bubble
+    );
+    chat.appendChild(
+      message
+    );
     window.scrollTo({
       top:
         document.body.scrollHeight,
@@ -975,18 +1378,23 @@
       return;
     }
     /*
-      إذا ماكو محادثة حالياً،
-      نسوي وحدة تلقائياً.
+      إذا ماكو محادثة،
+      ننشئ وحدة تلقائياً.
     */
     if (!activeConversationId) {
       const newConversation = {
         id:
           createId(),
         title:
-          text.slice(0, 35),
+          text.slice(
+            0,
+            35
+          ),
         messages:
           [],
         createdAt:
+          Date.now(),
+        updatedAt:
           Date.now()
       };
       conversations.push(
@@ -1008,17 +1416,21 @@
       content:
         text
     });
-    /*
-      عنوان المحادثة من أول رسالة
-    */
+    /* عنوان المحادثة */
     if (
-      conversation.messages.length === 1
+      conversation.messages.length ===
+      1
     ) {
       conversation.title =
         text.length > 35
-          ? text.slice(0, 35) + "..."
+          ? text.slice(
+              0,
+              35
+            ) + "..."
           : text;
     }
+    conversation.updatedAt =
+      Date.now();
     saveConversations();
     renderConversationList();
     addMessage(
@@ -1067,7 +1479,10 @@
         content:
           reply
       });
+      conversation.updatedAt =
+        Date.now();
       saveConversations();
+      renderConversationList();
       addMessage(
         "assistant",
         reply
@@ -1078,7 +1493,9 @@
         "assistant",
         "عذراً، صار خطأ بالاتصال بالخادم. حاول مرة ثانية."
       );
-      console.error(error);
+      console.error(
+        error
+      );
     } finally {
       sendButton.disabled =
         false;
@@ -1104,6 +1521,19 @@
       "active"
     );
   }
+  /* =========================
+     ESC CLOSE
+  ========================== */
+  document.addEventListener(
+    "keydown",
+    function(event) {
+      if (
+        event.key === "Escape"
+      ) {
+        closeMenu();
+      }
+    }
+  );
   /* =========================
      TEXTAREA AUTO HEIGHT
   ========================== */
@@ -1139,26 +1569,46 @@
   ========================== */
   function startApp() {
     /*
-      إذا ماكو محادثة محفوظة،
-      نعرض واجهة البداية.
+      إذا ماكو محادثات،
+      نعرض البداية.
     */
-    if (!conversations.length) {
-      activeConversationId = null;
+    if (
+      !conversations.length
+    ) {
+      activeConversationId =
+        null;
       saveActiveId();
       showWelcome();
     }
     /*
-      إذا عندنا محادثات،
-      نحاول فتح آخر محادثة.
+      إذا توجد محادثات،
+      نفتح المحادثة الحالية.
     */
     else {
-      let active =
+      const active =
         getActiveConversation();
       if (!active) {
+        const latest =
+          conversations
+            .slice()
+            .sort(
+              (
+                a,
+                b
+              ) =>
+                (
+                  b.updatedAt ||
+                  b.createdAt ||
+                  0
+                ) -
+                (
+                  a.updatedAt ||
+                  a.createdAt ||
+                  0
+                )
+            )[0];
         activeConversationId =
-          conversations[
-            conversations.length - 1
-          ].id;
+          latest.id;
         saveActiveId();
       }
       renderConversation();
