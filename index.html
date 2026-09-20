@@ -111,7 +111,7 @@
       width: 100%;
       max-width: 900px;
       margin: auto;
-      padding: 35px 20px 150px;
+      padding: 35px 20px 180px;
     }
     .welcome {
       text-align: center;
@@ -211,7 +211,7 @@
         transform: translateY(-6px);
       }
     }
-    /* INPUT */
+    /* INPUT AREA */
     .input-area {
       position: fixed;
       bottom: 0;
@@ -235,6 +235,7 @@
       align-items: flex-end;
       gap: 10px;
       box-shadow: 0 -5px 30px rgba(0,0,0,.15);
+      position: relative;
     }
     textarea {
       flex: 1;
@@ -252,6 +253,25 @@
     textarea::placeholder {
       color: #69738b;
     }
+    /* ATTACH BUTTON */
+    .attach {
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: transparent;
+      color: #c5ccdc;
+      font-size: 23px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: .2s;
+    }
+    .attach:hover {
+      color: white;
+      background: rgba(255,255,255,.05);
+      border-color: rgba(255,255,255,.16);
+    }
+    /* SEND */
     .send {
       width: 54px;
       height: 54px;
@@ -266,6 +286,73 @@
     .send:disabled {
       opacity: .5;
       cursor: not-allowed;
+    }
+    /* ATTACHMENT PREVIEW */
+    .attachment-preview {
+      max-width: 900px;
+      margin: 0 auto 8px;
+      display: none;
+    }
+    .attachment-preview.active {
+      display: block;
+    }
+    .attachment-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: fit-content;
+      max-width: 100%;
+      padding: 9px 11px;
+      background: rgba(13,18,34,.98);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    .attachment-image {
+      width: 58px;
+      height: 58px;
+      border-radius: 11px;
+      object-fit: cover;
+      display: none;
+    }
+    .attachment-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #182137;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .attachment-info {
+      min-width: 0;
+      max-width: 210px;
+    }
+    .attachment-name {
+      font-size: 14px;
+      color: white;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .attachment-type {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+    .remove-attachment {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #8d96aa;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .remove-attachment:hover {
+      color: #ff6b81;
+      background: rgba(255,107,129,.08);
     }
     /* SIDEBAR */
     .overlay {
@@ -445,6 +532,27 @@
         padding-left: 12px;
         padding-right: 12px;
       }
+      .input-area {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+      .input-box {
+        gap: 6px;
+        padding: 8px;
+      }
+      .attach {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+      }
+      .send {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+      }
+      .attachment-preview {
+        margin-bottom: 7px;
+      }
       .sidebar {
         width: 310px;
       }
@@ -462,6 +570,9 @@
       }
       .menu {
         width: 42px;
+      }
+      .attachment-info {
+        max-width: 150px;
       }
     }
   </style>
@@ -505,7 +616,62 @@
     </section>
   </main>
   <div class="input-area">
+    <!-- ATTACHMENT PREVIEW -->
+    <div
+      class="attachment-preview"
+      id="attachmentPreview"
+    >
+      <div class="attachment-card">
+        <img
+          class="attachment-image"
+          id="attachmentImage"
+          alt="معاينة"
+        >
+        <div
+          class="attachment-icon"
+          id="attachmentIcon"
+        >
+          📄
+        </div>
+        <div class="attachment-info">
+          <div
+            class="attachment-name"
+            id="attachmentName"
+          >
+            الملف
+          </div>
+          <div
+            class="attachment-type"
+            id="attachmentType"
+          >
+            مرفق
+          </div>
+        </div>
+        <button
+          class="remove-attachment"
+          type="button"
+          onclick="removeAttachment()"
+        >
+          ×
+        </button>
+      </div>
+    </div>
     <div class="input-box">
+      <input
+        type="file"
+        id="fileInput"
+        hidden
+        accept="image/*,.pdf,.doc,.docx,.txt"
+        onchange="handleFile(event)"
+      >
+      <button
+        class="attach"
+        type="button"
+        onclick="document.getElementById('fileInput').click()"
+        aria-label="إرفاق ملف"
+      >
+        📎
+      </button>
       <textarea
         id="messageInput"
         placeholder="اكتب رسالتك هنا..."
@@ -554,20 +720,119 @@
   ></div>
 </aside>
 <script>
-  const chat = document.getElementById("chat");
-  const input = document.getElementById("messageInput");
-  const sendButton = document.getElementById("sendButton");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-  const conversations = document.getElementById("conversations");
+  const chat =
+    document.getElementById("chat");
+  const input =
+    document.getElementById("messageInput");
+  const sendButton =
+    document.getElementById("sendButton");
+  const sidebar =
+    document.getElementById("sidebar");
+  const overlay =
+    document.getElementById("overlay");
+  const conversations =
+    document.getElementById("conversations");
+  const fileInput =
+    document.getElementById("fileInput");
+  const attachmentPreview =
+    document.getElementById("attachmentPreview");
+  const attachmentImage =
+    document.getElementById("attachmentImage");
+  const attachmentIcon =
+    document.getElementById("attachmentIcon");
+  const attachmentName =
+    document.getElementById("attachmentName");
+  const attachmentType =
+    document.getElementById("attachmentType");
   /* =========================
      CHAT DATA
   ========================= */
-  let chats = JSON.parse(
-    localStorage.getItem("altatawur_chats") || "[]"
-  );
+  let chats =
+    JSON.parse(
+      localStorage.getItem(
+        "altatawur_chats"
+      ) || "[]"
+    );
   let currentChatId =
-    localStorage.getItem("altatawur_current_chat") || null;
+    localStorage.getItem(
+      "altatawur_current_chat"
+    ) || null;
+  /* =========================
+     ATTACHMENT DATA
+  ========================= */
+  let selectedFile = null;
+  /* =========================
+     FILE SELECTION
+  ========================= */
+  function handleFile(event) {
+    const file =
+      event.target.files[0];
+    if (!file) {
+      return;
+    }
+    selectedFile = file;
+    attachmentPreview.classList.add(
+      "active"
+    );
+    attachmentName.textContent =
+      file.name;
+    attachmentType.textContent =
+      formatFileSize(file.size);
+    if (
+      file.type.startsWith("image/")
+    ) {
+      const url =
+        URL.createObjectURL(file);
+      attachmentImage.src = url;
+      attachmentImage.style.display =
+        "block";
+      attachmentIcon.style.display =
+        "none";
+    } else {
+      attachmentImage.style.display =
+        "none";
+      attachmentIcon.style.display =
+        "flex";
+      if (
+        file.type === "application/pdf"
+      ) {
+        attachmentIcon.textContent =
+          "📕";
+      } else if (
+        file.name.endsWith(".doc") ||
+        file.name.endsWith(".docx")
+      ) {
+        attachmentIcon.textContent =
+          "📝";
+      } else {
+        attachmentIcon.textContent =
+          "📄";
+      }
+    }
+  }
+  function formatFileSize(bytes) {
+    if (bytes < 1024) {
+      return bytes + " B";
+    }
+    if (bytes < 1024 * 1024) {
+      return (
+        (bytes / 1024).toFixed(1) +
+        " KB"
+      );
+    }
+    return (
+      (bytes / (1024 * 1024)).toFixed(1) +
+      " MB"
+    );
+  }
+  function removeAttachment() {
+    selectedFile = null;
+    fileInput.value = "";
+    attachmentPreview.classList.remove(
+      "active"
+    );
+    attachmentImage.src = "";
+  }
   /* =========================
      CHAT STORAGE
   ========================= */
@@ -589,8 +854,11 @@
       title: "محادثة جديدة",
       messages: []
     };
-    chats.unshift(chatObject);
-    currentChatId = chatObject.id;
+    chats.unshift(
+      chatObject
+    );
+    currentChatId =
+      chatObject.id;
     saveChats();
     renderConversations();
     return chatObject;
@@ -605,14 +873,20 @@
   ========================= */
   function showWelcome() {
     chat.innerHTML = `
-      <section class="welcome" id="welcome">
-        <div class="welcome-logo">ت</div>
+      <section
+        class="welcome"
+        id="welcome"
+      >
+        <div class="welcome-logo">
+          ت
+        </div>
         <h2>
-          أهلاً بك في <span>التطور چات</span>
+          أهلاً بك في
+          <span>التطور چات</span>
         </h2>
         <p>
-          مساعدك الذكي للإجابة عن الأسئلة، شرح المواضيع،
-          كتابة النصوص وتوليد الأفكار.
+          مساعدك الذكي للإجابة عن الأسئلة،
+          شرح المواضيع، كتابة النصوص وتوليد الأفكار.
         </p>
       </section>
     `;
@@ -620,51 +894,76 @@
   /* =========================
      ADD MESSAGE
   ========================= */
-  function addMessage(role, text) {
+  function addMessage(
+    role,
+    text
+  ) {
     const message =
       document.createElement("div");
     message.className =
       `message ${role}`;
     const avatar =
       document.createElement("div");
-    avatar.className = "avatar";
+    avatar.className =
+      "avatar";
     avatar.textContent =
-      role === "user" ? "أ" : "ت";
+      role === "user"
+        ? "أ"
+        : "ت";
     const bubble =
       document.createElement("div");
-    bubble.className = "bubble";
-    bubble.textContent = text;
-    message.appendChild(avatar);
-    message.appendChild(bubble);
-    chat.appendChild(message);
+    bubble.className =
+      "bubble";
+    bubble.textContent =
+      text;
+    message.appendChild(
+      avatar
+    );
+    message.appendChild(
+      bubble
+    );
+    chat.appendChild(
+      message
+    );
     window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth"
+      top:
+        document.body.scrollHeight,
+      behavior:
+        "smooth"
     });
     return message;
   }
   /* =========================
      LOAD CHAT
   ========================= */
-  function loadChat(chatId) {
+  function loadChat(
+    chatId
+  ) {
     const selected =
-      chats.find(c => c.id === chatId);
+      chats.find(
+        c => c.id === chatId
+      );
     if (!selected) {
       showWelcome();
       return;
     }
-    currentChatId = selected.id;
+    currentChatId =
+      selected.id;
     saveChats();
     chat.innerHTML = "";
-    if (!selected.messages.length) {
+    if (
+      !selected.messages.length
+    ) {
       showWelcome();
     } else {
-      selected.messages.forEach(message => {
-        addMessage(
-          message.role,
-          message.content
-        );
-      });
+      selected.messages.forEach(
+        message => {
+          addMessage(
+            message.role,
+            message.content
+          );
+        }
+      );
     }
     renderConversations();
   }
@@ -683,55 +982,87 @@
       `;
       return;
     }
-    chats.forEach(item => {
-      const row =
-        document.createElement("div");
-      row.className =
-        "conversation" +
-        (
-          item.id === currentChatId
-            ? " active"
-            : ""
+    chats.forEach(
+      item => {
+        const row =
+          document.createElement(
+            "div"
+          );
+        row.className =
+          "conversation" +
+          (
+            item.id === currentChatId
+              ? " active"
+              : ""
+          );
+        const openButton =
+          document.createElement(
+            "button"
+          );
+        openButton.className =
+          "conversation-open";
+        openButton.textContent =
+          item.title ||
+          "محادثة جديدة";
+        openButton.onclick =
+          function() {
+            loadChat(
+              item.id
+            );
+            closeSidebar();
+          };
+        const deleteButton =
+          document.createElement(
+            "button"
+          );
+        deleteButton.className =
+          "conversation-delete";
+        deleteButton.textContent =
+          "🗑";
+        deleteButton.onclick =
+          function(event) {
+            event.stopPropagation();
+            deleteChat(
+              item.id
+            );
+          };
+        row.appendChild(
+          openButton
         );
-      const openButton =
-        document.createElement("button");
-      openButton.className =
-        "conversation-open";
-      openButton.textContent =
-        item.title || "محادثة جديدة";
-      openButton.onclick = function() {
-        loadChat(item.id);
-        closeSidebar();
-      };
-      const deleteButton =
-        document.createElement("button");
-      deleteButton.className =
-        "conversation-delete";
-      deleteButton.textContent = "🗑";
-      deleteButton.onclick = function(event) {
-        event.stopPropagation();
-        deleteChat(item.id);
-      };
-      row.appendChild(openButton);
-      row.appendChild(deleteButton);
-      conversations.appendChild(row);
-    });
+        row.appendChild(
+          deleteButton
+        );
+        conversations.appendChild(
+          row
+        );
+      }
+    );
   }
   /* =========================
      DELETE CHAT
   ========================= */
-  function deleteChat(chatId) {
+  function deleteChat(
+    chatId
+  ) {
     chats =
       chats.filter(
         chat => chat.id !== chatId
       );
-    if (currentChatId === chatId) {
+    if (
+      currentChatId === chatId
+    ) {
       if (chats.length) {
         currentChatId =
           chats[0].id;
-        loadChat(currentChatId);
+        loadChat(
+          currentChatId
+        );
       } else {
-        currentChatId = null;
+        currentChatId =
+          null;
+        localStorage.removeItem(
+          "altatawur_current_chat"
+        );
         showWelcome();
       }
     }
@@ -742,11 +1073,12 @@
      NEW CHAT
   ========================= */
   function newChat() {
-    const newConversation =
-      createChat();
+    createChat();
     showWelcome();
     input.value = "";
-    input.style.height = "52px";
+    input.style.height =
+      "52px";
+    removeAttachment();
     closeSidebar();
     input.focus();
   }
@@ -755,18 +1087,27 @@
   ========================= */
   function addTyping() {
     const message =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
     message.className =
       "message assistant";
     message.id =
       "typingMessage";
     const avatar =
-      document.createElement("div");
-    avatar.className = "avatar";
-    avatar.textContent = "ت";
+      document.createElement(
+        "div"
+      );
+    avatar.className =
+      "avatar";
+    avatar.textContent =
+      "ت";
     const bubble =
-      document.createElement("div");
-    bubble.className = "bubble";
+      document.createElement(
+        "div"
+      );
+    bubble.className =
+      "bubble";
     bubble.innerHTML = `
       <div class="typing">
         <span></span>
@@ -774,12 +1115,20 @@
         <span></span>
       </div>
     `;
-    message.appendChild(avatar);
-    message.appendChild(bubble);
-    chat.appendChild(message);
+    message.appendChild(
+      avatar
+    );
+    message.appendChild(
+      bubble
+    );
+    chat.appendChild(
+      message
+    );
     window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth"
+      top:
+        document.body.scrollHeight,
+      behavior:
+        "smooth"
     });
   }
   function removeTyping() {
@@ -803,10 +1152,6 @@
     ) {
       return;
     }
-    /*
-      إذا ماكو محادثة حالياً،
-      ننشئ واحدة تلقائياً.
-    */
     if (!currentChatId) {
       createChat();
     }
@@ -815,7 +1160,6 @@
     if (!current) {
       return;
     }
-    /* عنوان المحادثة من أول رسالة */
     if (
       current.messages.length === 0
     ) {
@@ -834,9 +1178,17 @@
       "user",
       text
     );
+    /*
+      المرفق حالياً لا يتم إرساله
+      للـAI. سيتم ربطه بالـBackend
+      في الخطوة التالية.
+    */
+    removeAttachment();
     input.value = "";
-    input.style.height = "52px";
-    sendButton.disabled = true;
+    input.style.height =
+      "52px";
+    sendButton.disabled =
+      true;
     addTyping();
     try {
       const response =
@@ -882,9 +1234,12 @@
         "assistant",
         "عذراً، صار خطأ بالاتصال بالخادم. حاول مرة ثانية."
       );
-      console.error(error);
+      console.error(
+        error
+      );
     } finally {
-      sendButton.disabled = false;
+      sendButton.disabled =
+        false;
       input.focus();
     }
   }
@@ -892,13 +1247,21 @@
      SIDEBAR
   ========================= */
   function openSidebar() {
-    sidebar.classList.add("active");
-    overlay.classList.add("active");
+    sidebar.classList.add(
+      "active"
+    );
+    overlay.classList.add(
+      "active"
+    );
     renderConversations();
   }
   function closeSidebar() {
-    sidebar.classList.remove("active");
-    overlay.classList.remove("active");
+    sidebar.classList.remove(
+      "active"
+    );
+    overlay.classList.remove(
+      "active"
+    );
   }
   /* =========================
      TEXTAREA
@@ -906,7 +1269,8 @@
   input.addEventListener(
     "input",
     function() {
-      this.style.height = "52px";
+      this.style.height =
+        "52px";
       this.style.height =
         Math.min(
           this.scrollHeight,
@@ -930,10 +1294,6 @@
      INITIALIZATION
   ========================= */
   function initialize() {
-    /*
-      دعم المحادثات القديمة
-      التي كانت محفوظة بالإصدار السابق.
-    */
     const oldMessages =
       JSON.parse(
         localStorage.getItem(
@@ -945,14 +1305,17 @@
       oldMessages.length
     ) {
       const oldChat = {
-        id: Date.now().toString(),
+        id:
+          Date.now().toString(),
         title:
           oldMessages[0]?.content ||
           "محادثة قديمة",
         messages:
           oldMessages
       };
-      chats.push(oldChat);
+      chats.push(
+        oldChat
+      );
       currentChatId =
         oldChat.id;
       localStorage.removeItem(
@@ -968,7 +1331,9 @@
         chats[0].id;
     }
     if (currentChatId) {
-      loadChat(currentChatId);
+      loadChat(
+        currentChatId
+      );
     } else {
       showWelcome();
     }
