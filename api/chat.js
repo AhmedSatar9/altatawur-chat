@@ -4,122 +4,228 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+/*
+  =========================
+  SETTINGS
+  =========================
+*/
+
 const MAX_MESSAGES = 20;
 const MAX_TEXT_LENGTH = 12000;
 const MAX_IMAGE_LENGTH = 12 * 1024 * 1024;
 
+/*
+  =========================
+  HANDLER
+  =========================
+*/
+
 export default async function handler(req, res) {
 
+  /* =========================
+     METHOD
+  ========================== */
+
   if (req.method !== "POST") {
+
     return res.status(405).json({
       error: "Method Not Allowed"
     });
+
   }
+
 
   try {
 
-    if (!process.env.OPENAI_API_KEY) {
+    /* =========================
+       API KEY
+    ========================== */
+
+    const apiKey =
+      process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+
+      console.error(
+        "OPENAI_API_KEY is missing"
+      );
+
       return res.status(500).json({
-        error: "مفتاح OpenAI غير موجود في إعدادات Vercel."
+        error:
+          "مفتاح OpenAI غير موجود في إعدادات Vercel."
       });
+
     }
+
+
+    /* =========================
+       REQUEST BODY
+    ========================== */
 
     const messages =
       Array.isArray(req.body?.messages)
         ? req.body.messages
         : [];
 
+
     if (!messages.length) {
+
       return res.status(400).json({
         error: "لا توجد رسائل."
       });
+
     }
+
+
+    /*
+      نأخذ آخر 20 رسالة فقط
+      للحفاظ على سرعة الاستجابة
+      وتقليل حجم الطلب.
+    */
 
     const recentMessages =
       messages.slice(-MAX_MESSAGES);
 
+
+    /* =========================
+       BUILD INPUT
+    ========================== */
+
     const input = [];
+
 
     for (const message of recentMessages) {
 
       if (!message) continue;
 
+
       /* =========================
-         USER
+         USER MESSAGE
       ========================== */
 
       if (message.role === "user") {
+
+
+        /*
+          رسالة تحتوي على نص وصورة
+        */
 
         if (Array.isArray(message.content)) {
 
           const content = [];
 
+
           for (const item of message.content) {
 
             if (!item) continue;
 
-            /* TEXT */
 
-            if (item.type === "input_text") {
+            /* =========================
+               TEXT
+            ========================== */
+
+            if (
+              item.type === "input_text"
+            ) {
 
               let text =
                 String(item.text || "");
 
-              if (text.length > MAX_TEXT_LENGTH) {
+
+              if (
+                text.length >
+                MAX_TEXT_LENGTH
+              ) {
+
                 text =
-                  text.slice(0, MAX_TEXT_LENGTH);
+                  text.slice(
+                    0,
+                    MAX_TEXT_LENGTH
+                  );
+
               }
+
 
               if (text.trim()) {
 
                 content.push({
-                  type: "input_text",
+
+                  type:
+                    "input_text",
+
                   text
+
                 });
 
               }
 
+
               continue;
             }
 
-            /* IMAGE */
 
-            if (item.type === "input_image") {
+            /* =========================
+               IMAGE
+            ========================== */
+
+            if (
+              item.type === "input_image"
+            ) {
 
               const imageUrl =
-                String(item.image_url || "");
+                String(
+                  item.image_url || ""
+                );
+
 
               if (
-                imageUrl.startsWith("data:image/") &&
-                imageUrl.length <= MAX_IMAGE_LENGTH
+                imageUrl.startsWith(
+                  "data:image/"
+                ) &&
+                imageUrl.length <=
+                  MAX_IMAGE_LENGTH
               ) {
 
                 content.push({
-                  type: "input_image",
-                  image_url: imageUrl,
-                  detail: "high"
+
+                  type:
+                    "input_image",
+
+                  image_url:
+                    imageUrl
+
                 });
 
               }
 
+
               continue;
             }
 
-            /* OLD IMAGE FORMAT */
 
-            if (item.type === "image_url") {
+            /*
+              دعم صيغة الصورة القديمة
+            */
+
+            if (
+              item.type === "image_url"
+            ) {
 
               let imageUrl = "";
 
+
               if (
-                typeof item.image_url === "string"
+                typeof item.image_url ===
+                "string"
               ) {
 
-                imageUrl = item.image_url;
+                imageUrl =
+                  item.image_url;
 
               } else if (
                 item.image_url &&
-                typeof item.image_url.url === "string"
+                typeof item.image_url.url ===
+                  "string"
               ) {
 
                 imageUrl =
@@ -127,15 +233,23 @@ export default async function handler(req, res) {
 
               }
 
+
               if (
-                imageUrl.startsWith("data:image/") &&
-                imageUrl.length <= MAX_IMAGE_LENGTH
+                imageUrl.startsWith(
+                  "data:image/"
+                ) &&
+                imageUrl.length <=
+                  MAX_IMAGE_LENGTH
               ) {
 
                 content.push({
-                  type: "input_image",
-                  image_url: imageUrl,
-                  detail: "high"
+
+                  type:
+                    "input_image",
+
+                  image_url:
+                    imageUrl
+
                 });
 
               }
@@ -144,67 +258,128 @@ export default async function handler(req, res) {
 
           }
 
+
           if (content.length) {
 
             input.push({
-              role: "user",
+
+              role:
+                "user",
+
               content
+
             });
 
           }
 
+
           continue;
+
         }
+
+
+        /*
+          رسالة نصية عادية
+        */
 
         let text =
-          String(message.content || "");
+          String(
+            message.content || ""
+          );
 
-        if (text.length > MAX_TEXT_LENGTH) {
+
+        if (
+          text.length >
+          MAX_TEXT_LENGTH
+        ) {
+
           text =
-            text.slice(0, MAX_TEXT_LENGTH);
+            text.slice(
+              0,
+              MAX_TEXT_LENGTH
+            );
+
         }
+
 
         if (text.trim()) {
 
           input.push({
-            role: "user",
+
+            role:
+              "user",
+
             content: [
+
               {
-                type: "input_text",
+
+                type:
+                  "input_text",
+
                 text
+
               }
+
             ]
+
           });
 
         }
+
 
         continue;
+
       }
 
+
       /* =========================
-         ASSISTANT
+         ASSISTANT MESSAGE
       ========================== */
 
-      if (message.role === "assistant") {
+      if (
+        message.role === "assistant"
+      ) {
 
         let text =
-          String(message.content || "");
+          String(
+            message.content || ""
+          );
 
-        if (text.length > MAX_TEXT_LENGTH) {
+
+        if (
+          text.length >
+          MAX_TEXT_LENGTH
+        ) {
+
           text =
-            text.slice(0, MAX_TEXT_LENGTH);
+            text.slice(
+              0,
+              MAX_TEXT_LENGTH
+            );
+
         }
+
 
         if (text.trim()) {
 
           input.push({
-            role: "assistant",
+
+            role:
+              "assistant",
+
             content: [
+
               {
-                type: "output_text",
+
+                type:
+                  "output_text",
+
                 text
+
               }
+
             ]
+
           });
 
         }
@@ -213,41 +388,32 @@ export default async function handler(req, res) {
 
     }
 
+
+    /* =========================
+       VALID INPUT
+    ========================== */
+
     if (!input.length) {
+
       return res.status(400).json({
-        error: "لم يتم العثور على محتوى صالح."
+
+        error:
+          "لم يتم العثور على محتوى صالح."
+
       });
+
     }
 
-    /* =========================
-       HEADERS
-    ========================== */
-
-    res.statusCode = 200;
-
-    res.setHeader(
-      "Content-Type",
-      "text/plain; charset=utf-8"
-    );
-
-    res.setHeader(
-      "Cache-Control",
-      "no-cache, no-transform"
-    );
-
-    res.setHeader(
-      "Connection",
-      "keep-alive"
-    );
 
     /* =========================
-       AI
+       OPENAI
     ========================== */
 
-    const stream =
+    const response =
       await client.responses.create({
 
-        model: "gpt-5.6-luna",
+        model:
+          "gpt-5.6-luna",
 
         instructions: `
 
@@ -258,94 +424,83 @@ export default async function handler(req, res) {
 استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
 أو عندما تكون مناسبة للسياق.
 
-السياق:
+قواعد سياق المحادثة:
+
 - حافظ على سياق المحادثة السابقة.
-- اربط الأسئلة الجديدة بالرسائل السابقة.
-- افهم الإشارات مثل "هذا" و"هذه" و"هو" و"هي"
-  اعتماداً على سياق المحادثة.
+- اربط السؤال الحالي بالرسائل السابقة.
+- افهم كلمات مثل:
+  "هذا"، "هذه"، "هو"، "هي"، "ذلك"، "نفسه"
+  بالاعتماد على السياق السابق.
+- لا تطلب من المستخدم إعادة معلومة موجودة
+  بالفعل في سياق المحادثة.
+- لا تعيد شرح معلومات سابقة إلا إذا كان ذلك مفيداً.
 
-الصور:
-- افحص الصورة بعناية.
-- اقرأ النصوص الموجودة فيها قدر الإمكان.
-- حلل التفاصيل المهمة للسؤال.
-- لا تخترع تفاصيل غير واضحة.
-- إذا كانت الصورة غير واضحة، وضح ذلك.
-- لا تدّعي رؤية شيء غير موجود بالصورة.
+قواعد الصور:
 
-الدقة:
-- أجب مباشرة.
-- لا تكرر السؤال بلا حاجة.
+- افحص الصور المرفقة بعناية.
+- اقرأ النصوص الموجودة في الصورة قدر الإمكان.
+- حلل التفاصيل المرتبطة بسؤال المستخدم.
+- إذا كانت الصورة غير واضحة، اذكر ذلك.
+- لا تخترع تفاصيل غير ظاهرة.
+- لا تدّعي رؤية شيء غير موجود في الصورة.
+
+قواعد الإجابة:
+
+- أجب مباشرة على سؤال المستخدم.
+- كن واضحاً ومفيداً.
+- لا تكرر السؤال.
 - لا تدّعي تنفيذ إجراء لم تنفذه.
+- إذا لم تعرف الإجابة، قل ذلك بوضوح.
 
 `,
 
         input,
 
-        store: false,
-
-        stream: true
+        store:
+          false
 
       });
 
+
     /* =========================
-       STREAM RESPONSE
+       GET RESPONSE
     ========================== */
 
-    for await (const event of stream) {
+    const reply =
+      response.output_text ||
+      "ما حصلت جواب نصي من النموذج.";
 
-      if (
-        event.type ===
-        "response.output_text.delta"
-      ) {
 
-        const text =
-          event.delta || "";
+    /* =========================
+       RESPONSE
+    ========================== */
 
-        if (text) {
+    return res.status(200).json({
 
-          res.write(text);
+      reply
 
-        }
+    });
 
-      }
-
-    }
-
-    res.end();
 
   } catch (error) {
 
     console.error(
-      "OpenAI Streaming Error:",
+      "OpenAI Error:",
       error
     );
 
-    /*
-      إذا لم يبدأ إرسال الرد بعد
-    */
-
-    if (!res.headersSent) {
-
-      return res.status(500).json({
-        error:
-          "حدث خطأ أثناء معالجة الطلب. حاول مرة ثانية."
-      });
-
-    }
 
     /*
-      إذا كان الرد بدأ بالفعل
+      لا نرسل تفاصيل الخطأ الداخلية
+      للمستخدم.
     */
 
-    try {
+    return res.status(500).json({
 
-      res.write(
-        "\n\n[حدث خطأ أثناء إكمال الرد]"
-      );
+      error:
+        "حدث خطأ أثناء معالجة الطلب. حاول مرة ثانية."
 
-    } catch {}
-
-    res.end();
+    });
 
   }
 
