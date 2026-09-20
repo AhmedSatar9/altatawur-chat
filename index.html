@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>التطور چات</title>
+<style>
+:root{--bg:#060914;--panel:#0b1222;--panel2:#101a2d;--line:#1d2a43;--text:#f4f7ff;--muted:#8e9ab3;--cyan:#18e5ef;--purple:#9a55ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 75% 10%,#18204a 0,transparent 35%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;height:100vh;overflow:hidden}.app{display:flex;height:100vh}
+.sidebar{width:280px;background:rgba(7,12,24,.94);border-left:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:14px}.brand{display:flex;align-items:center;gap:10px;padding:8px}.bot,.bigbot,.mini{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#06101b;font-weight:900}.bot{width:42px;height:42px;border-radius:14px;display:grid;place-items:center}.brand b{font-size:19px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1px}.new{border:0;border-radius:12px;padding:13px;background:linear-gradient(90deg,var(--cyan),#a74cff);color:#041019;font-weight:800;cursor:pointer}.search{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px;color:var(--muted)}.chats{overflow:auto;flex:1}.chat{padding:11px;border-radius:10px;color:#ccd5e7;cursor:pointer;margin:3px 0}.chat:hover,.chat.active{background:var(--panel2)}.chat small{display:block;color:#65738e;margin-top:4px}.bottom{border-top:1px solid var(--line);padding-top:12px;color:#aab6cc}.bottom div{padding:10px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}.top{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(6,9,20,.72);backdrop-filter:blur(10px)}.model{background:var(--panel);border:1px solid var(--line);padding:10px 14px;border-radius:11px}.profile{display:flex;align-items:center;gap:10px}.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#36e7f1,#8c50ff);display:grid;place-items:center;color:#07101c;font-weight:bold}
+.messages{flex:1;overflow:auto;padding:30px max(20px,8vw)}.welcome{text-align:center;margin:8vh auto 35px;max-width:650px}.bigbot{margin:auto auto 18px;width:74px;height:74px;border-radius:24px;display:grid;place-items:center;font-size:34px;box-shadow:0 0 45px #16dce955}.welcome h1{font-size:32px;margin:0 0 10px}.welcome p{color:var(--muted);line-height:1.8}.msg{display:flex;gap:12px;margin:20px 0;align-items:flex-start}.msg.user{flex-direction:row-reverse}.bubble{max-width:min(760px,82%);padding:14px 17px;border-radius:16px;background:var(--panel2);border:1px solid var(--line);line-height:1.8;white-space:pre-wrap}.user .bubble{background:linear-gradient(135deg,#124b61,#493078);border-color:#315b79}.mini{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none}.composer{padding:15px 6vw 20px}.box{max-width:900px;margin:auto;background:var(--panel);border:1px solid #2a3b5c;border-radius:18px;padding:10px;display:flex;align-items:flex-end;gap:9px}.box textarea{flex:1;resize:none;background:transparent;border:0;outline:0;color:white;font:inherit;min-height:46px;padding:10px}.icon,.send{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:#111b30;color:#b9c6dc;cursor:pointer}.send{border:0;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#06101b;font-weight:900}.hint{text-align:center;color:#687792;font-size:11px;margin-top:9px}.typing{opacity:.65}
+@media(max-width:760px){.sidebar{display:none}.top{padding:0 14px}.messages{padding:18px 14px}.welcome{margin-top:10vh}.welcome h1{font-size:25px}.composer{padding:10px 10px 14px}.model{font-size:12px}.top .profile span{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar"><div class="brand"><div class="bot">✦</div><div><b>التطور چات</b><small>ALTATAWUR CHAT</small></div></div>
+<button class="new" onclick="newChat()">＋ محادثة جديدة</button><div class="search">⌕ &nbsp; ابحث في محادثاتك...</div>
+<div class="chats" id="chatList"><div class="chat active">محادثة جديدة <small>الآن</small></div><div class="chat">أفكار لمشروع جديد</div><div class="chat">كتابة محتوى إعلاني</div></div>
+<div class="bottom"><div>⚙ الإعدادات</div><div>◉ الباقات</div></div></aside>
+<main class="main"><header class="top"><div class="model">⚡ التطور AI · <b>ذكي</b>⌄</div><div class="profile"><span>المستخدم</span><div class="avatar">أ</div></div></header>
+<section class="messages" id="messages"><div class="welcome" id="welcome"><div class="bigbot">✦</div><h1>مرحباً بك في التطور چات 👋</h1><p>هسه صار عندك اتصال حقيقي بالذكاء الاصطناعي بعد إضافة مفتاح API.</p></div></section>
+<div class="composer"><div class="box"><button class="icon" title="مرفقات">＋</button><textarea id="input" placeholder="اكتب رسالتك هنا..." rows="1"></textarea><button class="send" onclick="sendMsg()">➤</button></div><div class="hint">التطور چات قد يخطئ أحياناً. تحقق من المعلومات المهمة.</div></div>
+</main></div>
+<script>
+const input=document.getElementById('input'),messages=document.getElementById('messages'); let history=[];
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}});
+function add(text,user=false,typing=false){const row=document.createElement('div');row.className='msg '+(user?'user':'');row.innerHTML=`<div class="mini">${user?'أ':'✦'}</div><div class="bubble ${typing?'typing':''}">${text}</div>`;messages.appendChild(row);messages.scrollTop=messages.scrollHeight;return row}
+async function sendMsg(){const t=input.value.trim();if(!t)return;document.getElementById('welcome')?.remove();input.value='';add(t,true);history.push({role:'user',content:t});const wait=add('جاري التفكير…',false,true);
+try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})});const d=await r.json();wait.remove();if(!r.ok)throw new Error(d.error||'خطأ');add(d.reply);history.push({role:'assistant',content:d.reply})}catch(e){wait.remove();add('صار خطأ بالاتصال. تأكد من إعداد OPENAI_API_KEY ثم أعد تشغيل السيرفر.');console.error(e)}}
+function newChat(){history=[];messages.innerHTML='<div class="welcome" id="welcome"><div class="bigbot">✦</div><h1>محادثة جديدة ✨</h1><p>شنو تحب تسألني اليوم؟</p></div>';input.focus()}
+</script>
+</body></html>

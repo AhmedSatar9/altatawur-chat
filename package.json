@@ -1,0 +1,13 @@
+{
+  "name": "altatawur-chat",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "openai": "^5.0.0",
+    "dotenv": "^16.4.7"
+  }
+}

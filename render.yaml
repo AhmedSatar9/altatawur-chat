@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: altatawur-chat
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PORT
+        value: 3000
