@@ -1,4 +1,7 @@
 import OpenAI from "openai";
+/* =========================
+   OPENAI
+========================= */
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
@@ -7,15 +10,17 @@ const client = new OpenAI({
 ========================= */
 const MAX_MESSAGES = 20;
 const MAX_TEXT_LENGTH = 12000;
-const MAX_IMAGE_LENGTH = 12 * 1024 * 1024;
+const MAX_IMAGE_LENGTH =
+  12 * 1024 * 1024;
 /*
-  Rate Limit
+  Rate Limit:
   10 طلبات لكل IP خلال 60 ثانية
 */
 const RATE_LIMIT = 10;
-const RATE_WINDOW = 60 * 1000;
+const RATE_WINDOW =
+  60 * 1000;
 /* =========================
-   SIMPLE RATE LIMIT STORE
+   RATE LIMIT STORAGE
 ========================= */
 const rateLimitStore =
   globalThis.__altatawurRateLimit ||
@@ -29,9 +34,7 @@ function getClientIP(req) {
   const forwarded =
     req.headers["x-forwarded-for"];
   if (forwarded) {
-    return String(
-      forwarded
-    )
+    return String(forwarded)
       .split(",")[0]
       .trim();
   }
@@ -49,6 +52,9 @@ function checkRateLimit(ip) {
     Date.now();
   const record =
     rateLimitStore.get(ip);
+  /*
+    أول طلب
+  */
   if (!record) {
     rateLimitStore.set(ip, {
       count: 1,
@@ -59,7 +65,7 @@ function checkRateLimit(ip) {
     };
   }
   /*
-    انتهت الدقيقة
+    انتهت نافذة الدقيقة
   */
   if (
     now - record.start >=
@@ -98,7 +104,7 @@ function checkRateLimit(ip) {
   };
 }
 /* =========================
-   CLEAN RATE LIMIT STORE
+   CLEAN OLD IPs
 ========================= */
 function cleanupRateLimitStore() {
   const now =
@@ -167,41 +173,41 @@ export default async function handler(
     "Cache-Control",
     "no-store"
   );
-  /* =========================
-     API KEY
-  ========================== */
-  if (
-    !process.env.OPENAI_API_KEY
-  ) {
-    console.error(
-      "OPENAI_API_KEY is missing"
-    );
-    return res.status(500).json({
-      error:
-        "الخدمة غير مهيأة بشكل صحيح."
-    });
-  }
-  /* =========================
-     RATE LIMIT
-  ========================== */
-  const ip =
-    getClientIP(req);
-  const rate =
-    checkRateLimit(ip);
-  if (!rate.allowed) {
-    res.setHeader(
-      "Retry-After",
-      String(rate.retryAfter)
-    );
-    return res.status(429).json({
-      error:
-        `تم تجاوز عدد الطلبات المسموح بها. حاول بعد ${rate.retryAfter} ثانية.`
-    });
-  }
-  cleanupRateLimitStore();
   try {
     /* =========================
-       BODY
+       API KEY
+    ========================== */
+    const apiKey =
+      process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      console.error(
+        "OPENAI_API_KEY is missing"
+      );
+      return res.status(500).json({
+        error:
+          "الخدمة غير مهيأة بشكل صحيح."
+      });
+    }
+    /* =========================
+       RATE LIMIT
+    ========================== */
+    const ip =
+      getClientIP(req);
+    const rate =
+      checkRateLimit(ip);
+    if (!rate.allowed) {
+      res.setHeader(
+        "Retry-After",
+        String(rate.retryAfter)
+      );
+      return res.status(429).json({
+        error:
+          `تم تجاوز عدد الطلبات المسموح بها. حاول بعد ${rate.retryAfter} ثانية.`
+      });
+    }
+    cleanupRateLimitStore();
+    /* =========================
+       READ BODY
     ========================== */
     const messages =
       Array.isArray(
@@ -210,7 +216,7 @@ export default async function handler(
         ? req.body.messages
         : [];
     /* =========================
-       MESSAGE LIMIT
+       EMPTY REQUEST
     ========================== */
     if (
       !messages.length
@@ -220,9 +226,11 @@ export default async function handler(
           "لا توجد رسائل."
       });
     }
+    /* =========================
+       MAX MESSAGE COUNT
+    ========================== */
     if (
-      messages.length >
-      100
+      messages.length > 100
     ) {
       return res.status(400).json({
         error:
@@ -230,7 +238,7 @@ export default async function handler(
       });
     }
     /* =========================
-       VALIDATE
+       VALIDATE MESSAGES
     ========================== */
     for (
       const message
@@ -248,26 +256,29 @@ export default async function handler(
       }
     }
     /* =========================
-       RECENT MESSAGES
+       KEEP RECENT CONTEXT
     ========================== */
     const recentMessages =
       messages.slice(
         -MAX_MESSAGES
       );
     /* =========================
-       BUILD INPUT
+       BUILD RESPONSES INPUT
     ========================== */
     const input = [];
     for (
       const message
       of recentMessages
     ) {
-      /* =========================
+      /* ==================================================
          USER
-      ========================== */
+      ================================================== */
       if (
         message.role === "user"
       ) {
+        /*
+          USER WITH TEXT + IMAGE
+        */
         if (
           Array.isArray(
             message.content
@@ -278,8 +289,12 @@ export default async function handler(
             const item
             of message.content
           ) {
-            if (!item) continue;
-            /* TEXT */
+            if (!item) {
+              continue;
+            }
+            /* =========================
+               TEXT
+            ========================== */
             if (
               item.type ===
               "input_text"
@@ -309,7 +324,9 @@ export default async function handler(
               }
               continue;
             }
-            /* IMAGE */
+            /* =========================
+               NEW IMAGE FORMAT
+            ========================== */
             if (
               item.type ===
               "input_image"
@@ -334,20 +351,33 @@ export default async function handler(
               }
               continue;
             }
-            /* OLD IMAGE FORMAT */
+            /* =========================
+               OLD IMAGE FORMAT
+            ========================== */
             if (
               item.type ===
               "image_url"
             ) {
               let imageUrl =
                 "";
+              /*
+                image_url:
+                "data:image/..."
+              */
               if (
                 typeof item.image_url ===
                 "string"
               ) {
                 imageUrl =
                   item.image_url;
-              } else if (
+              }
+              /*
+                image_url:
+                {
+                  url: "data:image/..."
+                }
+              */
+              else if (
                 item.image_url &&
                 typeof item.image_url.url ===
                   "string"
@@ -371,6 +401,10 @@ export default async function handler(
               }
             }
           }
+          /*
+            لا نرسل رسالة مستخدم
+            فارغة
+          */
           if (
             content.length
           ) {
@@ -382,7 +416,9 @@ export default async function handler(
           }
           continue;
         }
-        /* TEXT ONLY */
+        /* =========================
+           USER TEXT ONLY
+        ========================== */
         let text =
           String(
             message.content || ""
@@ -400,23 +436,25 @@ export default async function handler(
         if (
           text.trim()
         ) {
+          /*
+            مهم:
+            نرسل النص كـ string
+            حتى نتجنب مشاكل
+            output_text/input_text
+            مع رسائل المساعد.
+          */
           input.push({
             role:
               "user",
-            content: [
-              {
-                type:
-                  "input_text",
-                text
-              }
-            ]
+            content:
+              text
           });
         }
         continue;
       }
-      /* =========================
+      /* ==================================================
          ASSISTANT
-      ========================== */
+      ================================================== */
       if (
         message.role ===
         "assistant"
@@ -438,22 +476,23 @@ export default async function handler(
         if (
           text.trim()
         ) {
+          /*
+            نستخدم string مباشرة
+            بدلاً من output_text
+            حتى تكون الرسالة السابقة
+            صالحة كـ input.
+          */
           input.push({
             role:
               "assistant",
-            content: [
-              {
-                type:
-                  "output_text",
-                text
-              }
-            ]
+            content:
+              text
           });
         }
       }
     }
     /* =========================
-       VALID INPUT
+       FINAL INPUT CHECK
     ========================== */
     if (
       !input.length
@@ -463,9 +502,9 @@ export default async function handler(
           "لم يتم العثور على محتوى صالح."
       });
     }
-    /* =========================
-       OPENAI
-    ========================== */
+    /* ==================================================
+       OPENAI RESPONSE
+    ================================================== */
     const response =
       await client.responses.create({
         model:
@@ -475,22 +514,30 @@ export default async function handler(
 أجب بالعربية بشكل واضح ومفيد.
 استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
 أو عندما تكون مناسبة للسياق.
-السياق:
+قواعد السياق:
 - حافظ على سياق المحادثة السابقة.
-- اربط الأسئلة الجديدة بالرسائل السابقة.
-- افهم الإشارات مثل "هذا" و"هذه" و"هو" و"هي"
-  اعتماداً على سياق المحادثة.
+- اربط السؤال الحالي بالرسائل السابقة.
+- افهم كلمات مثل:
+  "هذا"
+  "هذه"
+  "هو"
+  "هي"
+  "ذلك"
+  "نفسه"
+  بالاعتماد على سياق المحادثة.
 - لا تطلب من المستخدم إعادة معلومة موجودة
   بالفعل في السياق.
-الصور:
-- افحص الصور المرفقة بعناية.
+- لا تعيد شرح المعلومات السابقة إلا عند الحاجة.
+قواعد الصور:
+- افحص الصورة بعناية.
 - اقرأ النصوص الموجودة فيها قدر الإمكان.
-- حلل التفاصيل المهمة المتعلقة بالسؤال.
-- إذا كانت الصورة غير واضحة، اذكر ذلك.
+- حلل التفاصيل المرتبطة بسؤال المستخدم.
+- إذا كانت الصورة غير واضحة، وضح ذلك.
 - لا تخترع تفاصيل غير ظاهرة.
 - لا تدّعي رؤية شيء غير موجود بالصورة.
-الدقة:
+قواعد الإجابة:
 - أجب مباشرة.
+- كن واضحاً ومفيداً.
 - لا تكرر السؤال بلا حاجة.
 - لا تدّعي تنفيذ إجراء لم تنفذه.
 - إذا لم تعرف الإجابة، قل ذلك بوضوح.
@@ -500,19 +547,28 @@ export default async function handler(
           false
       });
     /* =========================
-       RESPONSE
+       EXTRACT RESPONSE
     ========================== */
     const reply =
       response.output_text ||
       "ما حصلت جواب نصي من النموذج.";
+    /* =========================
+       SEND RESPONSE
+    ========================== */
     return res.status(200).json({
       reply
     });
   } catch (error) {
+    /* =========================
+       SERVER LOG
+    ========================== */
     console.error(
       "OpenAI Error:",
       error
     );
+    /* =========================
+       SAFE USER ERROR
+    ========================== */
     return res.status(500).json({
       error:
         "حدث خطأ أثناء معالجة الطلب. حاول مرة ثانية."
