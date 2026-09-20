@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>التطور چات</title>
-
   <style>
     :root {
       --bg: #070912;
@@ -18,33 +16,27 @@
       --cyan: #22d3ee;
       --gradient: linear-gradient(135deg, #8b5cf6, #22d3ee);
     }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
       min-height: 100vh;
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     }
-
     button,
     textarea {
       font-family: inherit;
     }
-
     .app {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
-
     /* HEADER */
-
     header {
       height: 92px;
       padding: 18px 24px;
@@ -57,13 +49,11 @@
       top: 0;
       z-index: 10;
     }
-
     .brand {
       display: flex;
       align-items: center;
       gap: 14px;
     }
-
     .logo {
       width: 58px;
       height: 58px;
@@ -76,17 +66,37 @@
       font-weight: 800;
       box-shadow: 0 10px 30px rgba(100,90,255,.18);
     }
-
     .brand-info h1 {
       font-size: 24px;
       margin-bottom: 3px;
     }
-
     .status {
       color: #6ee7b7;
       font-size: 14px;
     }
-
+    /* HEADER ACTIONS */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .new-chat {
+      height: 48px;
+      padding: 0 17px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 14px;
+      font-size: 15px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: .2s;
+    }
+    .new-chat:hover {
+      color: white;
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+    }
     .menu {
       width: 48px;
       height: 48px;
@@ -96,10 +106,9 @@
       color: white;
       font-size: 25px;
       cursor: pointer;
+      flex-shrink: 0;
     }
-
     /* CHAT */
-
     .chat {
       flex: 1;
       width: 100%;
@@ -107,12 +116,10 @@
       margin: auto;
       padding: 35px 20px 150px;
     }
-
     .welcome {
       text-align: center;
       padding: 70px 10px 30px;
     }
-
     .welcome-logo {
       width: 110px;
       height: 110px;
@@ -126,18 +133,15 @@
       font-weight: 800;
       box-shadow: 0 20px 60px rgba(100,90,255,.18);
     }
-
     .welcome h2 {
       font-size: 38px;
       margin-bottom: 15px;
     }
-
     .welcome h2 span {
       background: var(--gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     .welcome p {
       color: var(--muted);
       font-size: 18px;
@@ -145,18 +149,15 @@
       max-width: 650px;
       margin: auto;
     }
-
     .message {
       display: flex;
       gap: 12px;
       margin: 25px 0;
       align-items: flex-start;
     }
-
     .message.user {
       flex-direction: row-reverse;
     }
-
     .avatar {
       width: 46px;
       height: 46px;
@@ -169,11 +170,9 @@
       font-weight: bold;
       font-size: 20px;
     }
-
     .message.assistant .avatar {
       background: #182137;
     }
-
     .bubble {
       max-width: 75%;
       padding: 15px 19px;
@@ -185,19 +184,15 @@
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
-
     .message.user .bubble {
       background: #111a30;
     }
-
     /* TYPING */
-
     .typing {
       display: flex;
       gap: 5px;
       align-items: center;
     }
-
     .typing span {
       width: 7px;
       height: 7px;
@@ -205,15 +200,12 @@
       background: #8b5cf6;
       animation: bounce 1s infinite;
     }
-
     .typing span:nth-child(2) {
       animation-delay: .15s;
     }
-
     .typing span:nth-child(3) {
       animation-delay: .3s;
     }
-
     @keyframes bounce {
       0%, 60%, 100% {
         transform: translateY(0);
@@ -222,9 +214,7 @@
         transform: translateY(-6px);
       }
     }
-
     /* INPUT */
-
     .input-area {
       position: fixed;
       bottom: 0;
@@ -237,7 +227,6 @@
       );
       z-index: 20;
     }
-
     .input-box {
       max-width: 900px;
       margin: auto;
@@ -250,7 +239,6 @@
       gap: 10px;
       box-shadow: 0 -5px 30px rgba(0,0,0,.15);
     }
-
     textarea {
       flex: 1;
       resize: none;
@@ -264,11 +252,9 @@
       max-height: 150px;
       padding: 13px 12px;
     }
-
     textarea::placeholder {
       color: #69738b;
     }
-
     .send {
       width: 54px;
       height: 54px;
@@ -280,138 +266,127 @@
       cursor: pointer;
       flex-shrink: 0;
     }
-
     .send:disabled {
       opacity: .5;
       cursor: not-allowed;
     }
-
-    .clear {
-      position: fixed;
-      top: 23px;
-      left: 24px;
-      z-index: 30;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 13px;
-      padding: 11px 15px;
-      cursor: pointer;
-    }
-
+    /* MOBILE */
     @media (max-width: 600px) {
-
       header {
         height: 82px;
         padding: 14px 16px;
       }
-
       .logo {
         width: 50px;
         height: 50px;
         border-radius: 15px;
       }
-
+      .brand {
+        gap: 10px;
+      }
       .brand-info h1 {
         font-size: 21px;
       }
-
+      .status {
+        font-size: 12px;
+      }
+      .header-actions {
+        gap: 7px;
+      }
       .menu {
         width: 44px;
         height: 44px;
+        font-size: 23px;
       }
-
-      .clear {
-        top: 17px;
-        left: 16px;
+      .new-chat {
+        height: 44px;
+        padding: 0 12px;
         font-size: 12px;
       }
-
       .welcome {
         padding-top: 60px;
       }
-
       .welcome-logo {
         width: 90px;
         height: 90px;
         font-size: 45px;
       }
-
       .welcome h2 {
         font-size: 29px;
       }
-
       .welcome p {
         font-size: 15px;
       }
-
       .bubble {
         max-width: 82%;
         font-size: 15px;
       }
-
       .chat {
         padding-left: 12px;
         padding-right: 12px;
       }
     }
+    @media (max-width: 390px) {
+      .brand-info h1 {
+        font-size: 18px;
+      }
+      .status {
+        font-size: 11px;
+      }
+      .new-chat {
+        padding: 0 9px;
+        font-size: 11px;
+      }
+      .menu {
+        width: 42px;
+      }
+    }
   </style>
 </head>
-
 <body>
-
 <div class="app">
-
   <header>
-
     <div class="brand">
-
       <div class="logo">ت</div>
-
       <div class="brand-info">
         <h1>التطور چات</h1>
         <div class="status">● متصل الآن</div>
       </div>
-
     </div>
-
-    <button class="menu">☰</button>
-
+    <div class="header-actions">
+      <button
+        class="new-chat"
+        onclick="newChat()"
+      >
+        + محادثة جديدة
+      </button>
+      <button
+        class="menu"
+        type="button"
+      >
+        ☰
+      </button>
+    </div>
   </header>
-
-  <button class="clear" onclick="newChat()">
-  + محادثة جديدة
-</button>
-
   <main class="chat" id="chat">
-
     <section class="welcome" id="welcome">
-
       <div class="welcome-logo">ت</div>
-
       <h2>
         أهلاً بك في <span>التطور چات</span>
       </h2>
-
       <p>
         مساعدك الذكي للإجابة عن الأسئلة، شرح المواضيع،
         كتابة النصوص وتوليد الأفكار.
       </p>
-
     </section>
-
   </main>
-
   <div class="input-area">
-
     <div class="input-box">
-
       <textarea
         id="messageInput"
         placeholder="اكتب رسالتك هنا..."
         rows="1"
       ></textarea>
-
       <button
         class="send"
         id="sendButton"
@@ -419,119 +394,77 @@
       >
         ↑
       </button>
-
     </div>
-
   </div>
-
 </div>
-
 <script>
-
   const chat = document.getElementById("chat");
   const input = document.getElementById("messageInput");
   const sendButton = document.getElementById("sendButton");
-
   let messages = JSON.parse(
     localStorage.getItem("altatawur_chat") || "[]"
   );
-
   function saveMessages() {
     localStorage.setItem(
       "altatawur_chat",
       JSON.stringify(messages)
     );
   }
-
   function showWelcome() {
-
     chat.innerHTML = `
       <section class="welcome" id="welcome">
-
         <div class="welcome-logo">ت</div>
-
         <h2>
           أهلاً بك في <span>التطور چات</span>
         </h2>
-
         <p>
           مساعدك الذكي للإجابة عن الأسئلة، شرح المواضيع،
           كتابة النصوص وتوليد الأفكار.
         </p>
-
       </section>
     `;
   }
-
   function addMessage(role, text) {
-
     const message = document.createElement("div");
-
     message.className = `message ${role}`;
-
     const avatar = document.createElement("div");
-
     avatar.className = "avatar";
-
     avatar.textContent =
       role === "user" ? "أ" : "ت";
-
     const bubble = document.createElement("div");
-
     bubble.className = "bubble";
-
     bubble.textContent = text;
-
     message.appendChild(avatar);
     message.appendChild(bubble);
-
     chat.appendChild(message);
-
     window.scrollTo({
       top: document.body.scrollHeight,
       behavior: "smooth"
     });
-
     return message;
   }
-
   function loadMessages() {
-
     if (!messages.length) {
       showWelcome();
       return;
     }
-
     chat.innerHTML = "";
-
     messages.forEach(message => {
-
       addMessage(
         message.role,
         message.content
       );
-
     });
   }
-
   function addTyping() {
-
     const message = document.createElement("div");
-
     message.className = "message assistant";
-
     message.id = "typingMessage";
-
     const avatar = document.createElement("div");
-
     avatar.className = "avatar";
-
     avatar.textContent = "ت";
-
     const bubble = document.createElement("div");
-
     bubble.className = "bubble";
-
     bubble.innerHTML = `
       <div class="typing">
         <span></span>
@@ -539,165 +472,108 @@
         <span></span>
       </div>
     `;
-
     message.appendChild(avatar);
-
     message.appendChild(bubble);
-
     chat.appendChild(message);
-
     window.scrollTo({
       top: document.body.scrollHeight,
       behavior: "smooth"
     });
   }
-
   function removeTyping() {
-
     const typing =
       document.getElementById("typingMessage");
-
     if (typing) {
       typing.remove();
     }
   }
-
   async function sendMessage() {
-
     const text = input.value.trim();
-
     if (!text || sendButton.disabled) {
       return;
     }
-
     messages.push({
       role: "user",
       content: text
     });
-
     saveMessages();
-
     addMessage("user", text);
-
     input.value = "";
-
     input.style.height = "52px";
-
     sendButton.disabled = true;
-
     addTyping();
-
     try {
-
       const response = await fetch("/api/chat", {
-
         method: "POST",
-
         headers: {
           "Content-Type": "application/json"
         },
-
         body: JSON.stringify({
           messages: messages
         })
-
       });
-
       const data = await response.json();
-
       removeTyping();
-
       if (!response.ok) {
         throw new Error(
           data.error || "حدث خطأ."
         );
       }
-
       const reply =
         data.reply || "ما حصلت جواب.";
-
       messages.push({
         role: "assistant",
         content: reply
       });
-
       saveMessages();
-
       addMessage(
         "assistant",
         reply
       );
-
     } catch (error) {
-
       removeTyping();
-
       addMessage(
         "assistant",
         "عذراً، صار خطأ بالاتصال بالخادم. حاول مرة ثانية."
       );
-
       console.error(error);
-
     } finally {
-
       sendButton.disabled = false;
-
       input.focus();
-
     }
   }
-
   function newChat() {
-
     messages = [];
-
     localStorage.removeItem(
       "altatawur_chat"
     );
-
     showWelcome();
-
     input.focus();
   }
-
   input.addEventListener(
     "input",
     function() {
-
       this.style.height = "52px";
-
       this.style.height =
         Math.min(
           this.scrollHeight,
           150
         ) + "px";
-
     }
   );
-
   input.addEventListener(
     "keydown",
     function(event) {
-
       if (
         event.key === "Enter" &&
         !event.shiftKey
       ) {
-
         event.preventDefault();
-
         sendMessage();
-
       }
-
     }
   );
-
   loadMessages();
-
 </script>
-</script>
-
 </body>
 </html>
