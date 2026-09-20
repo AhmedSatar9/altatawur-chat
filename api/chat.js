@@ -1,5 +1,9 @@
 import OpenAI from "openai";
 
+/* =========================
+   OPENAI CLIENT
+========================= */
+
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
@@ -33,7 +37,7 @@ export default async function handler(req, res) {
   try {
 
     /* =========================
-       API KEY
+       API KEY CHECK
     ========================== */
 
     if (!process.env.OPENAI_API_KEY) {
@@ -67,7 +71,7 @@ export default async function handler(req, res) {
     }
 
     /* =========================
-       LAST MESSAGES ONLY
+       LAST MESSAGES
     ========================== */
 
     const recentMessages =
@@ -84,14 +88,14 @@ export default async function handler(req, res) {
       if (!message) continue;
 
       /* =========================
-         USER MESSAGE
+         USER
       ========================== */
 
       if (message.role === "user") {
 
-        /* -------------------------
+        /* =========================
            MULTI CONTENT
-        -------------------------- */
+        ========================== */
 
         if (Array.isArray(message.content)) {
 
@@ -149,8 +153,6 @@ export default async function handler(req, res) {
 
               let imageUrl = "";
 
-              /* New format */
-
               if (
                 typeof item.image_url ===
                 "string"
@@ -159,11 +161,7 @@ export default async function handler(req, res) {
                 imageUrl =
                   item.image_url;
 
-              }
-
-              /* Old OpenAI format */
-
-              else if (
+              } else if (
                 item.image_url &&
                 typeof item.image_url.url ===
                 "string"
@@ -175,7 +173,7 @@ export default async function handler(req, res) {
               }
 
               /* =====================
-                 SECURITY
+                 IMAGE SECURITY
               ====================== */
 
               if (
@@ -212,7 +210,7 @@ export default async function handler(req, res) {
         }
 
         /* =========================
-           NORMAL TEXT MESSAGE
+           NORMAL TEXT
         ========================== */
 
         let text =
@@ -251,7 +249,7 @@ export default async function handler(req, res) {
       }
 
       /* =========================
-         ASSISTANT MESSAGE
+         ASSISTANT
       ========================== */
 
       if (
@@ -308,7 +306,7 @@ export default async function handler(req, res) {
     }
 
     /* =========================
-       OPENAI
+       OPENAI REQUEST
     ========================== */
 
     const response =
@@ -361,7 +359,7 @@ export default async function handler(req, res) {
       });
 
     /* =========================
-       EXTRACT RESPONSE
+       RESPONSE TEXT
     ========================== */
 
     const reply =
@@ -383,7 +381,7 @@ export default async function handler(req, res) {
     }
 
     /* =========================
-       CACHE / CONNECTION
+       CACHE
     ========================== */
 
     res.setHeader(
@@ -401,21 +399,178 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
+    /* =========================
+       DETAILED ERROR LOG
+    ========================== */
+
     console.error(
-      "OpenAI Error:",
+      "=============================="
+    );
+
+    console.error(
+      "OPENAI ERROR"
+    );
+
+    console.error(
+      "Status:",
+      error?.status
+    );
+
+    console.error(
+      "Code:",
+      error?.code
+    );
+
+    console.error(
+      "Type:",
+      error?.type
+    );
+
+    console.error(
+      "Message:",
+      error?.message
+    );
+
+    console.error(
+      "Param:",
+      error?.param
+    );
+
+    console.error(
+      "Full Error:",
       error
     );
 
+    console.error(
+      "=============================="
+    );
+
     /* =========================
-       OPENAI ERROR
+       ERROR INFORMATION
     ========================== */
+
+    const status =
+      Number(error?.status) || 500;
+
+    const code =
+      error?.code || "";
+
+    const type =
+      error?.type || "";
 
     const message =
       error?.message ||
       "حدث خطأ أثناء معالجة الطلب.";
 
-    return res.status(500).json({
-      error: message
+    /* =========================
+       RATE LIMIT
+    ========================== */
+
+    if (
+      status === 429 &&
+      (
+        code === "rate_limit_exceeded" ||
+        type === "rate_limit_error"
+      )
+    ) {
+
+      return res.status(429).json({
+        error:
+          "تم الوصول إلى حد الطلبات المؤقت. انتظر قليلاً ثم حاول مرة ثانية.",
+        error_type:
+          "rate_limit",
+        debug:
+          message
+      });
+
+    }
+
+    /* =========================
+       QUOTA / BILLING
+    ========================== */
+
+    if (
+      status === 429 &&
+      (
+        code === "insufficient_quota" ||
+        code === "billing_hard_limit_reached" ||
+        code === "credit_balance_exhausted"
+      )
+    ) {
+
+      return res.status(429).json({
+        error:
+          "رصيد استخدام OpenAI API غير كافٍ أو تم الوصول إلى حد الإنفاق.",
+        error_type:
+          "quota",
+        debug:
+          message
+      });
+
+    }
+
+    /* =========================
+       AUTHENTICATION
+    ========================== */
+
+    if (status === 401) {
+
+      return res.status(401).json({
+        error:
+          "مفتاح OpenAI API غير صالح أو غير صحيح.",
+        error_type:
+          "authentication",
+        debug:
+          message
+      });
+
+    }
+
+    /* =========================
+       PERMISSION
+    ========================== */
+
+    if (status === 403) {
+
+      return res.status(403).json({
+        error:
+          "مفتاح OpenAI لا يملك صلاحية استخدام هذا النموذج أو الخدمة.",
+        error_type:
+          "permission",
+        debug:
+          message
+      });
+
+    }
+
+    /* =========================
+       MODEL ERROR
+    ========================== */
+
+    if (status === 404) {
+
+      return res.status(404).json({
+        error:
+          "النموذج المطلوب غير متاح بهذا الاسم أو غير متاح لهذا الحساب.",
+        error_type:
+          "model",
+        debug:
+          message
+      });
+
+    }
+
+    /* =========================
+       GENERIC ERROR
+    ========================== */
+
+    return res.status(status >= 400 ? status : 500).json({
+      error:
+        "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.",
+      error_type:
+        type || code || "unknown",
+      debug:
+        message
     });
 
   }
