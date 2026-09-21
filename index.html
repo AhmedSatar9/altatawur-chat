@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -13,9 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    /* =========================
-       SUPABASE
-    ========================== */
 
     const SUPABASE_URL =
       "https://wxsricscchalzvazdbzd.supabase.co";
@@ -29,47 +28,79 @@
         SUPABASE_PUBLISHABLE_KEY
       );
 
-    /* مهم جداً:
-       تعريف المتغيرات هنا حتى تكون
-       متاحة لكل السكربتات */
     let currentSession = null;
     let currentUser = null;
+
   </script>
 
+
   <style>
+
     :root {
+
       --bg: #070912;
       --panel: #0d1222;
       --panel2: #11182a;
-      --border: rgba(255,255,255,.09);
-      --text: #f5f7ff;
-      --muted: #8d96aa;
-      --purple: #8b5cf6;
-      --cyan: #22d3ee;
-      --gradient: linear-gradient(
-        135deg,
-        #8b5cf6,
-        #22d3ee
-      );
+
+      --border:
+        rgba(255,255,255,.09);
+
+      --text:
+        #f5f7ff;
+
+      --muted:
+        #8d96aa;
+
+      --purple:
+        #8b5cf6;
+
+      --cyan:
+        #22d3ee;
+
+      --gradient:
+        linear-gradient(
+          135deg,
+          #8b5cf6,
+          #22d3ee
+        );
+
     }
 
+
     * {
+
       box-sizing: border-box;
+
       margin: 0;
+
       padding: 0;
+
     }
+
 
     html,
     body {
+
       width: 100%;
+
       height: 100%;
-      background: var(--bg);
+
+      background:
+        var(--bg);
+
       overflow: hidden;
-      overscroll-behavior: none;
+
+      overscroll-behavior:
+        none;
+
     }
 
+
     body {
-      color: var(--text);
+
+      color:
+        var(--text);
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -77,40 +108,65 @@
         Arial,
         sans-serif;
 
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
+      position:
+        fixed;
+
+      inset:
+        0;
+
+      overflow:
+        hidden;
+
     }
+
 
     button,
     textarea,
     input {
-      font-family: inherit;
+
+      font-family:
+        inherit;
+
     }
+
 
     button {
-      -webkit-tap-highlight-color: transparent;
+
+      -webkit-tap-highlight-color:
+        transparent;
+
     }
 
+
     .app {
+
       width: 100%;
+
       height: 100dvh;
+
       min-height: 100dvh;
+
       max-height: 100dvh;
 
       display: flex;
+
       flex-direction: column;
 
       overflow: hidden;
+
       position: relative;
+
     }
+
 
     /* =========================
        HEADER
     ========================== */
 
     header {
+
       height: 92px;
+
       min-height: 92px;
 
       padding: 14px 24px;
@@ -122,23 +178,35 @@
         rgba(13,18,34,.94);
 
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
 
       position: relative;
+
       z-index: 100;
 
       flex-shrink: 0;
+
     }
+
 
     .brand {
+
       display: flex;
+
       align-items: center;
+
       gap: 14px;
+
     }
 
+
     .logo {
+
       width: 58px;
+
       height: 58px;
 
       border-radius: 17px;
@@ -147,35 +215,56 @@
         var(--gradient);
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
       font-size: 31px;
+
       font-weight: 800;
 
       box-shadow:
         0 10px 30px
         rgba(100,90,255,.18);
+
     }
+
 
     .brand-info h1 {
+
       font-size: 24px;
+
       margin-bottom: 3px;
+
     }
+
 
     .status {
-      color: #6ee7b7;
+
+      color:
+        #6ee7b7;
+
       font-size: 14px;
+
     }
+
 
     .header-actions {
+
       display: flex;
+
       align-items: center;
+
       gap: 10px;
+
       direction: ltr;
+
     }
 
+
     .new-chat {
+
       height: 48px;
 
       padding: 0 16px;
@@ -185,9 +274,11 @@
       border:
         1px solid var(--border);
 
-      background: transparent;
+      background:
+        transparent;
 
-      color: var(--muted);
+      color:
+        var(--muted);
 
       font-size: 15px;
 
@@ -196,9 +287,12 @@
       white-space: nowrap;
 
       transition: .2s ease;
+
     }
 
+
     .new-chat:hover {
+
       color: white;
 
       border-color:
@@ -206,16 +300,21 @@
 
       background:
         rgba(255,255,255,.04);
+
     }
 
+
     .menu {
+
       width: 48px;
+
       height: 48px;
 
       border:
         1px solid var(--border);
 
-      background: transparent;
+      background:
+        transparent;
 
       border-radius: 14px;
 
@@ -226,16 +325,22 @@
       cursor: pointer;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
+
     }
+
 
     /* =========================
        CHAT
     ========================== */
 
     .chat {
+
       width: 100%;
+
       max-width: 900px;
 
       margin: 0 auto;
@@ -243,27 +348,36 @@
       padding: 35px 20px 25px;
 
       flex: 1;
+
       min-height: 0;
 
       overflow-y: auto;
+
       overflow-x: hidden;
 
       overscroll-behavior: contain;
 
-      -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scrolling:
+        touch;
 
       scrollbar-width: thin;
+
     }
+
 
     .welcome {
+
       text-align: center;
 
-      padding:
-        70px 10px 30px;
+      padding: 70px 10px 30px;
+
     }
 
+
     .welcome-logo {
+
       width: 110px;
+
       height: 110px;
 
       border-radius: 32px;
@@ -275,32 +389,49 @@
         0 auto 28px;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
       font-size: 55px;
+
       font-weight: 800;
 
       box-shadow:
         0 20px 60px
         rgba(100,90,255,.18);
+
     }
+
 
     .welcome h2 {
+
       font-size: 38px;
+
       margin-bottom: 15px;
+
     }
 
+
     .welcome h2 span {
+
       background:
         var(--gradient);
 
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip:
+        text;
+
+      -webkit-text-fill-color:
+        transparent;
+
     }
 
+
     .welcome p {
-      color: var(--muted);
+
+      color:
+        var(--muted);
 
       font-size: 18px;
 
@@ -309,13 +440,16 @@
       max-width: 650px;
 
       margin: auto;
+
     }
+
 
     /* =========================
        MESSAGE
     ========================== */
 
     .message {
+
       display: flex;
 
       gap: 12px;
@@ -323,14 +457,22 @@
       margin: 25px 0;
 
       align-items: flex-start;
+
     }
+
 
     .message.user {
-      flex-direction: row-reverse;
+
+      flex-direction:
+        row-reverse;
+
     }
 
+
     .avatar {
+
       width: 46px;
+
       height: 46px;
 
       min-width: 46px;
@@ -341,18 +483,28 @@
         var(--gradient);
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
       font-weight: bold;
+
       font-size: 20px;
+
     }
+
 
     .message.assistant .avatar {
-      background: #182137;
+
+      background:
+        #182137;
+
     }
 
+
     .bubble {
+
       max-width: 75%;
 
       padding: 15px 19px;
@@ -372,18 +524,26 @@
       white-space: pre-wrap;
 
       overflow-wrap: anywhere;
+
     }
+
 
     .message.user .bubble {
-      background: #111a30;
+
+      background:
+        #111a30;
+
     }
 
+
     .message-image {
+
       display: block;
 
       width: 100%;
 
       max-width: 360px;
+
       max-height: 420px;
 
       object-fit: contain;
@@ -395,10 +555,14 @@
       border:
         1px solid
         rgba(255,255,255,.08);
+
     }
 
+
     .message-file {
+
       display: flex;
+
       align-items: center;
 
       gap: 10px;
@@ -412,19 +576,24 @@
       background:
         rgba(255,255,255,.04);
 
-      color: #dbe1ef;
+      color:
+        #dbe1ef;
 
       font-size: 14px;
+
     }
+
 
     /* =========================
        ATTACHMENT
     ========================== */
 
     .attachment-preview {
+
       display: none;
 
       width: 100%;
+
       max-width: 900px;
 
       margin:
@@ -440,18 +609,25 @@
         rgba(255,255,255,.10);
 
       border-radius: 17px;
+
     }
 
+
     .attachment-preview.active {
+
       display: flex;
 
       align-items: center;
 
       gap: 10px;
+
     }
 
+
     .attachment-icon {
+
       width: 42px;
+
       height: 42px;
 
       border-radius: 12px;
@@ -460,20 +636,29 @@
         rgba(139,92,246,.15);
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
       font-size: 21px;
 
       flex-shrink: 0;
+
     }
+
 
     .attachment-info {
+
       min-width: 0;
+
       flex: 1;
+
     }
 
+
     .attachment-name {
+
       font-size: 14px;
 
       white-space: nowrap;
@@ -481,42 +666,49 @@
       overflow: hidden;
 
       text-overflow: ellipsis;
+
     }
 
+
     .attachment-size {
-      color: var(--muted);
+
+      color:
+        var(--muted);
 
       font-size: 12px;
 
       margin-top: 2px;
+
     }
 
+
     .remove-attachment {
+
       width: 34px;
+
       height: 34px;
 
       border: none;
 
       border-radius: 10px;
 
-      background: transparent;
+      background:
+        transparent;
 
-      color: #8d96aa;
+      color:
+        #8d96aa;
 
       font-size: 20px;
 
       cursor: pointer;
+
     }
 
-    .remove-attachment:hover {
-      color: #ff6b81;
-
-      background:
-        rgba(255,107,129,.08);
-    }
 
     .attachment-image {
+
       width: 52px;
+
       height: 52px;
 
       border-radius: 11px;
@@ -526,59 +718,85 @@
       display: none;
 
       flex-shrink: 0;
+
     }
+
 
     /* =========================
        TYPING
     ========================== */
 
     .typing {
+
       display: flex;
 
       gap: 5px;
 
       align-items: center;
+
     }
 
+
     .typing span {
+
       width: 7px;
+
       height: 7px;
 
       border-radius: 50%;
 
-      background: #8b5cf6;
+      background:
+        #8b5cf6;
 
       animation:
         bounce 1s infinite;
+
     }
+
 
     .typing span:nth-child(2) {
-      animation-delay: .15s;
+
+      animation-delay:
+        .15s;
+
     }
+
 
     .typing span:nth-child(3) {
-      animation-delay: .3s;
+
+      animation-delay:
+        .3s;
+
     }
 
+
     @keyframes bounce {
+
       0%,
       60%,
       100% {
+
         transform:
           translateY(0);
+
       }
 
       30% {
+
         transform:
           translateY(-6px);
+
       }
+
     }
+
 
     /* =========================
        INPUT
     ========================== */
 
     .input-area {
+
       position: relative;
 
       width: 100%;
@@ -599,9 +817,12 @@
         );
 
       z-index: 200;
+
     }
 
+
     .input-box {
+
       max-width: 900px;
 
       margin: 0 auto;
@@ -626,19 +847,25 @@
       box-shadow:
         0 -5px 30px
         rgba(0,0,0,.15);
+
     }
 
+
     .attach-button {
+
       width: 52px;
+
       height: 52px;
 
       border: none;
 
       border-radius: 16px;
 
-      background: transparent;
+      background:
+        transparent;
 
-      color: #aab2c5;
+      color:
+        #aab2c5;
 
       font-size: 24px;
 
@@ -649,28 +876,21 @@
       display: flex;
 
       align-items: center;
+
       justify-content: center;
 
-      transition: .2s ease;
     }
 
-    .attach-button:hover {
-      color: white;
-
-      background:
-        rgba(255,255,255,.06);
-    }
-
-    .attach-button:active {
-      transform:
-        scale(.94);
-    }
 
     #fileInput {
+
       display: none;
+
     }
 
+
     textarea {
+
       flex: 1;
 
       resize: none;
@@ -679,7 +899,8 @@
 
       outline: none;
 
-      background: transparent;
+      background:
+        transparent;
 
       color: white;
 
@@ -693,14 +914,22 @@
 
       padding:
         13px 12px;
+
     }
+
 
     textarea::placeholder {
-      color: #69738b;
+
+      color:
+        #69738b;
+
     }
 
+
     .send {
+
       width: 54px;
+
       height: 54px;
 
       border: none;
@@ -721,36 +950,32 @@
       display: flex;
 
       align-items: center;
+
       justify-content: center;
 
       transition: .2s ease;
+
+      touch-action: manipulation;
+
     }
 
-    .send:hover:not(:disabled) {
-      transform:
-        translateY(-1px);
-
-      box-shadow:
-        0 8px 25px
-        rgba(139,92,246,.25);
-    }
-
-    .send:active:not(:disabled) {
-      transform:
-        scale(.94);
-    }
 
     .send:disabled {
+
       opacity: .5;
 
-      cursor: not-allowed;
+      cursor:
+        not-allowed;
+
     }
+
 
     /* =========================
        SIDE MENU
     ========================== */
 
     .side-overlay {
+
       position: fixed;
 
       inset: 0;
@@ -768,26 +993,35 @@
       visibility: hidden;
 
       transition: .25s ease;
+
     }
 
+
     .side-overlay.active {
+
       opacity: 1;
 
       visibility: visible;
+
     }
 
+
     .side-panel {
+
       position: fixed;
 
       top: 0;
+
       right: 0;
+
       bottom: 0;
 
       width: 330px;
 
       max-width: 88vw;
 
-      background: #0b1020;
+      background:
+        #0b1020;
 
       border-left:
         1px solid var(--border);
@@ -802,14 +1036,20 @@
       display: flex;
 
       flex-direction: column;
+
     }
+
 
     .side-panel.active {
+
       transform:
         translateX(0);
+
     }
 
+
     .side-header {
+
       height: 82px;
 
       padding:
@@ -823,14 +1063,21 @@
       align-items: center;
 
       justify-content: space-between;
+
     }
+
 
     .side-header h3 {
+
       font-size: 20px;
+
     }
 
+
     .close-menu {
+
       width: 42px;
+
       height: 42px;
 
       border:
@@ -838,18 +1085,22 @@
 
       border-radius: 12px;
 
-      background: transparent;
+      background:
+        transparent;
 
       color: white;
 
       font-size: 22px;
 
       cursor: pointer;
+
     }
+
 
     /* ACCOUNT */
 
     .account-box {
+
       margin:
         14px 16px 8px;
 
@@ -869,11 +1120,13 @@
 
       gap: 10px;
 
-      direction: rtl;
     }
 
+
     .account-avatar {
+
       width: 42px;
+
       height: 42px;
 
       border-radius: 12px;
@@ -884,28 +1137,39 @@
       display: flex;
 
       align-items: center;
+
       justify-content: center;
 
       font-weight: 800;
 
       flex-shrink: 0;
+
     }
 
+
     .account-info {
+
       min-width: 0;
 
       flex: 1;
+
     }
 
+
     .account-label {
-      color: var(--muted);
+
+      color:
+        var(--muted);
 
       font-size: 11px;
 
       margin-bottom: 3px;
+
     }
 
+
     .account-email {
+
       font-size: 13px;
 
       overflow: hidden;
@@ -917,15 +1181,18 @@
       direction: ltr;
 
       text-align: right;
+
     }
 
-    /* LOGIN BUTTON */
+
+    /* LOGIN */
 
     .login-button {
-      margin:
-        8px 16px;
 
-      padding: 14px;
+      margin:
+        0 16px 10px;
+
+      padding: 13px;
 
       border: none;
 
@@ -940,28 +1207,22 @@
 
       font-size: 15px;
 
-      font-weight: 700;
+      font-weight: 600;
 
-      transition: .2s ease;
     }
+
 
     .login-button:hover {
-      transform:
-        translateY(-1px);
 
-      box-shadow:
-        0 8px 25px
-        rgba(139,92,246,.25);
+      opacity: .92;
+
     }
 
-    .login-button:active {
-      transform:
-        scale(.98);
-    }
 
     /* NEW CHAT */
 
     .side-new {
+
       margin:
         8px 16px 16px;
 
@@ -983,21 +1244,26 @@
       font-size: 15px;
 
       text-align: center;
+
     }
 
-    /* CONVERSATIONS */
 
     .conversation-list {
+
       flex: 1;
 
       overflow-y: auto;
 
       padding:
         0 12px 20px;
+
     }
 
+
     .conversation-empty {
-      color: var(--muted);
+
+      color:
+        var(--muted);
 
       text-align: center;
 
@@ -1007,15 +1273,19 @@
       line-height: 1.8;
 
       font-size: 14px;
+
     }
 
+
     .conversation-item {
+
       width: 100%;
 
       border:
         1px solid transparent;
 
-      background: transparent;
+      background:
+        transparent;
 
       color: white;
 
@@ -1036,26 +1306,22 @@
 
       text-align: right;
 
-      transition: .2s ease;
     }
 
-    .conversation-item:hover {
-      background:
-        rgba(255,255,255,.04);
-
-      border-color:
-        var(--border);
-    }
 
     .conversation-item.active {
+
       background:
         rgba(139,92,246,.10);
 
       border-color:
         rgba(139,92,246,.25);
+
     }
 
+
     .conversation-title {
+
       flex: 1;
 
       min-width: 0;
@@ -1067,10 +1333,14 @@
       white-space: nowrap;
 
       font-size: 14px;
+
     }
 
+
     .delete-conversation {
+
       width: 32px;
+
       height: 32px;
 
       flex-shrink: 0;
@@ -1079,25 +1349,21 @@
 
       border-radius: 9px;
 
-      background: transparent;
+      background:
+        transparent;
 
-      color: #788198;
+      color:
+        #788198;
 
       cursor: pointer;
 
       font-size: 16px;
+
     }
 
-    .delete-conversation:hover {
-      color: #ff6b81;
-
-      background:
-        rgba(255,107,129,.08);
-    }
-
-    /* LOGOUT */
 
     .logout-button {
+
       margin:
         0 16px 14px;
 
@@ -1112,17 +1378,15 @@
       background:
         rgba(255,107,129,.06);
 
-      color: #ff9aaa;
+      color:
+        #ff9aaa;
 
       cursor: pointer;
 
       font-size: 14px;
+
     }
 
-    .logout-button:hover {
-      background:
-        rgba(255,107,129,.10);
-    }
 
     /* =========================
        MOBILE
@@ -1130,31 +1394,8 @@
 
     @media (max-width: 600px) {
 
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-
-        overflow: hidden;
-
-        position: fixed;
-
-        inset: 0;
-      }
-
-      .app {
-        width: 100%;
-
-        height: 100dvh;
-
-        min-height: 100dvh;
-
-        max-height: 100dvh;
-
-        overflow: hidden;
-      }
-
       header {
+
         height: 82px;
 
         min-height: 82px;
@@ -1162,35 +1403,52 @@
         padding:
           12px 16px;
 
-        flex-shrink: 0;
       }
+
 
       .brand {
+
         gap: 10px;
+
       }
 
+
       .logo {
+
         width: 50px;
+
         height: 50px;
 
         border-radius: 15px;
 
         font-size: 27px;
+
       }
+
 
       .brand-info h1 {
+
         font-size: 21px;
+
       }
+
 
       .status {
+
         font-size: 13px;
+
       }
+
 
       .header-actions {
+
         gap: 7px;
+
       }
 
+
       .new-chat {
+
         height: 44px;
 
         padding:
@@ -1199,78 +1457,76 @@
         font-size: 12px;
 
         border-radius: 13px;
+
       }
 
+
       .menu {
+
         width: 44px;
+
         height: 44px;
 
         border-radius: 13px;
 
         font-size: 23px;
+
       }
+
 
       .chat {
-        width: 100%;
 
         padding:
-          20px 12px 20px;
+          20px 12px;
 
-        flex: 1;
-
-        min-height: 0;
-
-        overflow-y: auto;
-
-        overflow-x: hidden;
-
-        overscroll-behavior-y:
-          contain;
-
-        -webkit-overflow-scrolling:
-          touch;
       }
+
 
       .welcome {
-        padding-top: 60px;
+
+        padding-top:
+          60px;
+
       }
 
+
       .welcome-logo {
+
         width: 90px;
+
         height: 90px;
 
         font-size: 45px;
 
         border-radius: 28px;
+
       }
+
 
       .welcome h2 {
+
         font-size: 29px;
+
       }
+
 
       .welcome p {
+
         font-size: 15px;
+
       }
 
+
       .bubble {
+
         max-width: 82%;
 
         font-size: 15px;
+
       }
 
-      .avatar {
-        width: 44px;
-        height: 44px;
-
-        min-width: 44px;
-      }
 
       .input-area {
-        position: relative;
-
-        width: 100%;
-
-        flex-shrink: 0;
 
         padding:
           10px 12px
@@ -1279,14 +1535,11 @@
             env(safe-area-inset-bottom)
           );
 
-        background:
-          linear-gradient(
-            transparent,
-            rgba(7,9,18,.98) 25%
-          );
       }
 
+
       .input-box {
+
         width: 100%;
 
         border-radius: 23px;
@@ -1294,106 +1547,122 @@
         margin: 0;
 
         padding: 8px;
+
       }
 
+
       .attach-button {
+
         width: 45px;
 
         height: 52px;
 
         font-size: 22px;
+
       }
 
+
       textarea {
+
         min-height: 52px;
 
         max-height: 120px;
 
         padding:
           13px 8px;
+
       }
 
+
       .send {
+
         width: 52px;
 
         height: 52px;
+
       }
+
 
       .side-panel {
+
         width: 310px;
+
       }
 
+
       .message-image {
+
         max-width: 260px;
+
       }
+
     }
+
 
     @media (max-width: 380px) {
 
       header {
+
         height: 76px;
 
         min-height: 76px;
+
       }
 
+
       .new-chat {
+
         padding:
           0 8px;
 
         font-size: 11px;
+
       }
+
 
       .brand-info h1 {
+
         font-size: 18px;
+
       }
+
 
       .status {
+
         font-size: 12px;
+
       }
+
 
       .logo {
+
         width: 46px;
+
         height: 46px;
+
       }
+
 
       .menu {
+
         width: 42px;
+
         height: 42px;
+
       }
 
-      .chat {
-        padding:
-          15px 10px 15px;
-      }
-
-      .input-area {
-        padding:
-          8px 10px
-          calc(
-            10px +
-            env(safe-area-inset-bottom)
-          );
-      }
-
-      .input-box {
-        border-radius: 21px;
-      }
-
-      .attach-button {
-        width: 40px;
-      }
-
-      .send {
-        width: 50px;
-        height: 50px;
-      }
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <div class="app">
+
 
   <!-- HEADER -->
 
@@ -1413,7 +1682,7 @@
 
         <div
           class="status"
-          id="headerStatus"
+          id="statusText"
         >
           ● متصل الآن
         </div>
@@ -1421,6 +1690,7 @@
       </div>
 
     </div>
+
 
     <div class="header-actions">
 
@@ -1431,6 +1701,7 @@
       >
         + محادثة جديدة
       </button>
+
 
       <button
         type="button"
@@ -1458,6 +1729,7 @@
 
   <div class="input-area">
 
+
     <div
       class="attachment-preview"
       id="attachmentPreview"
@@ -1476,6 +1748,7 @@
         📎
       </div>
 
+
       <div class="attachment-info">
 
         <div
@@ -1490,11 +1763,11 @@
 
       </div>
 
+
       <button
         type="button"
         class="remove-attachment"
         id="removeAttachmentButton"
-        aria-label="إزالة المرفق"
       >
         ×
       </button>
@@ -1504,21 +1777,22 @@
 
     <div class="input-box">
 
+
       <input
         type="file"
         id="fileInput"
         accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.csv"
       >
 
+
       <button
         type="button"
         class="attach-button"
         id="attachButton"
-        aria-label="إضافة مرفق"
-        title="إضافة مرفق"
       >
         📎
       </button>
+
 
       <textarea
         id="messageInput"
@@ -1526,11 +1800,11 @@
         rows="1"
       ></textarea>
 
+
       <button
         type="button"
         class="send"
         id="sendButton"
-        aria-label="إرسال"
       >
         ↑
       </button>
@@ -1542,7 +1816,7 @@
 </div>
 
 
-<!-- SIDE MENU -->
+<!-- OVERLAY -->
 
 <div
   class="side-overlay"
@@ -1550,10 +1824,13 @@
 ></div>
 
 
+<!-- SIDE MENU -->
+
 <aside
   class="side-panel"
   id="sidePanel"
 >
+
 
   <div class="side-header">
 
@@ -1580,13 +1857,13 @@
       class="account-avatar"
       id="accountAvatar"
     >
-      ز
+      أ
     </div>
 
     <div class="account-info">
 
       <div class="account-label">
-        الحالة
+        الحساب
       </div>
 
       <div
@@ -1601,7 +1878,7 @@
   </div>
 
 
-  <!-- LOGIN -->
+  <!-- LOGIN BUTTON -->
 
   <button
     type="button"
@@ -1642,700 +1919,1527 @@
     id="conversationList"
   ></div>
 
+
 </aside>
 
 
 <script>
 
-  /* =====================================================
-     ELEMENTS
-  ===================================================== */
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
-  const chat =
-    document.getElementById("chat");
+const chat =
+  document.getElementById("chat");
 
-  const input =
-    document.getElementById(
-      "messageInput"
+const input =
+  document.getElementById("messageInput");
+
+const sendButton =
+  document.getElementById("sendButton");
+
+const attachButton =
+  document.getElementById("attachButton");
+
+const fileInput =
+  document.getElementById("fileInput");
+
+const attachmentPreview =
+  document.getElementById("attachmentPreview");
+
+const attachmentName =
+  document.getElementById("attachmentName");
+
+const attachmentSize =
+  document.getElementById("attachmentSize");
+
+const attachmentImage =
+  document.getElementById("attachmentImage");
+
+const attachmentIcon =
+  document.getElementById("attachmentIcon");
+
+const removeAttachmentButton =
+  document.getElementById(
+    "removeAttachmentButton"
+  );
+
+const sidePanel =
+  document.getElementById("sidePanel");
+
+const sideOverlay =
+  document.getElementById("sideOverlay");
+
+const closeMenuButton =
+  document.getElementById("closeMenu");
+
+const sideNewChat =
+  document.getElementById("sideNewChat");
+
+const conversationList =
+  document.getElementById(
+    "conversationList"
+  );
+
+const headerNewChat =
+  document.getElementById(
+    "headerNewChat"
+  );
+
+const menuButton =
+  document.getElementById(
+    "menuButton"
+  );
+
+const accountEmail =
+  document.getElementById(
+    "accountEmail"
+  );
+
+const accountAvatar =
+  document.getElementById(
+    "accountAvatar"
+  );
+
+const loginButton =
+  document.getElementById(
+    "loginButton"
+  );
+
+const logoutButton =
+  document.getElementById(
+    "logoutButton"
+  );
+
+const statusText =
+  document.getElementById(
+    "statusText"
+  );
+
+
+/* =====================================================
+   STORAGE
+===================================================== */
+
+let STORAGE_KEY =
+  "altatawur_guest_conversations";
+
+let ACTIVE_KEY =
+  "altatawur_guest_active";
+
+let conversations = [];
+
+let activeConversationId = null;
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let selectedFile = null;
+
+let selectedFileData = null;
+
+let isSending = false;
+
+
+/* =====================================================
+   UPDATE ACCOUNT UI
+===================================================== */
+
+function updateAccountUI() {
+
+  if (currentUser) {
+
+    accountEmail.textContent =
+      currentUser.email ||
+      "مستخدم";
+
+    accountAvatar.textContent =
+      "أ";
+
+    loginButton.style.display =
+      "none";
+
+    logoutButton.style.display =
+      "block";
+
+    statusText.textContent =
+      "● متصل الآن";
+
+  } else {
+
+    accountEmail.textContent =
+      "مستخدم زائر";
+
+    accountAvatar.textContent =
+      "ز";
+
+    loginButton.style.display =
+      "block";
+
+    logoutButton.style.display =
+      "none";
+
+    statusText.textContent =
+      "● متصل الآن";
+
+  }
+
+}
+
+
+/* =====================================================
+   STORAGE
+===================================================== */
+
+function loadUserStorage() {
+
+  const userKey =
+    currentUser?.id ||
+    "guest";
+
+
+  STORAGE_KEY =
+    `altatawur_conversations_${userKey}`;
+
+
+  ACTIVE_KEY =
+    `altatawur_active_conversation_${userKey}`;
+
+
+  try {
+
+    conversations =
+      JSON.parse(
+        localStorage.getItem(
+          STORAGE_KEY
+        ) || "[]"
+      );
+
+
+    if (
+      !Array.isArray(
+        conversations
+      )
+    ) {
+
+      conversations = [];
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Storage error:",
+      error
     );
 
-  const sendButton =
-    document.getElementById(
-      "sendButton"
+    conversations = [];
+
+  }
+
+
+  activeConversationId =
+    localStorage.getItem(
+      ACTIVE_KEY
+    ) || null;
+
+}
+
+
+/* =====================================================
+   SAVE
+===================================================== */
+
+function saveConversations() {
+
+  try {
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(
+        conversations
+      )
     );
 
-  const attachButton =
-    document.getElementById(
-      "attachButton"
+  } catch (error) {
+
+    console.error(
+      "Save error:",
+      error
     );
 
-  const fileInput =
-    document.getElementById(
-      "fileInput"
+  }
+
+}
+
+
+function saveActiveId() {
+
+  if (
+    activeConversationId
+  ) {
+
+    localStorage.setItem(
+      ACTIVE_KEY,
+      activeConversationId
     );
 
-  const attachmentPreview =
-    document.getElementById(
-      "attachmentPreview"
+  } else {
+
+    localStorage.removeItem(
+      ACTIVE_KEY
     );
 
-  const attachmentName =
-    document.getElementById(
-      "attachmentName"
+  }
+
+}
+
+
+/* =====================================================
+   ID
+===================================================== */
+
+function createId() {
+
+  return (
+    Date.now().toString() +
+    Math.random()
+      .toString(36)
+      .slice(2)
+  );
+
+}
+
+
+/* =====================================================
+   ACTIVE CONVERSATION
+===================================================== */
+
+function getActiveConversation() {
+
+  return conversations.find(
+    conversation =>
+      conversation.id ===
+      activeConversationId
+  );
+
+}
+
+
+/* =====================================================
+   WELCOME
+===================================================== */
+
+function showWelcome() {
+
+  chat.innerHTML = `
+
+    <section class="welcome">
+
+      <div class="welcome-logo">
+        ت
+      </div>
+
+      <h2>
+        أهلاً بك في
+        <span>
+          التطور چات
+        </span>
+      </h2>
+
+      <p>
+        مساعدك الذكي للإجابة عن الأسئلة،
+        شرح المواضيع، كتابة النصوص
+        وتوليد الأفكار.
+      </p>
+
+    </section>
+
+  `;
+
+}
+
+
+/* =====================================================
+   SCROLL
+===================================================== */
+
+function scrollChatToBottom() {
+
+  requestAnimationFrame(() => {
+
+    chat.scrollTo({
+
+      top:
+        chat.scrollHeight,
+
+      behavior:
+        "smooth"
+
+    });
+
+  });
+
+}
+
+
+/* =====================================================
+   ADD MESSAGE
+===================================================== */
+
+function addMessage(
+  role,
+  text,
+  attachment = null
+) {
+
+  const message =
+    document.createElement(
+      "div"
     );
 
-  const attachmentSize =
-    document.getElementById(
-      "attachmentSize"
-    );
 
-  const attachmentImage =
-    document.getElementById(
-      "attachmentImage"
-    );
+  message.className =
+    `message ${role}`;
 
-  const attachmentIcon =
-    document.getElementById(
-      "attachmentIcon"
-    );
 
-  const removeAttachmentButton =
-    document.getElementById(
-      "removeAttachmentButton"
-    );
-
-  const sidePanel =
-    document.getElementById(
-      "sidePanel"
-    );
-
-  const sideOverlay =
-    document.getElementById(
-      "sideOverlay"
-    );
-
-  const closeMenuButton =
-    document.getElementById(
-      "closeMenu"
-    );
-
-  const sideNewChat =
-    document.getElementById(
-      "sideNewChat"
-    );
-
-  const conversationList =
-    document.getElementById(
-      "conversationList"
-    );
-
-  const headerNewChat =
-    document.getElementById(
-      "headerNewChat"
-    );
-
-  const menuButton =
-    document.getElementById(
-      "menuButton"
-    );
-
-  const accountEmail =
-    document.getElementById(
-      "accountEmail"
-    );
-
-  const accountAvatar =
-    document.getElementById(
-      "accountAvatar"
-    );
-
-  const logoutButton =
-    document.getElementById(
-      "logoutButton"
-    );
-
-  const loginButton =
-    document.getElementById(
-      "loginButton"
-    );
-
-  const headerStatus =
-    document.getElementById(
-      "headerStatus"
+  const avatar =
+    document.createElement(
+      "div"
     );
 
 
-  /* =====================================================
-     STORAGE
-  ===================================================== */
+  avatar.className =
+    "avatar";
 
-  let STORAGE_KEY = "";
-  let ACTIVE_KEY = "";
 
-  let conversations = [];
+  avatar.textContent =
+    role === "user"
+      ? "أ"
+      : "ت";
 
-  let activeConversationId =
+
+  const bubble =
+    document.createElement(
+      "div"
+    );
+
+
+  bubble.className =
+    "bubble";
+
+
+  if (
+    attachment &&
+    attachment.type ===
+      "image" &&
+    attachment.data
+  ) {
+
+    const img =
+      document.createElement(
+        "img"
+      );
+
+
+    img.className =
+      "message-image";
+
+
+    img.src =
+      attachment.data;
+
+
+    img.alt =
+      attachment.name ||
+      "صورة";
+
+
+    bubble.appendChild(
+      img
+    );
+
+  }
+
+
+  if (
+    attachment &&
+    attachment.type !==
+      "image"
+  ) {
+
+    const fileBox =
+      document.createElement(
+        "div"
+      );
+
+
+    fileBox.className =
+      "message-file";
+
+
+    fileBox.textContent =
+      `📎 ${
+        attachment.name ||
+        "ملف مرفق"
+      }`;
+
+
+    bubble.appendChild(
+      fileBox
+    );
+
+  }
+
+
+  if (text) {
+
+    const textElement =
+      document.createElement(
+        "div"
+      );
+
+
+    textElement.textContent =
+      text;
+
+
+    bubble.appendChild(
+      textElement
+    );
+
+  }
+
+
+  message.appendChild(
+    avatar
+  );
+
+
+  message.appendChild(
+    bubble
+  );
+
+
+  chat.appendChild(
+    message
+  );
+
+
+  scrollChatToBottom();
+
+
+  return message;
+
+}
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function renderConversation() {
+
+  const conversation =
+    getActiveConversation();
+
+
+  if (
+    !conversation ||
+    !Array.isArray(
+      conversation.messages
+    ) ||
+    !conversation.messages.length
+  ) {
+
+    showWelcome();
+
+    return;
+
+  }
+
+
+  chat.innerHTML = "";
+
+
+  conversation.messages.forEach(
+    message => {
+
+      addMessage(
+
+        message.role,
+
+        message.content ||
+          "",
+
+        message.attachment ||
+          null
+
+      );
+
+    }
+  );
+
+
+  requestAnimationFrame(() => {
+
+    chat.scrollTop =
+      chat.scrollHeight;
+
+  });
+
+}
+
+
+/* =====================================================
+   CONVERSATION LIST
+===================================================== */
+
+function renderConversationList() {
+
+  conversationList.innerHTML =
+    "";
+
+
+  if (
+    !conversations.length
+  ) {
+
+    conversationList.innerHTML = `
+
+      <div class="conversation-empty">
+
+        ما عندك محادثات محفوظة حالياً.
+
+        <br>
+
+        ابدأ محادثة جديدة
+        من الزر أعلاه.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  conversations
+    .slice()
+    .reverse()
+    .forEach(
+      conversation => {
+
+        const item =
+          document.createElement(
+            "div"
+          );
+
+
+        item.className =
+          "conversation-item" +
+          (
+            conversation.id ===
+            activeConversationId
+              ? " active"
+              : ""
+          );
+
+
+        const title =
+          document.createElement(
+            "div"
+          );
+
+
+        title.className =
+          "conversation-title";
+
+
+        title.textContent =
+          conversation.title ||
+          "محادثة جديدة";
+
+
+        const deleteButton =
+          document.createElement(
+            "button"
+          );
+
+
+        deleteButton.type =
+          "button";
+
+
+        deleteButton.className =
+          "delete-conversation";
+
+
+        deleteButton.textContent =
+          "🗑";
+
+
+        deleteButton.onclick =
+          event => {
+
+            event.stopPropagation();
+
+            deleteConversation(
+              conversation.id
+            );
+
+          };
+
+
+        item.appendChild(
+          title
+        );
+
+
+        item.appendChild(
+          deleteButton
+        );
+
+
+        item.onclick =
+          () => {
+
+            openConversation(
+              conversation.id
+            );
+
+          };
+
+
+        conversationList.appendChild(
+          item
+        );
+
+      }
+    );
+
+}
+
+
+/* =====================================================
+   OPEN
+===================================================== */
+
+function openConversation(id) {
+
+  activeConversationId =
+    id;
+
+
+  saveActiveId();
+
+
+  renderConversation();
+
+
+  renderConversationList();
+
+
+  closeMenu();
+
+
+  input.focus();
+
+}
+
+
+/* =====================================================
+   NEW CHAT
+===================================================== */
+
+function newChat() {
+
+  const newConversation = {
+
+    id:
+      createId(),
+
+    title:
+      "محادثة جديدة",
+
+    messages:
+      [],
+
+    createdAt:
+      Date.now()
+
+  };
+
+
+  conversations.push(
+    newConversation
+  );
+
+
+  activeConversationId =
+    newConversation.id;
+
+
+  saveConversations();
+
+  saveActiveId();
+
+
+  renderConversation();
+
+  renderConversationList();
+
+
+  input.value =
+    "";
+
+
+  input.style.height =
+    "52px";
+
+
+  removeAttachment();
+
+
+  input.focus();
+
+}
+
+
+/* =====================================================
+   DELETE
+===================================================== */
+
+function deleteConversation(id) {
+
+  conversations =
+    conversations.filter(
+      conversation =>
+        conversation.id !==
+        id
+    );
+
+
+  if (
+    activeConversationId ===
+    id
+  ) {
+
+    if (
+      conversations.length
+    ) {
+
+      activeConversationId =
+        conversations[
+          conversations.length - 1
+        ].id;
+
+    } else {
+
+      activeConversationId =
+        null;
+
+    }
+
+  }
+
+
+  saveConversations();
+
+  saveActiveId();
+
+  renderConversation();
+
+  renderConversationList();
+
+}
+
+
+/* =====================================================
+   TYPING
+===================================================== */
+
+function addTyping() {
+
+  removeTyping();
+
+
+  const message =
+    document.createElement(
+      "div"
+    );
+
+
+  message.className =
+    "message assistant";
+
+
+  message.id =
+    "typingMessage";
+
+
+  const avatar =
+    document.createElement(
+      "div"
+    );
+
+
+  avatar.className =
+    "avatar";
+
+
+  avatar.textContent =
+    "ت";
+
+
+  const bubble =
+    document.createElement(
+      "div"
+    );
+
+
+  bubble.className =
+    "bubble";
+
+
+  bubble.innerHTML = `
+
+    <div class="typing">
+
+      <span></span>
+
+      <span></span>
+
+      <span></span>
+
+    </div>
+
+  `;
+
+
+  message.appendChild(
+    avatar
+  );
+
+
+  message.appendChild(
+    bubble
+  );
+
+
+  chat.appendChild(
+    message
+  );
+
+
+  scrollChatToBottom();
+
+}
+
+
+function removeTyping() {
+
+  const typing =
+    document.getElementById(
+      "typingMessage"
+    );
+
+
+  if (typing) {
+
+    typing.remove();
+
+  }
+
+}
+
+
+/* =====================================================
+   FILE
+===================================================== */
+
+function formatFileSize(bytes) {
+
+  if (
+    bytes < 1024
+  ) {
+
+    return bytes + " B";
+
+  }
+
+
+  if (
+    bytes <
+    1024 * 1024
+  ) {
+
+    return (
+      (
+        bytes / 1024
+      ).toFixed(1) +
+      " KB"
+    );
+
+  }
+
+
+  if (
+    bytes <
+    1024 *
+    1024 *
+    1024
+  ) {
+
+    return (
+      (
+        bytes /
+        (1024 * 1024)
+      ).toFixed(1) +
+      " MB"
+    );
+
+  }
+
+
+  return (
+    (
+      bytes /
+      (1024 * 1024 * 1024)
+    ).toFixed(1) +
+    " GB"
+  );
+
+}
+
+
+function readFileAsDataURL(
+  file
+) {
+
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        () =>
+          resolve(
+            reader.result
+          );
+
+
+      reader.onerror =
+        () =>
+          reject(
+            new Error(
+              "تعذر قراءة الملف."
+            )
+          );
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
+
+}
+
+
+async function resizeImage(
+  file,
+  maxSize = 1600,
+  quality = 0.82
+) {
+
+  const dataUrl =
+    await readFileAsDataURL(
+      file
+    );
+
+
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
+
+      const img =
+        new Image();
+
+
+      img.onload =
+        function() {
+
+          let width =
+            img.width;
+
+          let height =
+            img.height;
+
+
+          if (
+            width > maxSize ||
+            height > maxSize
+          ) {
+
+            const ratio =
+              Math.min(
+                maxSize /
+                  width,
+
+                maxSize /
+                  height
+              );
+
+
+            width =
+              Math.round(
+                width *
+                ratio
+              );
+
+
+            height =
+              Math.round(
+                height *
+                ratio
+              );
+
+          }
+
+
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
+
+
+          canvas.width =
+            width;
+
+
+          canvas.height =
+            height;
+
+
+          const ctx =
+            canvas.getContext(
+              "2d"
+            );
+
+
+          ctx.drawImage(
+            img,
+            0,
+            0,
+            width,
+            height
+          );
+
+
+          resolve(
+            canvas.toDataURL(
+              "image/jpeg",
+              quality
+            )
+          );
+
+        };
+
+
+      img.onerror =
+        () =>
+          reject(
+            new Error(
+              "تعذر معالجة الصورة."
+            )
+          );
+
+
+      img.src =
+        dataUrl;
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   ATTACHMENT
+===================================================== */
+
+attachButton.addEventListener(
+  "click",
+  event => {
+
+    event.preventDefault();
+
+    fileInput.click();
+
+  }
+);
+
+
+fileInput.addEventListener(
+  "change",
+  handleFileSelect
+);
+
+
+removeAttachmentButton.addEventListener(
+  "click",
+  removeAttachment
+);
+
+
+async function handleFileSelect(
+  event
+) {
+
+  const file =
+    event.target.files[0];
+
+
+  if (!file) {
+
+    return;
+
+  }
+
+
+  if (
+    file.size >
+    20 * 1024 * 1024
+  ) {
+
+    alert(
+      "حجم الملف أكبر من 20MB."
+    );
+
+
+    removeAttachment();
+
+    return;
+
+  }
+
+
+  selectedFile =
+    file;
+
+
+  attachmentName.textContent =
+    file.name;
+
+
+  attachmentSize.textContent =
+    formatFileSize(
+      file.size
+    );
+
+
+  attachmentPreview.classList.add(
+    "active"
+  );
+
+
+  if (
+    file.type.startsWith(
+      "image/"
+    )
+  ) {
+
+    try {
+
+      const compressedImage =
+        await resizeImage(
+          file
+        );
+
+
+      selectedFileData = {
+
+        type:
+          "image",
+
+        name:
+          file.name,
+
+        mime:
+          "image/jpeg",
+
+        data:
+          compressedImage
+
+      };
+
+
+      attachmentImage.src =
+        compressedImage;
+
+
+      attachmentImage.style.display =
+        "block";
+
+
+      attachmentIcon.style.display =
+        "none";
+
+
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+
+      alert(
+        "تعذر تجهيز الصورة."
+      );
+
+
+      removeAttachment();
+
+    }
+
+  } else {
+
+    try {
+
+      const data =
+        await readFileAsDataURL(
+          file
+        );
+
+
+      selectedFileData = {
+
+        type:
+          "file",
+
+        name:
+          file.name,
+
+        mime:
+          file.type ||
+          "application/octet-stream",
+
+        data:
+          data
+
+      };
+
+
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+
+      alert(
+        "تعذر قراءة الملف."
+      );
+
+
+      removeAttachment();
+
+      return;
+
+    }
+
+
+    attachmentImage.style.display =
+      "none";
+
+
+    attachmentIcon.style.display =
+      "flex";
+
+
+    attachmentIcon.textContent =
+      file.type ===
+      "application/pdf"
+        ? "📄"
+        : "📎";
+
+  }
+
+}
+
+
+function removeAttachment() {
+
+  selectedFile =
     null;
 
 
-  function loadUserStorage() {
+  selectedFileData =
+    null;
 
-    const userKey =
-      currentUser?.id ||
-      "guest";
 
-    STORAGE_KEY =
-      `altatawur_conversations_${userKey}`;
+  fileInput.value =
+    "";
 
-    ACTIVE_KEY =
-      `altatawur_active_conversation_${userKey}`;
 
-    try {
+  attachmentPreview.classList.remove(
+    "active"
+  );
 
-      conversations =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
 
-      if (
-        !Array.isArray(
-          conversations
-        )
-      ) {
-        conversations = [];
-      }
+  attachmentImage.src =
+    "";
 
-    } catch (error) {
 
-      console.error(
-        "Storage read error:",
-        error
-      );
+  attachmentImage.style.display =
+    "none";
 
-      conversations = [];
-    }
 
-    activeConversationId =
-      localStorage.getItem(
-        ACTIVE_KEY
-      ) || null;
-  }
+  attachmentIcon.style.display =
+    "flex";
 
 
-  /* =====================================================
-     STATE
-  ===================================================== */
+  attachmentIcon.textContent =
+    "📎";
 
-  let selectedFile = null;
 
-  let selectedFileData = null;
+  attachmentName.textContent =
+    "";
 
-  let isSending = false;
 
+  attachmentSize.textContent =
+    "";
 
-  /* =====================================================
-     ACCOUNT UI
-  ===================================================== */
+}
 
-  function updateAccountUI() {
 
-    if (currentUser) {
+/* =====================================================
+   SEND MESSAGE
+===================================================== */
 
-      accountEmail.textContent =
-        currentUser.email ||
-        "مستخدم";
+async function sendMessage() {
 
-      accountAvatar.textContent =
-        "أ";
-
-      loginButton.style.display =
-        "none";
-
-      logoutButton.style.display =
-        "block";
-
-      headerStatus.textContent =
-        "● متصل الآن";
-
-    } else {
-
-      accountEmail.textContent =
-        "مستخدم زائر";
-
-      accountAvatar.textContent =
-        "ز";
-
-      loginButton.style.display =
-        "block";
-
-      logoutButton.style.display =
-        "none";
-
-      headerStatus.textContent =
-        "● متصل الآن";
-    }
-  }
-
-
-  /* =====================================================
-     SAVE
-  ===================================================== */
-
-  function saveConversations() {
-
-    try {
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(
-          conversations
-        )
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Storage Error:",
-        error
-      );
-
-      alert(
-        "تعذر حفظ المحادثة محلياً. قد تكون مساحة التخزين ممتلئة."
-      );
-    }
-  }
-
-
-  function saveActiveId() {
-
-    if (
-      activeConversationId
-    ) {
-
-      localStorage.setItem(
-        ACTIVE_KEY,
-        activeConversationId
-      );
-
-    } else {
-
-      localStorage.removeItem(
-        ACTIVE_KEY
-      );
-    }
-  }
-
-
-  /* =====================================================
-     ID
-  ===================================================== */
-
-  function createId() {
-
-    return (
-      Date.now().toString() +
-      Math.random()
-        .toString(36)
-        .slice(2)
-    );
-  }
-
-
-  /* =====================================================
-     ACTIVE CONVERSATION
-  ===================================================== */
-
-  function getActiveConversation() {
-
-    return conversations.find(
-      conversation =>
-        conversation.id ===
-        activeConversationId
-    );
-  }
-
-
-  /* =====================================================
-     WELCOME
-  ===================================================== */
-
-  function showWelcome() {
-
-    chat.innerHTML = `
-
-      <section class="welcome">
-
-        <div class="welcome-logo">
-          ت
-        </div>
-
-        <h2>
-          أهلاً بك في
-          <span>
-            التطور چات
-          </span>
-        </h2>
-
-        <p>
-          مساعدك الذكي للإجابة عن الأسئلة،
-          شرح المواضيع، كتابة النصوص
-          وتوليد الأفكار.
-        </p>
-
-      </section>
-
-    `;
-  }
-
-
-  /* =====================================================
-     SCROLL
-  ===================================================== */
-
-  function scrollChatToBottom() {
-
-    requestAnimationFrame(
-      function() {
-
-        chat.scrollTo({
-          top:
-            chat.scrollHeight,
-          behavior:
-            "smooth"
-        });
-
-      }
-    );
-  }
-
-
-  /* =====================================================
-     ADD MESSAGE
-  ===================================================== */
-
-  function addMessage(
-    role,
-    text,
-    attachment = null
+  if (
+    isSending
   ) {
 
-    const message =
-      document.createElement(
-        "div"
-      );
+    return;
 
-    message.className =
-      `message ${role}`;
-
-
-    const avatar =
-      document.createElement(
-        "div"
-      );
-
-    avatar.className =
-      "avatar";
-
-    avatar.textContent =
-      role === "user"
-        ? "أ"
-        : "ت";
-
-
-    const bubble =
-      document.createElement(
-        "div"
-      );
-
-    bubble.className =
-      "bubble";
-
-
-    if (
-      attachment &&
-      attachment.type === "image" &&
-      attachment.data
-    ) {
-
-      const img =
-        document.createElement(
-          "img"
-        );
-
-      img.className =
-        "message-image";
-
-      img.src =
-        attachment.data;
-
-      img.alt =
-        attachment.name ||
-        "صورة";
-
-      bubble.appendChild(
-        img
-      );
-    }
-
-
-    if (
-      attachment &&
-      attachment.type !== "image"
-    ) {
-
-      const fileBox =
-        document.createElement(
-          "div"
-        );
-
-      fileBox.className =
-        "message-file";
-
-      fileBox.textContent =
-        `📎 ${
-          attachment.name ||
-          "ملف مرفق"
-        }`;
-
-      bubble.appendChild(
-        fileBox
-      );
-    }
-
-
-    if (text) {
-
-      const textElement =
-        document.createElement(
-          "div"
-        );
-
-      textElement.textContent =
-        text;
-
-      bubble.appendChild(
-        textElement
-      );
-    }
-
-
-    message.appendChild(
-      avatar
-    );
-
-    message.appendChild(
-      bubble
-    );
-
-    chat.appendChild(
-      message
-    );
-
-    scrollChatToBottom();
-
-    return message;
   }
 
 
-  /* =====================================================
-     RENDER
-  ===================================================== */
-
-  function renderConversation() {
-
-    const conversation =
-      getActiveConversation();
-
-    if (
-      !conversation ||
-      !Array.isArray(
-        conversation.messages
-      ) ||
-      !conversation.messages.length
-    ) {
-
-      showWelcome();
-
-      return;
-    }
+  const text =
+    input.value.trim();
 
 
-    chat.innerHTML = "";
+  if (
+    !text &&
+    !selectedFileData
+  ) {
 
+    return;
 
-    conversation.messages.forEach(
-      message => {
-
-        addMessage(
-          message.role,
-          message.content || "",
-          message.attachment ||
-            null
-        );
-
-      }
-    );
-
-
-    requestAnimationFrame(
-      function() {
-
-        chat.scrollTop =
-          chat.scrollHeight;
-
-      }
-    );
   }
 
 
-  /* =====================================================
-     CONVERSATION LIST
-  ===================================================== */
+  /*
+     إذا المستخدم غير مسجل:
+     نتحقق من الجلسة مباشرة
+  */
 
-  function renderConversationList() {
-
-    conversationList.innerHTML =
-      "";
-
-
-    if (!conversations.length) {
-
-      conversationList.innerHTML = `
-
-        <div class="conversation-empty">
-
-          ما عندك محادثات محفوظة حالياً.
-
-          <br>
-
-          ابدأ محادثة جديدة
-          من الزر أعلاه.
-
-        </div>
-
-      `;
-
-      return;
-    }
+  let session =
+    null;
 
 
-    conversations
-      .slice()
-      .reverse()
-      .forEach(
-        conversation => {
+  try {
 
-          const item =
-            document.createElement(
-              "div"
-            );
-
-          item.className =
-            "conversation-item" +
-            (
-              conversation.id ===
-              activeConversationId
-                ? " active"
-                : ""
-            );
+    const {
+      data,
+      error
+    } =
+      await supabase.auth.getSession();
 
 
-          const title =
-            document.createElement(
-              "div"
-            );
+    if (error) {
 
-          title.className =
-            "conversation-title";
-
-          title.textContent =
-            conversation.title ||
-            "محادثة جديدة";
-
-
-          const deleteButton =
-            document.createElement(
-              "button"
-            );
-
-          deleteButton.type =
-            "button";
-
-          deleteButton.className =
-            "delete-conversation";
-
-          deleteButton.textContent =
-            "🗑";
-
-
-          deleteButton.onclick =
-            function(event) {
-
-              event.stopPropagation();
-
-              deleteConversation(
-                conversation.id
-              );
-
-            };
-
-
-          item.appendChild(
-            title
-          );
-
-          item.appendChild(
-            deleteButton
-          );
-
-
-          item.onclick =
-            function() {
-
-              openConversation(
-                conversation.id
-              );
-
-            };
-
-
-          conversationList.appendChild(
-            item
-          );
-
-        }
+      console.error(
+        "Session error:",
+        error
       );
+
+    } else {
+
+      session =
+        data?.session ||
+        null;
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Auth error:",
+      error
+    );
+
   }
 
 
-  /* =====================================================
-     OPEN
-  ===================================================== */
+  /*
+     المستخدم غير مسجل
+  */
 
-  function openConversation(id) {
+  if (!session) {
 
-    activeConversationId =
-      id;
+    window.location.href =
+      "/login.html";
 
-    saveActiveId();
+    return;
 
-    renderConversation();
-
-    renderConversationList();
-
-    closeMenu();
-
-    input.focus();
   }
 
 
-  /* =====================================================
-     NEW CHAT
-  ===================================================== */
+  /*
+     تثبيت الجلسة
+  */
 
-  function newChat() {
+  currentSession =
+    session;
+
+
+  currentUser =
+    session.user;
+
+
+  updateAccountUI();
+
+
+  /*
+     تحميل تخزين المستخدم
+  */
+
+  loadUserStorage();
+
+
+  /*
+     إنشاء محادثة
+  */
+
+  if (
+    !activeConversationId
+  ) {
 
     const newConversation = {
 
@@ -2343,7 +3447,19 @@
         createId(),
 
       title:
-        "محادثة جديدة",
+        text
+          ? text.slice(
+              0,
+              35
+            )
+          : (
+              selectedFile
+                ? selectedFile.name.slice(
+                    0,
+                    35
+                  )
+                : "محادثة جديدة"
+            ),
 
       messages:
         [],
@@ -2363,826 +3479,174 @@
       newConversation.id;
 
 
-    saveConversations();
-
     saveActiveId();
 
-    renderConversation();
-
-    renderConversationList();
-
-
-    input.value =
-      "";
-
-    input.style.height =
-      "52px";
-
-
-    removeAttachment();
-
-    input.focus();
   }
 
 
-  /* =====================================================
-     DELETE
-  ===================================================== */
-
-  function deleteConversation(id) {
-
-    conversations =
-      conversations.filter(
-        conversation =>
-          conversation.id !==
-          id
-      );
+  const conversation =
+    getActiveConversation();
 
 
-    if (
-      activeConversationId ===
-      id
-    ) {
+  if (!conversation) {
 
-      if (
-        conversations.length
-      ) {
+    return;
 
-        activeConversationId =
-          conversations[
-            conversations.length - 1
-          ].id;
-
-      } else {
-
-        activeConversationId =
-          null;
-      }
-    }
-
-
-    saveConversations();
-
-    saveActiveId();
-
-    renderConversation();
-
-    renderConversationList();
   }
 
 
-  /* =====================================================
-     TYPING
-  ===================================================== */
+  /*
+     المرفق
+  */
 
-  function addTyping() {
-
-    removeTyping();
-
-
-    const message =
-      document.createElement(
-        "div"
-      );
-
-    message.className =
-      "message assistant";
-
-    message.id =
-      "typingMessage";
+  const attachment =
+    selectedFileData
+      ? {
+          ...selectedFileData
+        }
+      : null;
 
 
-    const avatar =
-      document.createElement(
-        "div"
-      );
+  /*
+     إضافة رسالة المستخدم
+  */
 
-    avatar.className =
-      "avatar";
+  conversation.messages.push({
 
-    avatar.textContent =
-      "ت";
+    role:
+      "user",
 
+    content:
+      text,
 
-    const bubble =
-      document.createElement(
-        "div"
-      );
+    attachment:
+      attachment
 
-    bubble.className =
-      "bubble";
+  });
 
 
-    bubble.innerHTML = `
-
-      <div class="typing">
-
-        <span></span>
-        <span></span>
-        <span></span>
-
-      </div>
-
-    `;
-
-
-    message.appendChild(
-      avatar
-    );
-
-    message.appendChild(
-      bubble
-    );
-
-    chat.appendChild(
-      message
-    );
-
-    scrollChatToBottom();
-  }
-
-
-  function removeTyping() {
-
-    const typing =
-      document.getElementById(
-        "typingMessage"
-      );
-
-    if (typing) {
-      typing.remove();
-    }
-  }
-
-
-  /* =====================================================
-     ATTACHMENT
-  ===================================================== */
-
-  attachButton.addEventListener(
-    "click",
-    function(event) {
-
-      event.preventDefault();
-
-      fileInput.click();
-
-    }
-  );
-
-
-  fileInput.addEventListener(
-    "change",
-    handleFileSelect
-  );
-
-
-  removeAttachmentButton.addEventListener(
-    "click",
-    removeAttachment
-  );
-
-
-  function formatFileSize(bytes) {
-
-    if (bytes < 1024) {
-      return bytes + " B";
-    }
-
-    if (
-      bytes <
-      1024 * 1024
-    ) {
-
-      return (
-        (
-          bytes / 1024
-        ).toFixed(1) +
-        " KB"
-      );
-
-    }
-
-    if (
-      bytes <
-      1024 *
-      1024 *
-      1024
-    ) {
-
-      return (
-        (
-          bytes /
-          (1024 * 1024)
-        ).toFixed(1) +
-        " MB"
-      );
-
-    }
-
-    return (
-      (
-        bytes /
-        (1024 * 1024 * 1024)
-      ).toFixed(1) +
-      " GB"
-    );
-  }
-
-
-  function readFileAsDataURL(file) {
-
-    return new Promise(
-      (
-        resolve,
-        reject
-      ) => {
-
-        const reader =
-          new FileReader();
-
-
-        reader.onload =
-          () =>
-            resolve(
-              reader.result
-            );
-
-
-        reader.onerror =
-          () =>
-            reject(
-              new Error(
-                "تعذر قراءة الملف."
-              )
-            );
-
-
-        reader.readAsDataURL(
-          file
-        );
-
-      }
-    );
-  }
-
-
-  async function resizeImage(
-    file,
-    maxSize = 1600,
-    quality = 0.82
+  if (
+    conversation.messages.length ===
+    1
   ) {
 
-    const dataUrl =
-      await readFileAsDataURL(
-        file
-      );
-
-
-    return new Promise(
+    const titleText =
+      text ||
       (
-        resolve,
-        reject
-      ) => {
-
-        const img =
-          new Image();
-
-
-        img.onload =
-          function() {
-
-            let width =
-              img.width;
-
-            let height =
-              img.height;
-
-
-            if (
-              width > maxSize ||
-              height > maxSize
-            ) {
-
-              const ratio =
-                Math.min(
-                  maxSize /
-                    width,
-                  maxSize /
-                    height
-                );
-
-
-              width =
-                Math.round(
-                  width *
-                  ratio
-                );
-
-
-              height =
-                Math.round(
-                  height *
-                  ratio
-                );
-            }
-
-
-            const canvas =
-              document.createElement(
-                "canvas"
-              );
-
-
-            canvas.width =
-              width;
-
-            canvas.height =
-              height;
-
-
-            const ctx =
-              canvas.getContext(
-                "2d"
-              );
-
-
-            ctx.drawImage(
-              img,
-              0,
-              0,
-              width,
-              height
-            );
-
-
-            resolve(
-              canvas.toDataURL(
-                "image/jpeg",
-                quality
-              )
-            );
-
-          };
-
-
-        img.onerror =
-          () =>
-            reject(
-              new Error(
-                "تعذر معالجة الصورة."
-              )
-            );
-
-
-        img.src =
-          dataUrl;
-
-      }
-    );
-  }
-
-
-  async function handleFileSelect(event) {
-
-    const file =
-      event.target.files[0];
-
-
-    if (!file) {
-      return;
-    }
-
-
-    if (
-      file.size >
-      20 * 1024 * 1024
-    ) {
-
-      alert(
-        "حجم الملف أكبر من 20MB."
-      );
-
-      removeAttachment();
-
-      return;
-    }
-
-
-    selectedFile =
-      file;
-
-
-    attachmentName.textContent =
-      file.name;
-
-
-    attachmentSize.textContent =
-      formatFileSize(
-        file.size
+        attachment
+          ? attachment.name
+          : "محادثة جديدة"
       );
 
 
-    attachmentPreview.classList.add(
-      "active"
-    );
+    conversation.title =
+      titleText.length >
+      35
+        ? titleText.slice(
+            0,
+            35
+          ) + "..."
+        : titleText;
 
-
-    if (
-      file.type.startsWith(
-        "image/"
-      )
-    ) {
-
-      try {
-
-        const compressedImage =
-          await resizeImage(
-            file
-          );
-
-
-        selectedFileData = {
-
-          type:
-            "image",
-
-          name:
-            file.name,
-
-          mime:
-            "image/jpeg",
-
-          data:
-            compressedImage
-
-        };
-
-
-        attachmentImage.src =
-          compressedImage;
-
-
-        attachmentImage.style.display =
-          "block";
-
-
-        attachmentIcon.style.display =
-          "none";
-
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
-        alert(
-          "تعذر تجهيز الصورة."
-        );
-
-        removeAttachment();
-      }
-
-
-    } else {
-
-      try {
-
-        const data =
-          await readFileAsDataURL(
-            file
-          );
-
-
-        selectedFileData = {
-
-          type:
-            "file",
-
-          name:
-            file.name,
-
-          mime:
-            file.type ||
-            "application/octet-stream",
-
-          data:
-            data
-
-        };
-
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
-        alert(
-          "تعذر قراءة الملف."
-        );
-
-        removeAttachment();
-
-        return;
-      }
-
-
-      attachmentImage.style.display =
-        "none";
-
-
-      attachmentIcon.style.display =
-        "flex";
-
-
-      attachmentIcon.textContent =
-        file.type ===
-        "application/pdf"
-          ? "📄"
-          : "📎";
-    }
   }
 
 
-  function removeAttachment() {
+  saveConversations();
 
-    selectedFile =
-      null;
-
-    selectedFileData =
-      null;
+  renderConversationList();
 
 
-    fileInput.value =
-      "";
+  addMessage(
+    "user",
+    text,
+    attachment
+  );
 
 
-    attachmentPreview.classList.remove(
-      "active"
-    );
+  /*
+     تنظيف الإدخال
+  */
+
+  input.value =
+    "";
+
+  input.style.height =
+    "52px";
+
+  removeAttachment();
 
 
-    attachmentImage.src =
-      "";
+  /*
+     حالة الإرسال
+  */
+
+  isSending =
+    true;
 
 
-    attachmentImage.style.display =
-      "none";
+  sendButton.disabled =
+    true;
 
 
-    attachmentIcon.style.display =
-      "flex";
+  sendButton.textContent =
+    "…";
 
 
-    attachmentIcon.textContent =
-      "📎";
+  addTyping();
 
 
-    attachmentName.textContent =
-      "";
-
-
-    attachmentSize.textContent =
-      "";
-  }
-
-
-  /* =====================================================
-     SEND MESSAGE
-  ===================================================== */
-
-  async function sendMessage() {
-
-    if (isSending) {
-      return;
-    }
-
+  try {
 
     /*
-      إذا المستخدم زائر:
-      نحوله إلى صفحة تسجيل الدخول
+       تجهيز الرسائل
     */
 
-    if (!currentSession) {
+    const apiMessages =
+      conversation.messages
+        .slice(-30)
+        .map(
+          message => {
 
-      window.location.href =
-        "/login.html";
+            /*
+               صورة
+            */
 
-      return;
-    }
+            if (
+              message.attachment &&
+              message.attachment.type ===
+                "image" &&
+              message.attachment.data
+            ) {
 
+              const content = [];
 
-    const text =
-      input.value.trim();
-
-
-    if (
-      !text &&
-      !selectedFileData
-    ) {
-      return;
-    }
-
-
-    if (
-      !activeConversationId
-    ) {
-
-      const newConversation = {
-
-        id:
-          createId(),
-
-        title:
-          text
-            ? text.slice(
-                0,
-                35
-              )
-            : (
-              selectedFile
-                ? selectedFile.name.slice(
-                    0,
-                    35
-                  )
-                : "محادثة جديدة"
-            ),
-
-        messages:
-          [],
-
-        createdAt:
-          Date.now()
-
-      };
-
-
-      conversations.push(
-        newConversation
-      );
-
-
-      activeConversationId =
-        newConversation.id;
-
-
-      saveActiveId();
-    }
-
-
-    const conversation =
-      getActiveConversation();
-
-
-    if (!conversation) {
-      return;
-    }
-
-
-    const messageText =
-      text;
-
-
-    const attachment =
-      selectedFileData
-        ? {
-            ...selectedFileData
-          }
-        : null;
-
-
-    conversation.messages.push({
-
-      role:
-        "user",
-
-      content:
-        messageText,
-
-      attachment:
-        attachment
-
-    });
-
-
-    if (
-      conversation.messages.length ===
-      1
-    ) {
-
-      const titleText =
-        messageText ||
-        (
-          attachment
-            ? attachment.name
-            : "محادثة جديدة"
-        );
-
-
-      conversation.title =
-        titleText.length > 35
-          ? titleText.slice(
-              0,
-              35
-            ) + "..."
-          : titleText;
-    }
-
-
-    saveConversations();
-
-    renderConversationList();
-
-
-    addMessage(
-      "user",
-      messageText,
-      attachment
-    );
-
-
-    input.value =
-      "";
-
-    input.style.height =
-      "52px";
-
-
-    removeAttachment();
-
-
-    isSending =
-      true;
-
-
-    sendButton.disabled =
-      true;
-
-
-    sendButton.textContent =
-      "…";
-
-
-    addTyping();
-
-
-    try {
-
-      const apiMessages =
-        conversation.messages
-          .slice(-30)
-          .map(
-            message => {
 
               if (
-                message.attachment &&
-                message.attachment.type ===
-                  "image" &&
-                message.attachment.data
+                message.content
               ) {
-
-                const content = [];
-
-
-                if (
-                  message.content
-                ) {
-
-                  content.push({
-
-                    type:
-                      "input_text",
-
-                    text:
-                      message.content
-
-                  });
-                }
-
 
                 content.push({
 
                   type:
-                    "input_image",
+                    "input_text",
 
-                  image_url:
-                    message.attachment.data
+                  text:
+                    message.content
 
                 });
 
-
-                return {
-
-                  role:
-                    message.role,
-
-                  content:
-                    content
-
-                };
               }
+
+
+              content.push({
+
+                type:
+                  "input_image",
+
+                image_url:
+                  message.attachment.data
+
+              });
 
 
               return {
@@ -3191,491 +3655,573 @@
                   message.role,
 
                 content:
-                  String(
-                    message.content ||
-                    ""
-                  )
+                  content
 
               };
+
             }
-          );
 
 
-      const response =
-        await fetch(
-          "/api/chat",
-          {
+            /*
+               رسالة عادية
+            */
 
-            method:
-              "POST",
+            return {
 
-            headers: {
+              role:
+                message.role,
 
-              "Content-Type":
-                "application/json",
+              content:
+                String(
+                  message.content ||
+                  ""
+                )
 
-              "Authorization":
-                `Bearer ${currentSession.access_token}`
-
-            },
-
-            body:
-              JSON.stringify({
-
-                messages:
-                  apiMessages
-
-              })
+            };
 
           }
         );
 
 
-      let data = {};
+    /*
+       API
+    */
 
+    const response =
+      await fetch(
+        "/api/chat",
+        {
 
-      try {
+          method:
+            "POST",
 
-        data =
-          await response.json();
+          headers: {
 
-      } catch (jsonError) {
+            "Content-Type":
+              "application/json",
 
-        console.error(
-          "JSON Error:",
-          jsonError
-        );
-      }
+            "Authorization":
+              `Bearer ${session.access_token}`
 
+          },
 
-      removeTyping();
+          body:
+            JSON.stringify({
 
+              messages:
+                apiMessages
 
-      if (
-        response.status === 401
-      ) {
+            })
 
-        await supabase.auth.signOut();
-
-        window.location.href =
-          "/login.html";
-
-        return;
-      }
-
-
-      if (!response.ok) {
-
-        throw new Error(
-
-          data.error ||
-          `خطأ من الخادم (${response.status})`
-
-        );
-      }
-
-
-      const reply =
-        data.reply ||
-        "ما حصلت جواب من الذكاء الاصطناعي.";
-
-
-      conversation.messages.push({
-
-        role:
-          "assistant",
-
-        content:
-          reply
-
-      });
-
-
-      saveConversations();
-
-
-      addMessage(
-        "assistant",
-        reply
+        }
       );
 
+
+    let data = {};
+
+
+    try {
+
+      data =
+        await response.json();
 
     } catch (error) {
 
-      removeTyping();
-
-
       console.error(
-        "Send Error:",
+        "JSON error:",
         error
       );
 
-
-      addMessage(
-
-        "assistant",
-
-        "عذراً، صار خطأ بالاتصال بالخادم.\n\n" +
-        (
-          error?.message ||
-          "حاول مرة ثانية."
-        )
-
-      );
+    }
 
 
-    } finally {
+    removeTyping();
 
-      isSending =
-        false;
 
-      sendButton.disabled =
-        false;
+    /*
+       جلسة منتهية
+    */
 
-      sendButton.textContent =
-        "↑";
+    if (
+      response.status ===
+      401
+    ) {
 
-      input.focus();
+      await supabase.auth.signOut();
+
+
+      window.location.href =
+        "/login.html";
+
+
+      return;
 
     }
+
+
+    /*
+       خطأ من API
+    */
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        data.error ||
+        `خطأ من الخادم (${response.status})`
+      );
+
+    }
+
+
+    /*
+       جواب AI
+    */
+
+    const reply =
+      data.reply ||
+      "ما حصلت جواب من الذكاء الاصطناعي.";
+
+
+    conversation.messages.push({
+
+      role:
+        "assistant",
+
+      content:
+        reply
+
+    });
+
+
+    saveConversations();
+
+
+    addMessage(
+      "assistant",
+      reply
+    );
+
+
+  } catch (error) {
+
+    removeTyping();
+
+
+    console.error(
+      "Send Error:",
+      error
+    );
+
+
+    addMessage(
+
+      "assistant",
+
+      "عذراً، صار خطأ بالاتصال بالخادم.\n\n" +
+      (
+        error?.message ||
+        "حاول مرة ثانية."
+      )
+
+    );
+
+  } finally {
+
+    isSending =
+      false;
+
+
+    sendButton.disabled =
+      false;
+
+
+    sendButton.textContent =
+      "↑";
+
+
+    input.focus();
+
   }
 
+}
 
-  /* =====================================================
-     SEND BUTTON
-  ===================================================== */
 
-  sendButton.addEventListener(
-    "click",
-    function(event) {
+/* =====================================================
+   SEND BUTTON
+===================================================== */
+
+sendButton.addEventListener(
+  "click",
+  function(event) {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+    sendMessage();
+
+  }
+);
+
+
+/* =====================================================
+   MENU
+===================================================== */
+
+function toggleMenu() {
+
+  sidePanel.classList.toggle(
+    "active"
+  );
+
+
+  sideOverlay.classList.toggle(
+    "active"
+  );
+
+}
+
+
+function closeMenu() {
+
+  sidePanel.classList.remove(
+    "active"
+  );
+
+
+  sideOverlay.classList.remove(
+    "active"
+  );
+
+}
+
+
+menuButton.addEventListener(
+  "click",
+  toggleMenu
+);
+
+
+sideOverlay.addEventListener(
+  "click",
+  closeMenu
+);
+
+
+closeMenuButton.addEventListener(
+  "click",
+  closeMenu
+);
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+loginButton.addEventListener(
+  "click",
+  function() {
+
+    window.location.href =
+      "/login.html";
+
+  }
+);
+
+
+/* =====================================================
+   NEW CHAT
+===================================================== */
+
+sideNewChat.addEventListener(
+  "click",
+  function() {
+
+    newChat();
+
+    closeMenu();
+
+  }
+);
+
+
+headerNewChat.addEventListener(
+  "click",
+  newChat
+);
+
+
+/* =====================================================
+   TEXTAREA
+===================================================== */
+
+input.addEventListener(
+  "input",
+  function() {
+
+    this.style.height =
+      "52px";
+
+
+    this.style.height =
+      Math.min(
+        this.scrollHeight,
+        150
+      ) + "px";
+
+  }
+);
+
+
+/* =====================================================
+   ENTER
+===================================================== */
+
+input.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (
+      event.key ===
+        "Enter" &&
+      !event.shiftKey
+    ) {
 
       event.preventDefault();
 
       sendMessage();
 
     }
-  );
 
-
-  /* =====================================================
-     MENU
-  ===================================================== */
-
-  function toggleMenu() {
-
-    sidePanel.classList.toggle(
-      "active"
-    );
-
-    sideOverlay.classList.toggle(
-      "active"
-    );
   }
+);
 
 
-  function closeMenu() {
+/* =====================================================
+   MOBILE KEYBOARD
+===================================================== */
 
-    sidePanel.classList.remove(
-      "active"
-    );
+if (
+  window.visualViewport
+) {
 
-    sideOverlay.classList.remove(
-      "active"
-    );
-  }
-
-
-  menuButton.addEventListener(
-    "click",
-    toggleMenu
-  );
-
-
-  sideOverlay.addEventListener(
-    "click",
-    closeMenu
-  );
-
-
-  closeMenuButton.addEventListener(
-    "click",
-    closeMenu
-  );
-
-
-  sideNewChat.addEventListener(
-    "click",
+  window.visualViewport.addEventListener(
+    "resize",
     function() {
-
-      newChat();
-
-      closeMenu();
-
-    }
-  );
-
-
-  headerNewChat.addEventListener(
-    "click",
-    newChat
-  );
-
-
-  /* =====================================================
-     LOGIN BUTTON
-  ===================================================== */
-
-  loginButton.addEventListener(
-    "click",
-    function() {
-
-      window.location.href =
-        "/login.html";
-
-    }
-  );
-
-
-  /* =====================================================
-     LOGOUT
-  ===================================================== */
-
-  async function logout() {
-
-    try {
-
-      await supabase.auth.signOut();
-
-    } catch (error) {
-
-      console.error(
-        "Logout Error:",
-        error
-      );
-
-    }
-
-    currentSession =
-      null;
-
-    currentUser =
-      null;
-
-    updateAccountUI();
-
-    window.location.href =
-      "/login.html";
-  }
-
-
-  logoutButton.addEventListener(
-    "click",
-    logout
-  );
-
-
-  /* =====================================================
-     TEXTAREA
-  ===================================================== */
-
-  input.addEventListener(
-    "input",
-    function() {
-
-      this.style.height =
-        "52px";
-
-      this.style.height =
-        Math.min(
-          this.scrollHeight,
-          150
-        ) + "px";
-
-    }
-  );
-
-
-  /* =====================================================
-     ENTER
-  ===================================================== */
-
-  input.addEventListener(
-    "keydown",
-    function(event) {
 
       if (
-        event.key === "Enter" &&
-        !event.shiftKey
+        document.activeElement ===
+        input
       ) {
 
-        event.preventDefault();
-
-        sendMessage();
-
-      }
-
-    }
-  );
-
-
-  /* =====================================================
-     KEYBOARD / MOBILE
-  ===================================================== */
-
-  if (
-    window.visualViewport
-  ) {
-
-    window.visualViewport.addEventListener(
-      "resize",
-      function() {
-
-        requestAnimationFrame(
+        setTimeout(
           function() {
 
-            const active =
-              document.activeElement;
+            scrollChatToBottom();
 
-
-            if (
-              active === input
-            ) {
-
-              setTimeout(
-                function() {
-
-                  scrollChatToBottom();
-
-                },
-                50
-              );
-
-            }
-
-          }
+          },
+          50
         );
 
       }
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout() {
+
+  try {
+
+    await supabase.auth.signOut();
+
+  } catch (error) {
+
+    console.error(
+      "Logout error:",
+      error
     );
+
   }
 
 
-  /* =====================================================
-     SUPABASE AUTH STATE
-  ===================================================== */
+  currentSession =
+    null;
 
-  supabase.auth.onAuthStateChange(
-    (event, session) => {
+
+  currentUser =
+    null;
+
+
+  updateAccountUI();
+
+
+  loadUserStorage();
+
+
+  renderConversation();
+
+  renderConversationList();
+
+}
+
+
+/* =====================================================
+   LOGOUT BUTTON
+===================================================== */
+
+logoutButton.addEventListener(
+  "click",
+  logout
+);
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+supabase.auth.onAuthStateChange(
+  function(
+    event,
+    session
+  ) {
+
+    if (
+      session
+    ) {
 
       currentSession =
-        session || null;
+        session;
 
 
       currentUser =
-        session?.user || null;
+        session.user;
 
-
-      /*
-        إذا صار تسجيل خروج
-        نخلي الصفحة كزائر
-        بدون إجبار على تسجيل الدخول
-      */
 
       updateAccountUI();
 
 
+      loadUserStorage();
+
+
       if (
-        currentUser
+        !conversations.length
       ) {
 
-        loadUserStorage();
+        activeConversationId =
+          null;
 
-        renderConversation();
-
-        renderConversationList();
+        showWelcome();
 
       } else {
 
-        /*
-          تخزين الزائر مستقل
-        */
+        if (
+          !getActiveConversation()
+        ) {
 
-        loadUserStorage();
+          activeConversationId =
+            conversations[
+              conversations.length - 1
+            ].id;
+
+          saveActiveId();
+
+        }
+
 
         renderConversation();
 
-        renderConversationList();
-
       }
+
+
+      renderConversationList();
+
     }
-  );
 
 
-  /* =====================================================
-     START APP
-  ===================================================== */
-
-  async function startApp() {
-
-    try {
-
-      /*
-        هنا لا نفرض تسجيل الدخول.
-        المستخدم يدخل مباشرة كزائر.
-      */
-
-      const {
-        data,
-        error
-      } =
-        await supabase.auth.getSession();
-
-
-      if (error) {
-
-        console.error(
-          "Session Error:",
-          error
-        );
-
-        currentSession =
-          null;
-
-        currentUser =
-          null;
-
-      } else {
-
-        currentSession =
-          data?.session || null;
-
-        currentUser =
-          data?.session?.user || null;
-      }
-
-
-    } catch (error) {
-
-      console.error(
-        "Start App Error:",
-        error
-      );
+    if (
+      event ===
+      "SIGNED_OUT"
+    ) {
 
       currentSession =
         null;
 
+
       currentUser =
         null;
+
+
+      updateAccountUI();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   START APP
+   مهم:
+   لا يوجد إجبار على تسجيل الدخول هنا
+===================================================== */
+
+async function startApp() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabase.auth.getSession();
+
+
+    if (
+      error
+    ) {
+
+      console.error(
+        "Startup session error:",
+        error
+      );
+
+    }
+
+
+    if (
+      data?.session
+    ) {
+
+      currentSession =
+        data.session;
+
+
+      currentUser =
+        data.session.user;
+
+    } else {
+
+      currentSession =
+        null;
+
+
+      currentUser =
+        null;
+
     }
 
 
     updateAccountUI();
 
-
-    /*
-      تحميل محادثات المستخدم
-      أو محادثات الزائر
-    */
 
     loadUserStorage();
 
@@ -3687,40 +4233,78 @@
       activeConversationId =
         null;
 
+
       saveActiveId();
+
 
       showWelcome();
 
     } else {
 
-      let active =
-        getActiveConversation();
-
-
-      if (!active) {
+      if (
+        !getActiveConversation()
+      ) {
 
         activeConversationId =
           conversations[
             conversations.length - 1
           ].id;
 
+
         saveActiveId();
+
       }
 
 
       renderConversation();
+
     }
 
 
     renderConversationList();
+
+
+  } catch (error) {
+
+    console.error(
+      "Start App Error:",
+      error
+    );
+
+
+    /*
+       حتى إذا صار خطأ بالجلسة،
+       المستخدم يدخل للمحادثة كزائر
+    */
+
+    currentSession =
+      null;
+
+
+    currentUser =
+      null;
+
+
+    updateAccountUI();
+
+
+    loadUserStorage();
+
+
+    renderConversation();
+
+    renderConversationList();
+
   }
 
+}
 
-  /* =====================================================
-     RUN
-  ===================================================== */
 
-  startApp();
+/* =====================================================
+   START
+===================================================== */
+
+startApp();
 
 </script>
 
