@@ -2,11 +2,80 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
+
   <title>التطور چات</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      "https://wxsricscchalzvazdbzd.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
+
+    const supabase =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+    /*
+      =====================================================
+      AUTH STATE
+      =====================================================
+    */
+
+    let currentSession = null;
+    let currentUser = null;
+
+    /*
+      تسجيل الدخول أصبح اختياري.
+      الزائر يدخل للمحادثة مباشرة.
+    */
+
+    async function loadAuthState() {
+      try {
+        const {
+          data,
+          error
+        } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error(
+            "Auth session error:",
+            error
+          );
+
+          currentSession = null;
+          currentUser = null;
+
+          return;
+        }
+
+        currentSession =
+          data?.session || null;
+
+        currentUser =
+          data?.session?.user || null;
+
+      } catch (error) {
+        console.error(
+          "Auth state error:",
+          error
+        );
+
+        currentSession = null;
+        currentUser = null;
+      }
+    }
+  </script>
+
   <style>
     :root {
       --bg: #070912;
@@ -17,13 +86,19 @@
       --muted: #8d96aa;
       --purple: #8b5cf6;
       --cyan: #22d3ee;
-      --gradient: linear-gradient(135deg, #8b5cf6, #22d3ee);
+      --gradient: linear-gradient(
+        135deg,
+        #8b5cf6,
+        #22d3ee
+      );
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     html,
     body {
       width: 100%;
@@ -32,6 +107,7 @@
       overflow: hidden;
       overscroll-behavior: none;
     }
+
     body {
       color: var(--text);
       font-family:
@@ -40,751 +116,1293 @@
         "Segoe UI",
         Arial,
         sans-serif;
+
       position: fixed;
       inset: 0;
       overflow: hidden;
     }
+
     button,
     textarea,
     input {
       font-family: inherit;
     }
+
     button {
       -webkit-tap-highlight-color: transparent;
     }
+
     .app {
       width: 100%;
       height: 100dvh;
       min-height: 100dvh;
       max-height: 100dvh;
+
       display: flex;
       flex-direction: column;
+
       overflow: hidden;
       position: relative;
     }
+
     /* =========================
        HEADER
     ========================== */
+
     header {
       height: 92px;
       min-height: 92px;
+
       padding: 14px 24px;
+
       border-bottom: 1px solid var(--border);
-      background: rgba(13,18,34,.94);
+
+      background:
+        rgba(13,18,34,.94);
+
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       position: relative;
       z-index: 100;
+
       flex-shrink: 0;
     }
+
     .brand {
       display: flex;
       align-items: center;
       gap: 14px;
     }
+
     .logo {
       width: 58px;
       height: 58px;
+
       border-radius: 17px;
+
       background: var(--gradient);
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 31px;
       font-weight: 800;
+
       box-shadow:
         0 10px 30px rgba(100,90,255,.18);
     }
+
     .brand-info h1 {
       font-size: 24px;
       margin-bottom: 3px;
     }
+
     .status {
       color: #6ee7b7;
       font-size: 14px;
     }
+
     .header-actions {
       display: flex;
       align-items: center;
       gap: 10px;
       direction: ltr;
     }
+
     .new-chat {
       height: 48px;
+
       padding: 0 16px;
+
       border-radius: 14px;
+
       border: 1px solid var(--border);
+
       background: transparent;
+
       color: var(--muted);
+
       font-size: 15px;
+
       cursor: pointer;
+
       white-space: nowrap;
+
       transition: .2s ease;
     }
+
     .new-chat:hover {
       color: white;
-      border-color: rgba(255,255,255,.18);
-      background: rgba(255,255,255,.04);
+
+      border-color:
+        rgba(255,255,255,.18);
+
+      background:
+        rgba(255,255,255,.04);
     }
+
     .menu {
       width: 48px;
       height: 48px;
+
       border: 1px solid var(--border);
+
       background: transparent;
+
       border-radius: 14px;
+
       color: white;
+
       font-size: 25px;
+
       cursor: pointer;
+
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
     /* =========================
        CHAT
     ========================== */
+
     .chat {
       width: 100%;
       max-width: 900px;
+
       margin: 0 auto;
+
       padding: 35px 20px 25px;
+
       flex: 1;
       min-height: 0;
+
       overflow-y: auto;
       overflow-x: hidden;
+
       overscroll-behavior: contain;
+
       -webkit-overflow-scrolling: touch;
+
       scrollbar-width: thin;
     }
+
     .welcome {
       text-align: center;
+
       padding: 70px 10px 30px;
     }
+
     .welcome-logo {
       width: 110px;
       height: 110px;
+
       border-radius: 32px;
+
       background: var(--gradient);
+
       margin: 0 auto 28px;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 55px;
       font-weight: 800;
+
       box-shadow:
         0 20px 60px rgba(100,90,255,.18);
     }
+
     .welcome h2 {
       font-size: 38px;
       margin-bottom: 15px;
     }
+
     .welcome h2 span {
       background: var(--gradient);
+
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
     .welcome p {
       color: var(--muted);
+
       font-size: 18px;
+
       line-height: 1.8;
+
       max-width: 650px;
+
       margin: auto;
     }
+
     /* =========================
        MESSAGE
     ========================== */
+
     .message {
       display: flex;
+
       gap: 12px;
+
       margin: 25px 0;
+
       align-items: flex-start;
     }
+
     .message.user {
       flex-direction: row-reverse;
     }
+
     .avatar {
       width: 46px;
       height: 46px;
+
       min-width: 46px;
+
       border-radius: 14px;
+
       background: var(--gradient);
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-weight: bold;
       font-size: 20px;
     }
+
     .message.assistant .avatar {
       background: #182137;
     }
+
     .bubble {
       max-width: 75%;
+
       padding: 15px 19px;
+
       border-radius: 20px;
+
       background: var(--panel2);
+
       border: 1px solid var(--border);
+
       line-height: 1.8;
+
       font-size: 16px;
+
       white-space: pre-wrap;
+
       overflow-wrap: anywhere;
     }
+
     .message.user .bubble {
       background: #111a30;
     }
+
     .message-image {
       display: block;
+
       width: 100%;
+
       max-width: 360px;
       max-height: 420px;
+
       object-fit: contain;
+
       border-radius: 14px;
+
       margin-bottom: 10px;
-      border: 1px solid rgba(255,255,255,.08);
+
+      border:
+        1px solid rgba(255,255,255,.08);
     }
+
     .message-file {
       display: flex;
+
       align-items: center;
+
       gap: 10px;
+
       padding: 10px 12px;
+
       margin-bottom: 8px;
+
       border-radius: 12px;
-      background: rgba(255,255,255,.04);
+
+      background:
+        rgba(255,255,255,.04);
+
       color: #dbe1ef;
+
       font-size: 14px;
     }
+
     /* =========================
        ATTACHMENT
     ========================== */
+
     .attachment-preview {
       display: none;
+
       width: 100%;
       max-width: 900px;
+
       margin: 0 auto 10px;
+
       padding: 10px;
-      background: rgba(13,18,34,.96);
-      border: 1px solid rgba(255,255,255,.10);
+
+      background:
+        rgba(13,18,34,.96);
+
+      border:
+        1px solid rgba(255,255,255,.10);
+
       border-radius: 17px;
     }
+
     .attachment-preview.active {
       display: flex;
+
       align-items: center;
+
       gap: 10px;
     }
+
     .attachment-icon {
       width: 42px;
       height: 42px;
+
       border-radius: 12px;
-      background: rgba(139,92,246,.15);
+
+      background:
+        rgba(139,92,246,.15);
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       font-size: 21px;
+
       flex-shrink: 0;
     }
+
     .attachment-info {
       min-width: 0;
       flex: 1;
     }
+
     .attachment-name {
       font-size: 14px;
+
       white-space: nowrap;
+
       overflow: hidden;
+
       text-overflow: ellipsis;
     }
+
     .attachment-size {
       color: var(--muted);
+
       font-size: 12px;
+
       margin-top: 2px;
     }
+
     .remove-attachment {
       width: 34px;
       height: 34px;
+
       border: none;
+
       border-radius: 10px;
+
       background: transparent;
+
       color: #8d96aa;
+
       font-size: 20px;
+
       cursor: pointer;
     }
+
     .remove-attachment:hover {
       color: #ff6b81;
-      background: rgba(255,107,129,.08);
+
+      background:
+        rgba(255,107,129,.08);
     }
+
     .attachment-image {
       width: 52px;
       height: 52px;
+
       border-radius: 11px;
+
       object-fit: cover;
+
       display: none;
+
       flex-shrink: 0;
     }
+
     /* =========================
        TYPING
     ========================== */
+
     .typing {
       display: flex;
+
       gap: 5px;
+
       align-items: center;
     }
+
     .typing span {
       width: 7px;
       height: 7px;
+
       border-radius: 50%;
+
       background: #8b5cf6;
-      animation: bounce 1s infinite;
+
+      animation:
+        bounce 1s infinite;
     }
+
     .typing span:nth-child(2) {
       animation-delay: .15s;
     }
+
     .typing span:nth-child(3) {
       animation-delay: .3s;
     }
+
     @keyframes bounce {
       0%,
       60%,
       100% {
         transform: translateY(0);
       }
+
       30% {
         transform: translateY(-6px);
       }
     }
+
     /* =========================
        INPUT AREA
     ========================== */
+
     .input-area {
       position: relative;
+
       width: 100%;
+
       flex-shrink: 0;
+
       padding:
         12px 20px
         calc(14px + env(safe-area-inset-bottom));
+
       background:
         linear-gradient(
           transparent,
           rgba(7,9,18,.96) 30%
         );
+
       z-index: 200;
     }
+
     .input-box {
       max-width: 900px;
+
       margin: 0 auto;
+
       background: var(--panel);
-      border: 1px solid rgba(255,255,255,.12);
+
+      border:
+        1px solid rgba(255,255,255,.12);
+
       border-radius: 25px;
+
       padding: 10px;
+
       display: flex;
+
       align-items: flex-end;
+
       gap: 8px;
+
       box-shadow:
         0 -5px 30px rgba(0,0,0,.15);
     }
+
     .attach-button {
       width: 52px;
       height: 52px;
+
       border: none;
+
       border-radius: 16px;
+
       background: transparent;
+
       color: #aab2c5;
+
       font-size: 24px;
+
       cursor: pointer;
+
       flex-shrink: 0;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       transition: .2s ease;
     }
+
     .attach-button:hover {
       color: white;
-      background: rgba(255,255,255,.06);
+
+      background:
+        rgba(255,255,255,.06);
     }
+
     .attach-button:active {
       transform: scale(.94);
     }
+
     #fileInput {
       display: none;
     }
+
     textarea {
       flex: 1;
+
       resize: none;
+
       border: none;
+
       outline: none;
+
       background: transparent;
+
       color: white;
+
       font-size: 16px;
+
       line-height: 1.6;
+
       min-height: 52px;
       max-height: 150px;
+
       padding: 13px 12px;
     }
+
     textarea::placeholder {
       color: #69738b;
     }
+
     .send {
       width: 54px;
       height: 54px;
+
       border: none;
+
       border-radius: 17px;
+
       background: var(--gradient);
+
       color: white;
+
       font-size: 26px;
+
       cursor: pointer;
+
       flex-shrink: 0;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       transition: .2s ease;
     }
+
     .send:hover:not(:disabled) {
       transform: translateY(-1px);
+
       box-shadow:
         0 8px 25px rgba(139,92,246,.25);
     }
+
     .send:active:not(:disabled) {
       transform: scale(.94);
     }
+
     .send:disabled {
       opacity: .5;
+
       cursor: not-allowed;
     }
+
     /* =========================
        SIDE MENU
     ========================== */
+
     .side-overlay {
       position: fixed;
+
       inset: 0;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(3px);
+
+      background:
+        rgba(0,0,0,.55);
+
+      backdrop-filter:
+        blur(3px);
+
       z-index: 300;
+
       opacity: 0;
+
       visibility: hidden;
+
       transition: .25s ease;
     }
+
     .side-overlay.active {
       opacity: 1;
+
       visibility: visible;
     }
+
     .side-panel {
       position: fixed;
+
       top: 0;
       right: 0;
       bottom: 0;
+
       width: 330px;
       max-width: 88vw;
+
       background: #0b1020;
-      border-left: 1px solid var(--border);
+
+      border-left:
+        1px solid var(--border);
+
       z-index: 301;
-      transform: translateX(100%);
+
+      transform:
+        translateX(100%);
+
       transition: .28s ease;
+
       display: flex;
+
       flex-direction: column;
     }
+
     .side-panel.active {
-      transform: translateX(0);
+      transform:
+        translateX(0);
     }
+
     .side-header {
       height: 82px;
+
       padding: 16px 18px;
-      border-bottom: 1px solid var(--border);
+
+      border-bottom:
+        1px solid var(--border);
+
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
     }
+
     .side-header h3 {
       font-size: 20px;
     }
+
     .close-menu {
       width: 42px;
       height: 42px;
-      border: 1px solid var(--border);
+
+      border:
+        1px solid var(--border);
+
       border-radius: 12px;
+
       background: transparent;
+
       color: white;
+
       font-size: 22px;
+
       cursor: pointer;
     }
-    .side-new {
-      margin: 16px;
-      padding: 14px;
-      border: 1px solid rgba(139,92,246,.35);
-      border-radius: 15px;
-      background: rgba(139,92,246,.08);
-      color: white;
-      cursor: pointer;
-      font-size: 15px;
-      text-align: center;
-    }
-    .conversation-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 12px 20px;
-    }
-    .conversation-empty {
-      color: var(--muted);
-      text-align: center;
-      padding: 40px 20px;
-      line-height: 1.8;
-      font-size: 14px;
-    }
-    .conversation-item {
-      width: 100%;
-      border: 1px solid transparent;
-      background: transparent;
-      color: white;
-      border-radius: 14px;
-      padding: 13px 12px;
-      margin-bottom: 7px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-align: right;
-      transition: .2s ease;
-    }
-    .conversation-item:hover {
-      background: rgba(255,255,255,.04);
-      border-color: var(--border);
-    }
-    .conversation-item.active {
-      background: rgba(139,92,246,.10);
-      border-color: rgba(139,92,246,.25);
-    }
-    .conversation-title {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 14px;
-    }
-    .delete-conversation {
-      width: 32px;
-      height: 32px;
-      flex-shrink: 0;
-      border: none;
-      border-radius: 9px;
-      background: transparent;
-      color: #788198;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .delete-conversation:hover {
-      color: #ff6b81;
-      background: rgba(255,107,129,.08);
-    }
+
+    /* =========================
+       ACCOUNT
+    ========================== */
+
     .account-box {
-      margin: 14px 16px 8px;
+      margin: 14px 16px 10px;
+
       padding: 12px;
-      border: 1px solid var(--border);
+
+      border:
+        1px solid var(--border);
+
       border-radius: 15px;
-      background: rgba(255,255,255,.03);
+
+      background:
+        rgba(255,255,255,.03);
+
       display: flex;
+
       align-items: center;
+
       gap: 10px;
+
       direction: rtl;
     }
+
     .account-avatar {
       width: 42px;
       height: 42px;
+
       border-radius: 12px;
+
       background: var(--gradient);
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       font-weight: 800;
+
       flex-shrink: 0;
     }
+
     .account-info {
       min-width: 0;
       flex: 1;
     }
+
     .account-label {
       color: var(--muted);
+
       font-size: 11px;
+
       margin-bottom: 3px;
     }
+
     .account-email {
       font-size: 13px;
+
       overflow: hidden;
+
       text-overflow: ellipsis;
+
       white-space: nowrap;
-      direction: rtl;
+
+      direction: ltr;
+
       text-align: right;
     }
+
+    /* =========================
+       LOGIN BUTTON
+    ========================== */
+
+    .login-button {
+      margin:
+        0 16px 10px;
+
+      padding: 13px 14px;
+
+      border:
+        1px solid rgba(34,211,238,.35);
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(139,92,246,.14),
+          rgba(34,211,238,.10)
+        );
+
+      color: #ffffff;
+
+      cursor: pointer;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      transition: .2s ease;
+    }
+
+    .login-button:hover {
+      border-color:
+        rgba(34,211,238,.55);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(139,92,246,.22),
+          rgba(34,211,238,.16)
+        );
+    }
+
+    .login-button:active {
+      transform: scale(.98);
+    }
+
+    /* =========================
+       NEW CHAT
+    ========================== */
+
+    .side-new {
+      margin: 6px 16px 16px;
+
+      padding: 14px;
+
+      border:
+        1px solid rgba(139,92,246,.35);
+
+      border-radius: 15px;
+
+      background:
+        rgba(139,92,246,.08);
+
+      color: white;
+
+      cursor: pointer;
+
+      font-size: 15px;
+
+      text-align: center;
+    }
+
+    /* =========================
+       CONVERSATIONS
+    ========================== */
+
+    .conversation-list {
+      flex: 1;
+
+      overflow-y: auto;
+
+      padding:
+        0 12px 20px;
+    }
+
+    .conversation-empty {
+      color: var(--muted);
+
+      text-align: center;
+
+      padding: 40px 20px;
+
+      line-height: 1.8;
+
+      font-size: 14px;
+    }
+
+    .conversation-item {
+      width: 100%;
+
+      border:
+        1px solid transparent;
+
+      background: transparent;
+
+      color: white;
+
+      border-radius: 14px;
+
+      padding: 13px 12px;
+
+      margin-bottom: 7px;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      text-align: right;
+
+      transition: .2s ease;
+    }
+
+    .conversation-item:hover {
+      background:
+        rgba(255,255,255,.04);
+
+      border-color:
+        var(--border);
+    }
+
+    .conversation-item.active {
+      background:
+        rgba(139,92,246,.10);
+
+      border-color:
+        rgba(139,92,246,.25);
+    }
+
+    .conversation-title {
+      flex: 1;
+
+      min-width: 0;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+      white-space: nowrap;
+
+      font-size: 14px;
+    }
+
+    .delete-conversation {
+      width: 32px;
+      height: 32px;
+
+      flex-shrink: 0;
+
+      border: none;
+
+      border-radius: 9px;
+
+      background: transparent;
+
+      color: #788198;
+
+      cursor: pointer;
+
+      font-size: 16px;
+    }
+
+    .delete-conversation:hover {
+      color: #ff6b81;
+
+      background:
+        rgba(255,107,129,.08);
+    }
+
+    /* =========================
+       LOGOUT
+    ========================== */
+
+    .logout-button {
+      margin:
+        0 16px 14px;
+
+      padding: 12px;
+
+      border:
+        1px solid rgba(255,107,129,.22);
+
+      border-radius: 14px;
+
+      background:
+        rgba(255,107,129,.06);
+
+      color: #ff9aaa;
+
+      cursor: pointer;
+
+      font-size: 14px;
+    }
+
+    .logout-button:hover {
+      background:
+        rgba(255,107,129,.10);
+    }
+
     /* =========================
        MOBILE
     ========================== */
+
     @media (max-width: 600px) {
+
       html,
       body {
         width: 100%;
         height: 100%;
+
         overflow: hidden;
+
         position: fixed;
+
         inset: 0;
       }
+
       .app {
         width: 100%;
+
         height: 100dvh;
+
         min-height: 100dvh;
         max-height: 100dvh;
+
         overflow: hidden;
       }
+
       header {
         height: 82px;
         min-height: 82px;
+
         padding: 12px 16px;
+
         flex-shrink: 0;
       }
+
       .brand {
         gap: 10px;
       }
+
       .logo {
         width: 50px;
         height: 50px;
+
         border-radius: 15px;
+
         font-size: 27px;
       }
+
       .brand-info h1 {
         font-size: 21px;
       }
+
       .status {
         font-size: 13px;
       }
+
       .header-actions {
         gap: 7px;
       }
+
       .new-chat {
         height: 44px;
+
         padding: 0 11px;
+
         font-size: 12px;
+
         border-radius: 13px;
       }
+
       .menu {
         width: 44px;
         height: 44px;
+
         border-radius: 13px;
+
         font-size: 23px;
       }
+
       .chat {
         width: 100%;
+
         padding:
           20px 12px
           20px;
+
         flex: 1;
+
         min-height: 0;
+
         overflow-y: auto;
+
         overflow-x: hidden;
-        overscroll-behavior-y: contain;
-        -webkit-overflow-scrolling: touch;
+
+        overscroll-behavior-y:
+          contain;
+
+        -webkit-overflow-scrolling:
+          touch;
       }
+
       .welcome {
         padding-top: 60px;
       }
+
       .welcome-logo {
         width: 90px;
         height: 90px;
+
         font-size: 45px;
+
         border-radius: 28px;
       }
+
       .welcome h2 {
         font-size: 29px;
       }
+
       .welcome p {
         font-size: 15px;
       }
+
       .bubble {
         max-width: 82%;
+
         font-size: 15px;
       }
+
       .avatar {
         width: 44px;
         height: 44px;
+
         min-width: 44px;
       }
+
       .input-area {
         position: relative;
+
         width: 100%;
+
         flex-shrink: 0;
+
         padding:
           10px 12px
-          calc(12px + env(safe-area-inset-bottom));
+          calc(
+            12px +
+            env(
+              safe-area-inset-bottom
+            )
+          );
+
         background:
           linear-gradient(
             transparent,
             rgba(7,9,18,.98) 25%
           );
       }
+
       .input-box {
         width: 100%;
+
         border-radius: 23px;
+
         margin: 0;
+
         padding: 8px;
       }
+
       .attach-button {
         width: 45px;
         height: 52px;
+
         font-size: 22px;
       }
+
       textarea {
         min-height: 52px;
+
         max-height: 120px;
+
         padding:
           13px 8px;
       }
+
       .send {
         width: 52px;
         height: 52px;
       }
+
       .side-panel {
         width: 310px;
       }
+
       .message-image {
         max-width: 260px;
       }
     }
+
     /* =========================
        VERY SMALL PHONES
     ========================== */
+
     @media (max-width: 380px) {
+
       header {
         height: 76px;
         min-height: 76px;
       }
+
       .new-chat {
         padding: 0 8px;
+
         font-size: 11px;
       }
+
       .brand-info h1 {
         font-size: 18px;
       }
+
       .status {
         font-size: 12px;
       }
+
       .logo {
         width: 46px;
         height: 46px;
       }
+
       .menu {
         width: 42px;
         height: 42px;
       }
+
       .chat {
         padding:
           15px 10px
           15px;
       }
+
       .input-area {
         padding:
           8px 10px
-          calc(10px + env(safe-area-inset-bottom));
+          calc(
+            10px +
+            env(
+              safe-area-inset-bottom
+            )
+          );
       }
+
       .input-box {
         border-radius: 21px;
       }
+
       .attach-button {
         width: 40px;
       }
+
       .send {
         width: 50px;
         height: 50px;
@@ -792,23 +1410,39 @@
     }
   </style>
 </head>
+
 <body>
+
 <div class="app">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
   <header>
+
     <div class="brand">
+
       <div class="logo">
         ت
       </div>
+
       <div class="brand-info">
+
         <h1>
           التطور چات
         </h1>
+
         <div class="status">
           ● متصل الآن
         </div>
+
       </div>
+
     </div>
+
     <div class="header-actions">
+
       <button
         type="button"
         class="new-chat"
@@ -816,6 +1450,7 @@
       >
         + محادثة جديدة
       </button>
+
       <button
         type="button"
         class="menu"
@@ -824,38 +1459,58 @@
       >
         ☰
       </button>
+
     </div>
+
   </header>
+
+  <!-- =========================
+       CHAT
+  ========================== -->
+
   <main
     class="chat"
     id="chat"
   ></main>
+
+  <!-- =========================
+       INPUT
+  ========================== -->
+
   <div class="input-area">
+
     <div
       class="attachment-preview"
       id="attachmentPreview"
     >
+
       <img
         class="attachment-image"
         id="attachmentImage"
         alt=""
       >
+
       <div
         class="attachment-icon"
         id="attachmentIcon"
       >
         📎
       </div>
+
       <div class="attachment-info">
+
         <div
           class="attachment-name"
           id="attachmentName"
         ></div>
+
         <div
           class="attachment-size"
           id="attachmentSize"
         ></div>
+
       </div>
+
       <button
         type="button"
         class="remove-attachment"
@@ -864,13 +1519,17 @@
       >
         ×
       </button>
+
     </div>
+
     <div class="input-box">
+
       <input
         type="file"
         id="fileInput"
         accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.csv"
       >
+
       <button
         type="button"
         class="attach-button"
@@ -880,11 +1539,13 @@
       >
         📎
       </button>
+
       <textarea
         id="messageInput"
         placeholder="اكتب رسالتك هنا..."
         rows="1"
       ></textarea>
+
       <button
         type="button"
         class="send"
@@ -893,21 +1554,33 @@
       >
         ↑
       </button>
+
     </div>
+
   </div>
+
 </div>
+
+<!-- =========================
+     SIDE MENU
+========================== -->
+
 <div
   class="side-overlay"
   id="sideOverlay"
 ></div>
+
 <aside
   class="side-panel"
   id="sidePanel"
 >
+
   <div class="side-header">
+
     <h3>
       محادثاتي
     </h3>
+
     <button
       type="button"
       class="close-menu"
@@ -915,23 +1588,55 @@
     >
       ×
     </button>
+
   </div>
-  <div class="account-box">
-    <div class="account-avatar">
-      ت
+
+  <!-- ACCOUNT -->
+
+  <div
+    class="account-box"
+    id="accountBox"
+  >
+
+    <div
+      class="account-avatar"
+      id="accountAvatar"
+    >
+      أ
     </div>
+
     <div class="account-info">
-      <div class="account-label">
+
+      <div
+        class="account-label"
+        id="accountLabel"
+      >
         الحالة
       </div>
+
       <div
         class="account-email"
         id="accountEmail"
       >
         مستخدم زائر
       </div>
+
     </div>
+
   </div>
+
+  <!-- LOGIN -->
+
+  <button
+    type="button"
+    class="login-button"
+    id="loginButton"
+  >
+    🔐 تسجيل الدخول
+  </button>
+
+  <!-- NEW CHAT -->
+
   <button
     type="button"
     class="side-new"
@@ -939,78 +1644,190 @@
   >
     ＋ محادثة جديدة
   </button>
+
+  <!-- LOGOUT -->
+
+  <button
+    type="button"
+    class="logout-button"
+    id="logoutButton"
+    style="display:none;"
+  >
+    ↪ تسجيل الخروج
+  </button>
+
+  <!-- CONVERSATIONS -->
+
   <div
     class="conversation-list"
     id="conversationList"
   ></div>
+
 </aside>
+
 <script>
-  /* =========================
+
+  /* =====================================================
      ELEMENTS
-  ========================== */
+  ===================================================== */
+
   const chat =
-    document.getElementById("chat");
+    document.getElementById(
+      "chat"
+    );
+
   const input =
-    document.getElementById("messageInput");
+    document.getElementById(
+      "messageInput"
+    );
+
   const sendButton =
-    document.getElementById("sendButton");
+    document.getElementById(
+      "sendButton"
+    );
+
   const attachButton =
-    document.getElementById("attachButton");
+    document.getElementById(
+      "attachButton"
+    );
+
   const fileInput =
-    document.getElementById("fileInput");
+    document.getElementById(
+      "fileInput"
+    );
+
   const attachmentPreview =
-    document.getElementById("attachmentPreview");
+    document.getElementById(
+      "attachmentPreview"
+    );
+
   const attachmentName =
-    document.getElementById("attachmentName");
+    document.getElementById(
+      "attachmentName"
+    );
+
   const attachmentSize =
-    document.getElementById("attachmentSize");
+    document.getElementById(
+      "attachmentSize"
+    );
+
   const attachmentImage =
-    document.getElementById("attachmentImage");
+    document.getElementById(
+      "attachmentImage"
+    );
+
   const attachmentIcon =
-    document.getElementById("attachmentIcon");
+    document.getElementById(
+      "attachmentIcon"
+    );
+
   const removeAttachmentButton =
     document.getElementById(
       "removeAttachmentButton"
     );
+
   const sidePanel =
-    document.getElementById("sidePanel");
+    document.getElementById(
+      "sidePanel"
+    );
+
   const sideOverlay =
-    document.getElementById("sideOverlay");
+    document.getElementById(
+      "sideOverlay"
+    );
+
   const closeMenuButton =
-    document.getElementById("closeMenu");
+    document.getElementById(
+      "closeMenu"
+    );
+
   const sideNewChat =
-    document.getElementById("sideNewChat");
+    document.getElementById(
+      "sideNewChat"
+    );
+
   const conversationList =
     document.getElementById(
       "conversationList"
     );
+
   const headerNewChat =
     document.getElementById(
       "headerNewChat"
     );
+
   const menuButton =
     document.getElementById(
       "menuButton"
     );
+
   const accountEmail =
-    document.getElementById("accountEmail");
-  /* =========================
+    document.getElementById(
+      "accountEmail"
+    );
+
+  const accountLabel =
+    document.getElementById(
+      "accountLabel"
+    );
+
+  const accountAvatar =
+    document.getElementById(
+      "accountAvatar"
+    );
+
+  const loginButton =
+    document.getElementById(
+      "loginButton"
+    );
+
+  const logoutButton =
+    document.getElementById(
+      "logoutButton"
+    );
+
+
+  /* =====================================================
      STORAGE
-  ========================== */
-  let STORAGE_KEY =
-    "altatawur_conversations_guest";
-  let ACTIVE_KEY =
-    "altatawur_active_conversation_guest";
+  ===================================================== */
+
+  let STORAGE_KEY = "";
+  let ACTIVE_KEY = "";
+
   let conversations = [];
+
   let activeConversationId = null;
+
+
   function loadUserStorage() {
+
+    /*
+      إذا المستخدم مسجل:
+      نستخدم ID الخاص به.
+
+      إذا زائر:
+      نستخدم guest.
+    */
+
+    const userKey =
+      currentUser?.id ||
+      "guest";
+
+    STORAGE_KEY =
+      `altatawur_conversations_${userKey}`;
+
+    ACTIVE_KEY =
+      `altatawur_active_conversation_${userKey}`;
+
     try {
+
       conversations =
         JSON.parse(
           localStorage.getItem(
             STORAGE_KEY
           ) || "[]"
         );
+
       if (
         !Array.isArray(
           conversations
@@ -1018,63 +1835,148 @@
       ) {
         conversations = [];
       }
+
     } catch (error) {
+
       console.error(
         "Storage read error:",
         error
       );
+
       conversations = [];
     }
+
     activeConversationId =
       localStorage.getItem(
         ACTIVE_KEY
       ) || null;
   }
-  /* =========================
+
+
+  /* =====================================================
      STATE
-  ========================== */
+  ===================================================== */
+
   let selectedFile = null;
+
   let selectedFileData = null;
+
   let isSending = false;
-  /* =========================
+
+
+  /* =====================================================
+     ACCOUNT UI
+  ===================================================== */
+
+  function updateAccountUI() {
+
+    /*
+      GUEST
+    */
+
+    if (!currentUser) {
+
+      accountLabel.textContent =
+        "الحالة";
+
+      accountEmail.textContent =
+        "مستخدم زائر";
+
+      accountAvatar.textContent =
+        "أ";
+
+      loginButton.style.display =
+        "block";
+
+      logoutButton.style.display =
+        "none";
+
+      return;
+    }
+
+
+    /*
+      LOGGED IN
+    */
+
+    accountLabel.textContent =
+      "الحساب";
+
+    accountEmail.textContent =
+      currentUser.email ||
+      "مستخدم";
+
+    accountAvatar.textContent =
+      (
+        currentUser.email ||
+        "م"
+      )
+        .charAt(0)
+        .toUpperCase();
+
+    loginButton.style.display =
+      "none";
+
+    logoutButton.style.display =
+      "block";
+  }
+
+
+  /* =====================================================
      SAVE
-  ========================== */
+  ===================================================== */
+
   function saveConversations() {
+
     try {
+
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(
           conversations
         )
       );
+
     } catch (error) {
+
       console.error(
         "Storage Error:",
         error
       );
+
       alert(
         "تعذر حفظ المحادثة محلياً. قد تكون مساحة التخزين ممتلئة."
       );
     }
   }
+
+
   function saveActiveId() {
+
     if (
       activeConversationId
     ) {
+
       localStorage.setItem(
         ACTIVE_KEY,
         activeConversationId
       );
+
     } else {
+
       localStorage.removeItem(
         ACTIVE_KEY
       );
     }
   }
-  /* =========================
+
+
+  /* =====================================================
      ID
-  ========================== */
+  ===================================================== */
+
   function createId() {
+
     return (
       Date.now().toString() +
       Math.random()
@@ -1082,152 +1984,226 @@
         .slice(2)
     );
   }
-  /* =========================
-     ACTIVE
-  ========================== */
+
+
+  /* =====================================================
+     ACTIVE CONVERSATION
+  ===================================================== */
+
   function getActiveConversation() {
+
     return conversations.find(
       conversation =>
         conversation.id ===
         activeConversationId
     );
   }
-  /* =========================
+
+
+  /* =====================================================
      WELCOME
-  ========================== */
+  ===================================================== */
+
   function showWelcome() {
+
     chat.innerHTML = `
+
       <section class="welcome">
+
         <div class="welcome-logo">
           ت
         </div>
+
         <h2>
           أهلاً بك في
           <span>
             التطور چات
           </span>
         </h2>
+
         <p>
           مساعدك الذكي للإجابة عن الأسئلة،
           شرح المواضيع، كتابة النصوص
           وتوليد الأفكار.
         </p>
+
       </section>
+
     `;
   }
-  /* =========================
-     CHAT SCROLL
-  ========================== */
+
+
+  /* =====================================================
+     SCROLL
+  ===================================================== */
+
   function scrollChatToBottom() {
+
     requestAnimationFrame(
       function() {
+
         chat.scrollTo({
           top:
             chat.scrollHeight,
+
           behavior:
             "smooth"
         });
+
       }
     );
   }
-  /* =========================
+
+
+  /* =====================================================
      ADD MESSAGE
-  ========================== */
+  ===================================================== */
+
   function addMessage(
     role,
     text,
     attachment = null
   ) {
+
     const message =
       document.createElement(
         "div"
       );
+
     message.className =
       `message ${role}`;
+
+
     const avatar =
       document.createElement(
         "div"
       );
+
     avatar.className =
       "avatar";
+
     avatar.textContent =
       role === "user"
         ? "أ"
         : "ت";
+
+
     const bubble =
       document.createElement(
         "div"
       );
+
     bubble.className =
       "bubble";
+
+
+    /*
+      IMAGE
+    */
+
     if (
       attachment &&
       attachment.type === "image" &&
       attachment.data
     ) {
+
       const img =
         document.createElement(
           "img"
         );
+
       img.className =
         "message-image";
+
       img.src =
         attachment.data;
+
       img.alt =
         attachment.name ||
         "صورة";
+
       bubble.appendChild(
         img
       );
     }
+
+
+    /*
+      FILE
+    */
+
     if (
       attachment &&
       attachment.type !== "image"
     ) {
+
       const fileBox =
         document.createElement(
           "div"
         );
+
       fileBox.className =
         "message-file";
+
       fileBox.textContent =
         `📎 ${
           attachment.name ||
           "ملف مرفق"
         }`;
+
       bubble.appendChild(
         fileBox
       );
     }
+
+
+    /*
+      TEXT
+    */
+
     if (text) {
+
       const textElement =
         document.createElement(
           "div"
         );
+
       textElement.textContent =
         text;
+
       bubble.appendChild(
         textElement
       );
     }
+
+
     message.appendChild(
       avatar
     );
+
     message.appendChild(
       bubble
     );
+
     chat.appendChild(
       message
     );
+
     scrollChatToBottom();
+
     return message;
   }
-  /* =========================
-     RENDER
-  ========================== */
+
+
+  /* =====================================================
+     RENDER CONVERSATION
+  ===================================================== */
+
   function renderConversation() {
+
     const conversation =
       getActiveConversation();
+
     if (
       !conversation ||
       !Array.isArray(
@@ -1235,53 +2211,81 @@
       ) ||
       !conversation.messages.length
     ) {
+
       showWelcome();
+
       return;
     }
+
     chat.innerHTML = "";
+
     conversation.messages.forEach(
       message => {
+
         addMessage(
           message.role,
           message.content || "",
           message.attachment ||
             null
         );
+
       }
     );
+
     requestAnimationFrame(
       function() {
+
         chat.scrollTop =
           chat.scrollHeight;
+
       }
     );
   }
-  /* =========================
+
+
+  /* =====================================================
      CONVERSATION LIST
-  ========================== */
+  ===================================================== */
+
   function renderConversationList() {
+
     conversationList.innerHTML =
       "";
-    if (!conversations.length) {
+
+    if (
+      !conversations.length
+    ) {
+
       conversationList.innerHTML = `
+
         <div class="conversation-empty">
+
           ما عندك محادثات محفوظة حالياً.
+
           <br>
+
           ابدأ محادثة جديدة
           من الزر أعلاه.
+
         </div>
+
       `;
+
       return;
     }
+
+
     conversations
       .slice()
       .reverse()
       .forEach(
         conversation => {
+
           const item =
             document.createElement(
               "div"
             );
+
           item.className =
             "conversation-item" +
             (
@@ -1290,248 +2294,386 @@
                 ? " active"
                 : ""
             );
+
+
           const title =
             document.createElement(
               "div"
             );
+
           title.className =
             "conversation-title";
+
           title.textContent =
             conversation.title ||
             "محادثة جديدة";
+
+
           const deleteButton =
             document.createElement(
               "button"
             );
+
           deleteButton.type =
             "button";
+
           deleteButton.className =
             "delete-conversation";
+
           deleteButton.textContent =
             "🗑";
+
+
           deleteButton.onclick =
             function(event) {
+
               event.stopPropagation();
+
               deleteConversation(
                 conversation.id
               );
             };
+
+
           item.appendChild(
             title
           );
+
           item.appendChild(
             deleteButton
           );
+
+
           item.onclick =
             function() {
+
               openConversation(
                 conversation.id
               );
             };
+
+
           conversationList.appendChild(
             item
           );
         }
       );
   }
-  /* =========================
+
+
+  /* =====================================================
      OPEN
-  ========================== */
+  ===================================================== */
+
   function openConversation(id) {
+
     activeConversationId =
       id;
+
     saveActiveId();
+
     renderConversation();
+
     renderConversationList();
+
     closeMenu();
+
     input.focus();
   }
-  /* =========================
+
+
+  /* =====================================================
      NEW CHAT
-  ========================== */
+  ===================================================== */
+
   function newChat() {
+
     const newConversation = {
+
       id:
         createId(),
+
       title:
         "محادثة جديدة",
+
       messages:
         [],
+
       createdAt:
         Date.now()
     };
+
+
     conversations.push(
       newConversation
     );
+
     activeConversationId =
       newConversation.id;
+
+
     saveConversations();
+
     saveActiveId();
+
     renderConversation();
+
     renderConversationList();
+
+
     input.value =
       "";
+
     input.style.height =
       "52px";
+
+
     removeAttachment();
+
     input.focus();
   }
-  /* =========================
+
+
+  /* =====================================================
      DELETE
-  ========================== */
+  ===================================================== */
+
   function deleteConversation(
     id
   ) {
+
     conversations =
       conversations.filter(
         conversation =>
           conversation.id !==
           id
       );
+
+
     if (
       activeConversationId ===
       id
     ) {
+
       if (
         conversations.length
       ) {
+
         activeConversationId =
           conversations[
             conversations.length - 1
           ].id;
+
       } else {
+
         activeConversationId =
           null;
       }
     }
+
+
     saveConversations();
+
     saveActiveId();
+
     renderConversation();
+
     renderConversationList();
   }
-  /* =========================
+
+
+  /* =====================================================
      TYPING
-  ========================== */
+  ===================================================== */
+
   function addTyping() {
+
     removeTyping();
+
+
     const message =
       document.createElement(
         "div"
       );
+
     message.className =
       "message assistant";
+
     message.id =
       "typingMessage";
+
+
     const avatar =
       document.createElement(
         "div"
       );
+
     avatar.className =
       "avatar";
+
     avatar.textContent =
       "ت";
+
+
     const bubble =
       document.createElement(
         "div"
       );
+
     bubble.className =
       "bubble";
+
+
     bubble.innerHTML = `
+
       <div class="typing">
+
         <span></span>
         <span></span>
         <span></span>
+
       </div>
+
     `;
+
+
     message.appendChild(
       avatar
     );
+
     message.appendChild(
       bubble
     );
+
     chat.appendChild(
       message
     );
+
     scrollChatToBottom();
   }
+
+
   function removeTyping() {
+
     const typing =
       document.getElementById(
         "typingMessage"
       );
+
     if (typing) {
+
       typing.remove();
     }
   }
-  /* =========================
+
+
+  /* =====================================================
      ATTACHMENT
-  ========================== */
+  ===================================================== */
+
   attachButton.addEventListener(
     "click",
     function(event) {
+
       event.preventDefault();
+
       fileInput.click();
     }
   );
+
+
   fileInput.addEventListener(
     "change",
     handleFileSelect
   );
+
+
   removeAttachmentButton.addEventListener(
     "click",
     removeAttachment
   );
+
+
   function formatFileSize(
     bytes
   ) {
-    if (bytes < 1024) {
+
+    if (
+      bytes < 1024
+    ) {
+
       return bytes + " B";
     }
+
+
     if (
       bytes <
       1024 * 1024
     ) {
+
       return (
         (bytes / 1024)
           .toFixed(1) +
         " KB"
       );
     }
+
+
     if (
       bytes <
-      1024 * 1024 * 1024
+      1024 *
+      1024 *
+      1024
     ) {
+
       return (
         (
           bytes /
-          (1024 * 1024)
+          (
+            1024 *
+            1024
+          )
         ).toFixed(1) +
         " MB"
       );
     }
+
+
     return (
       (
         bytes /
-        (1024 * 1024 * 1024)
+        (
+          1024 *
+          1024 *
+          1024
+        )
       ).toFixed(1) +
       " GB"
     );
   }
+
+
   function readFileAsDataURL(
     file
   ) {
+
     return new Promise(
       (
         resolve,
         reject
       ) => {
+
         const reader =
           new FileReader();
+
+
         reader.onload =
           () =>
             resolve(
               reader.result
             );
+
+
         reader.onerror =
           () =>
             reject(
@@ -1539,66 +2681,96 @@
                 "تعذر قراءة الملف."
               )
             );
+
+
         reader.readAsDataURL(
           file
         );
       }
     );
   }
+
+
   async function resizeImage(
     file,
     maxSize = 1600,
     quality = 0.82
   ) {
+
     const dataUrl =
       await readFileAsDataURL(
         file
       );
+
+
     return new Promise(
       (
         resolve,
         reject
       ) => {
+
         const img =
           new Image();
+
+
         img.onload =
           function() {
+
             let width =
               img.width;
+
             let height =
               img.height;
+
+
             if (
               width > maxSize ||
               height > maxSize
             ) {
+
               const ratio =
                 Math.min(
                   maxSize /
                     width,
+
                   maxSize /
                     height
                 );
+
+
               width =
                 Math.round(
-                  width * ratio
+                  width *
+                  ratio
                 );
+
               height =
                 Math.round(
-                  height * ratio
+                  height *
+                  ratio
                 );
             }
+
+
             const canvas =
               document.createElement(
                 "canvas"
               );
+
+
             canvas.width =
               width;
+
             canvas.height =
               height;
+
+
             const ctx =
               canvas.getContext(
                 "2d"
               );
+
+
             ctx.drawImage(
               img,
               0,
@@ -1606,6 +2778,8 @@
               width,
               height
             );
+
+
             resolve(
               canvas.toDataURL(
                 "image/jpeg",
@@ -1613,6 +2787,8 @@
               )
             );
           };
+
+
         img.onerror =
           () =>
             reject(
@@ -1620,102 +2796,175 @@
                 "تعذر معالجة الصورة."
               )
             );
+
+
         img.src =
           dataUrl;
       }
     );
   }
+
+
   async function handleFileSelect(
     event
   ) {
+
     const file =
       event.target.files[0];
+
+
     if (!file) {
       return;
     }
+
+
     if (
       file.size >
-      20 * 1024 * 1024
+      20 *
+      1024 *
+      1024
     ) {
+
       alert(
         "حجم الملف أكبر من 20MB."
       );
+
       removeAttachment();
+
       return;
     }
+
+
     selectedFile =
       file;
+
+
     attachmentName.textContent =
       file.name;
+
+
     attachmentSize.textContent =
       formatFileSize(
         file.size
       );
+
+
     attachmentPreview.classList.add(
       "active"
     );
+
+
+    /*
+      IMAGE
+    */
+
     if (
       file.type.startsWith(
         "image/"
       )
     ) {
+
       try {
+
         const compressedImage =
           await resizeImage(
             file
           );
+
+
         selectedFileData = {
+
           type:
             "image",
+
           name:
             file.name,
+
           mime:
             "image/jpeg",
+
           data:
             compressedImage
         };
+
+
         attachmentImage.src =
           compressedImage;
+
         attachmentImage.style.display =
           "block";
+
         attachmentIcon.style.display =
           "none";
+
       } catch (error) {
-        console.error(error);
+
+        console.error(
+          error
+        );
+
         alert(
           "تعذر تجهيز الصورة."
         );
+
         removeAttachment();
       }
-    } else {
+
+    }
+
+    /*
+      FILE
+    */
+
+    else {
+
       try {
+
         const data =
           await readFileAsDataURL(
             file
           );
+
+
         selectedFileData = {
+
           type:
             "file",
+
           name:
             file.name,
+
           mime:
             file.type ||
             "application/octet-stream",
+
           data:
             data
         };
+
       } catch (error) {
-        console.error(error);
+
+        console.error(
+          error
+        );
+
         alert(
           "تعذر قراءة الملف."
         );
+
         removeAttachment();
+
         return;
       }
+
+
       attachmentImage.style.display =
         "none";
+
       attachmentIcon.style.display =
         "flex";
+
+
       attachmentIcon.textContent =
         file.type ===
         "application/pdf"
@@ -1723,53 +2972,95 @@
           : "📎";
     }
   }
+
+
   function removeAttachment() {
+
     selectedFile =
       null;
+
     selectedFileData =
       null;
+
+
     fileInput.value =
       "";
+
+
     attachmentPreview.classList.remove(
       "active"
     );
+
+
     attachmentImage.src =
       "";
+
+
     attachmentImage.style.display =
       "none";
+
+
     attachmentIcon.style.display =
       "flex";
+
+
     attachmentIcon.textContent =
       "📎";
+
+
     attachmentName.textContent =
       "";
+
+
     attachmentSize.textContent =
       "";
   }
-  /* =========================
-     SEND
-  ========================== */
+
+
+  /* =====================================================
+     SEND MESSAGE
+  ===================================================== */
+
   async function sendMessage() {
+
     if (isSending) {
       return;
     }
+
+
     const text =
       input.value.trim();
+
+
     if (
       !text &&
       !selectedFileData
     ) {
+
       return;
     }
+
+
+    /*
+      إذا ماكو محادثة فعالة،
+      ننشئ واحدة.
+    */
+
     if (
       !activeConversationId
     ) {
+
       const newConversation = {
+
         id:
           createId(),
+
         title:
           text
-            ? text.slice(0, 35)
+            ? text.slice(
+                0,
+                35
+              )
             : (
               selectedFile
                 ? selectedFile.name.slice(
@@ -1778,43 +3069,67 @@
                   )
                 : "محادثة جديدة"
             ),
+
         messages:
           [],
+
         createdAt:
           Date.now()
       };
+
+
       conversations.push(
         newConversation
       );
+
+
       activeConversationId =
         newConversation.id;
+
+
       saveActiveId();
     }
+
+
     const conversation =
       getActiveConversation();
+
+
     if (!conversation) {
       return;
     }
+
+
     const messageText =
       text;
+
+
     const attachment =
       selectedFileData
         ? {
             ...selectedFileData
           }
         : null;
+
+
     conversation.messages.push({
+
       role:
         "user",
+
       content:
         messageText,
+
       attachment:
         attachment
     });
+
+
     if (
       conversation.messages.length ===
       1
     ) {
+
       const titleText =
         messageText ||
         (
@@ -1822,6 +3137,8 @@
             ? attachment.name
             : "محادثة جديدة"
         );
+
+
       conversation.title =
         titleText.length > 35
           ? titleText.slice(
@@ -1830,64 +3147,115 @@
             ) + "..."
           : titleText;
     }
+
+
     saveConversations();
+
     renderConversationList();
+
+
     addMessage(
       "user",
       messageText,
       attachment
     );
+
+
     input.value =
       "";
+
     input.style.height =
       "52px";
+
+
     removeAttachment();
+
+
     isSending =
       true;
+
     sendButton.disabled =
       true;
+
     sendButton.textContent =
       "…";
+
+
     addTyping();
+
+
     try {
+
+      /*
+        تجهيز الرسائل للـ API
+      */
+
       const apiMessages =
         conversation.messages
           .slice(-30)
           .map(
             message => {
+
+              /*
+                IMAGE
+              */
+
               if (
                 message.attachment &&
                 message.attachment.type ===
                   "image" &&
                 message.attachment.data
               ) {
-                const content = [];
+
+                const content =
+                  [];
+
+
                 if (
                   message.content
                 ) {
+
                   content.push({
+
                     type:
                       "input_text",
+
                     text:
                       message.content
                   });
                 }
+
+
                 content.push({
+
                   type:
                     "input_image",
+
                   image_url:
                     message.attachment.data
                 });
+
+
                 return {
+
                   role:
                     message.role,
+
                   content:
                     content
                 };
               }
+
+
+              /*
+                TEXT
+              */
+
               return {
+
                 role:
                   message.role,
+
                 content:
                   String(
                     message.content ||
@@ -1896,138 +3264,486 @@
               };
             }
           );
+
+
+      /*
+        =================================================
+        API HEADERS
+        =================================================
+
+        إذا المستخدم مسجل:
+        نرسل التوكن.
+
+        إذا زائر:
+        نرسل الطلب بدون Authorization.
+      */
+
+      const headers = {
+
+        "Content-Type":
+          "application/json"
+      };
+
+
+      if (
+        currentSession &&
+        currentSession.access_token
+      ) {
+
+        headers.Authorization =
+          `Bearer ${
+            currentSession.access_token
+          }`;
+      }
+
+
+      /*
+        API REQUEST
+      */
+
       const response =
         await fetch(
           "/api/chat",
           {
+
             method:
               "POST",
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
+
+            headers:
+              headers,
+
             body:
               JSON.stringify({
+
                 messages:
                   apiMessages
+
               })
           }
         );
+
+
       let data = {};
+
+
       try {
+
         data =
           await response.json();
+
       } catch (jsonError) {
+
         console.error(
           "JSON Error:",
           jsonError
         );
       }
+
+
       removeTyping();
+
+
+      /*
+        إذا الـ API قال Unauthorized
+      */
+
+      if (
+        response.status ===
+        401
+      ) {
+
+        /*
+          إذا المستخدم كان مسجل
+          نسوي تسجيل خروج محلي.
+
+          أما الزائر، نخليه يكمل
+          بدون تحويل إلى login.
+        */
+
+        if (currentUser) {
+
+          await supabase.auth.signOut();
+
+          currentSession =
+            null;
+
+          currentUser =
+            null;
+
+          updateAccountUI();
+        }
+
+
+        throw new Error(
+          "انتهت جلسة تسجيل الدخول. حاول مرة ثانية."
+        );
+      }
+
+
       if (!response.ok) {
+
         throw new Error(
           data.error ||
           `خطأ من الخادم (${response.status})`
         );
       }
+
+
       const reply =
         data.reply ||
         "ما حصلت جواب من الذكاء الاصطناعي.";
+
+
       conversation.messages.push({
+
         role:
           "assistant",
+
         content:
           reply
+
       });
+
+
       saveConversations();
+
+
       addMessage(
         "assistant",
         reply
       );
+
+
     } catch (error) {
+
       removeTyping();
+
+
       console.error(
         "Send Error:",
         error
       );
+
+
       addMessage(
         "assistant",
+
         "عذراً، صار خطأ بالاتصال بالخادم.\n\n" +
         (
           error?.message ||
           "حاول مرة ثانية."
         )
       );
+
+
     } finally {
+
       isSending =
         false;
+
       sendButton.disabled =
         false;
+
       sendButton.textContent =
         "↑";
+
       input.focus();
     }
   }
-  /* =========================
+
+
+  /* =====================================================
      SEND BUTTON
-  ========================== */
+  ===================================================== */
+
   sendButton.addEventListener(
     "click",
     function(event) {
+
       event.preventDefault();
+
       sendMessage();
     }
   );
-  /* =========================
+
+
+  /* =====================================================
      MENU
-  ========================== */
+  ===================================================== */
+
   function toggleMenu() {
+
     sidePanel.classList.toggle(
       "active"
     );
+
     sideOverlay.classList.toggle(
       "active"
     );
   }
+
+
   function closeMenu() {
+
     sidePanel.classList.remove(
       "active"
     );
+
     sideOverlay.classList.remove(
       "active"
     );
   }
+
+
   menuButton.addEventListener(
     "click",
     toggleMenu
   );
+
+
   sideOverlay.addEventListener(
     "click",
     closeMenu
   );
+
+
   closeMenuButton.addEventListener(
     "click",
     closeMenu
   );
+
+
   sideNewChat.addEventListener(
     "click",
     function() {
+
       newChat();
+
       closeMenu();
     }
   );
+
+
   headerNewChat.addEventListener(
     "click",
     newChat
   );
-  /* =========================
+
+
+  /* =====================================================
+     LOGIN
+  ===================================================== */
+
+  loginButton.addEventListener(
+    "click",
+    function() {
+
+      /*
+        ننقل المستخدم إلى
+        صفحة تسجيل الدخول.
+      */
+
+      window.location.href =
+        "/login.html";
+    }
+  );
+
+
+  /* =====================================================
+     LOGOUT
+  ===================================================== */
+
+  async function logout() {
+
+    try {
+
+      await supabase.auth.signOut();
+
+    } catch (error) {
+
+      console.error(
+        "Logout Error:",
+        error
+      );
+    }
+
+
+    /*
+      لا نطرد المستخدم من المحادثة.
+
+      فقط نرجعه إلى وضع الزائر.
+    */
+
+    currentSession =
+      null;
+
+    currentUser =
+      null;
+
+
+    /*
+      نغير مساحة التخزين إلى guest
+    */
+
+    loadUserStorage();
+
+
+    updateAccountUI();
+
+    renderConversation();
+
+    renderConversationList();
+
+    closeMenu();
+  }
+
+
+  logoutButton.addEventListener(
+    "click",
+    logout
+  );
+
+
+  /* =====================================================
+     AUTH STATE CHANGE
+  ===================================================== */
+
+  supabase.auth.onAuthStateChange(
+    (
+      event,
+      session
+    ) => {
+
+      console.log(
+        "Auth Event:",
+        event
+      );
+
+
+      /*
+        SIGNED_IN
+      */
+
+      if (
+        event ===
+        "SIGNED_IN"
+      ) {
+
+        currentSession =
+          session || null;
+
+        currentUser =
+          session?.user || null;
+
+
+        /*
+          بعد تسجيل الدخول
+          ننتقل إلى مساحة تخزين
+          المستخدم الخاصة.
+        */
+
+        loadUserStorage();
+
+
+        updateAccountUI();
+
+        renderConversation();
+
+        renderConversationList();
+
+        return;
+      }
+
+
+      /*
+        TOKEN REFRESH
+      */
+
+      if (
+        event ===
+        "TOKEN_REFRESHED"
+      ) {
+
+        currentSession =
+          session || null;
+
+        currentUser =
+          session?.user || null;
+
+
+        updateAccountUI();
+
+        return;
+      }
+
+
+      /*
+        SIGNED_OUT
+      */
+
+      if (
+        event ===
+        "SIGNED_OUT"
+      ) {
+
+        currentSession =
+          null;
+
+        currentUser =
+          null;
+
+
+        /*
+          لا redirect إلى login.
+
+          المستخدم يبقى داخل الموقع
+          كزائر.
+        */
+
+        loadUserStorage();
+
+        updateAccountUI();
+
+        renderConversation();
+
+        renderConversationList();
+
+        return;
+      }
+
+
+      /*
+        SESSION UPDATED
+      */
+
+      if (
+        session
+      ) {
+
+        currentSession =
+          session;
+
+        currentUser =
+          session.user;
+
+        updateAccountUI();
+      }
+    }
+  );
+
+
+  /* =====================================================
      TEXTAREA
-  ========================== */
+  ===================================================== */
+
   input.addEventListener(
     "input",
     function() {
+
       this.style.height =
         "52px";
+
+
       this.style.height =
         Math.min(
           this.scrollHeight,
@@ -2035,40 +3751,59 @@
         ) + "px";
     }
   );
-  /* =========================
+
+
+  /* =====================================================
      ENTER
-  ========================== */
+  ===================================================== */
+
   input.addEventListener(
     "keydown",
     function(event) {
+
       if (
-        event.key === "Enter" &&
+        event.key ===
+          "Enter" &&
         !event.shiftKey
       ) {
+
         event.preventDefault();
+
         sendMessage();
       }
     }
   );
-  /* =========================
+
+
+  /* =====================================================
      KEYBOARD / MOBILE
-  ========================== */
+  ===================================================== */
+
   if (
     window.visualViewport
   ) {
+
     window.visualViewport.addEventListener(
       "resize",
       function() {
+
         requestAnimationFrame(
           function() {
+
             const active =
               document.activeElement;
+
+
             if (
-              active === input
+              active ===
+              input
             ) {
+
               setTimeout(
                 function() {
+
                   scrollChatToBottom();
+
                 },
                 50
               );
@@ -2078,37 +3813,94 @@
       }
     );
   }
-  /* =========================
-     START
-  ========================== */
-  function startApp() {
+
+
+  /* =====================================================
+     START APP
+  ===================================================== */
+
+  async function startApp() {
+
+    /*
+      نقرأ جلسة Supabase
+      لكن لا نجبر المستخدم على تسجيل الدخول.
+    */
+
+    await loadAuthState();
+
+
+    /*
+      تحديث واجهة الحساب
+    */
+
+    updateAccountUI();
+
+
+    /*
+      تحميل محادثات المستخدم
+      أو محادثات الزائر.
+    */
+
     loadUserStorage();
-    if (accountEmail) {
-      accountEmail.textContent =
-        "مستخدم زائر";
-    }
+
+
+    /*
+      لا توجد محادثات
+    */
+
     if (
       !conversations.length
     ) {
+
       activeConversationId =
         null;
+
       saveActiveId();
+
       showWelcome();
-    } else {
+
+    }
+
+    /*
+      توجد محادثات
+    */
+
+    else {
+
       let active =
         getActiveConversation();
+
+
       if (!active) {
+
         activeConversationId =
           conversations[
             conversations.length - 1
           ].id;
+
         saveActiveId();
       }
+
+
       renderConversation();
     }
+
+
+    /*
+      قائمة المحادثات
+    */
+
     renderConversationList();
   }
+
+
+  /*
+    تشغيل التطبيق
+  */
+
   startApp();
+
 </script>
+
 </body>
 </html>
