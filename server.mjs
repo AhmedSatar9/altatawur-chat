@@ -1,326 +1,97 @@
-import express from "express";
-import dotenv from "dotenv";
-import OpenAI from "openai";
-import path from "path";
-import { fileURLToPath } from "url";
+import "dotenv/config";
 
-dotenv.config();
+import express from "express";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename =
+    fileURLToPath(import.meta.url);
 
-const port = process.env.PORT || 3000;
+const __dirname =
+    path.dirname(__filename);
 
-/* =========================
-   OPENAI
-========================= */
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
-/* =========================
-   MIDDLEWARE
-========================= */
 
 app.use(
-  express.json({
-    limit: "25mb"
-  })
+    express.json({
+        limit: "1mb"
+    })
 );
 
-/* =========================
-   STATIC FILES
-========================= */
 
 app.use(
-  express.static(__dirname)
+    express.static(__dirname)
 );
 
-/* =========================
-   MAIN PAGE
-========================= */
 
-app.get("/", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "index.html")
-  );
-});
+// ==========================================
+// HEALTH
+// ==========================================
 
-/* =========================
-   LOGIN PAGE
-========================= */
+app.get(
+    "/api/health",
+    (req, res) => {
 
-app.get("/login", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "login.html")
-  );
-});
+        res.json({
+            status: "ok",
+            app: "altatawur-chat",
+            time: new Date().toISOString()
+        });
 
-app.get("/login.html", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "login.html")
-  );
-});
-
-/* =========================
-   CHAT API
-========================= */
-
-app.post("/api/chat", async (req, res) => {
-  try {
-    const messages =
-      Array.isArray(req.body?.messages)
-        ? req.body.messages
-        : [];
-
-    if (!messages.length) {
-      return res.status(400).json({
-        error: "لا توجد رسالة."
-      });
     }
+);
 
-    /* آخر 30 رسالة فقط */
-    const recentMessages =
-      messages.slice(-30);
 
-    const apiMessages = [];
+// ==========================================
+// LOGIN PAGE
+// ==========================================
 
-    for (const message of recentMessages) {
-      if (!message) {
-        continue;
-      }
+app.get(
+    "/login",
+    (req, res) => {
 
-      /* =========================
-         USER
-      ========================== */
-
-      if (message.role === "user") {
-        const content = [];
-
-        if (Array.isArray(message.content)) {
-          for (const item of message.content) {
-            if (!item) {
-              continue;
-            }
-
-            /* TEXT */
-
-            if (
-              item.type === "input_text" ||
-              item.type === "text"
-            ) {
-              if (item.text) {
-                content.push({
-                  type: "text",
-                  text: String(item.text)
-                });
-              }
-            }
-
-            /* IMAGE */
-
-            else if (
-              item.type === "input_image"
-            ) {
-              let imageUrl =
-                item.image_url;
-
-              if (
-                typeof imageUrl === "string" &&
-                imageUrl.length > 0
-              ) {
-                content.push({
-                  type: "image_url",
-                  image_url: {
-                    url: imageUrl
-                  }
-                });
-              }
-
-              else if (
-                imageUrl &&
-                typeof imageUrl === "object" &&
-                imageUrl.url
-              ) {
-                content.push({
-                  type: "image_url",
-                  image_url: {
-                    url: String(
-                      imageUrl.url
-                    )
-                  }
-                });
-              }
-            }
-          }
-        }
-
-        /* ATTACHMENT */
-
-        else if (
-          message.attachment &&
-          message.attachment.type === "image" &&
-          message.attachment.data
-        ) {
-          if (message.content) {
-            content.push({
-              type: "text",
-              text: String(
-                message.content
-              )
-            });
-          }
-
-          content.push({
-            type: "image_url",
-            image_url: {
-              url: String(
-                message.attachment.data
-              )
-            }
-          });
-        }
-
-        /* TEXT ONLY */
-
-        else if (message.content) {
-          content.push({
-            type: "text",
-            text: String(
-              message.content
+        res.sendFile(
+            path.join(
+                __dirname,
+                "login.html"
             )
-          });
-        }
+        );
 
-        if (content.length > 0) {
-          apiMessages.push({
-            role: "user",
-            content
-          });
-        }
-      }
-
-      /* =========================
-         ASSISTANT
-      ========================== */
-
-      else if (
-        message.role === "assistant"
-      ) {
-        if (
-          typeof message.content === "string" &&
-          message.content.trim()
-        ) {
-          apiMessages.push({
-            role: "assistant",
-            content: message.content
-          });
-        }
-      }
     }
+);
 
-    if (!apiMessages.length) {
-      return res.status(400).json({
-        error:
-          "لم يتم العثور على محتوى صالح."
-      });
+
+// ==========================================
+// MAIN APP
+// ==========================================
+
+app.get(
+    "*",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "index.html"
+            )
+        );
+
     }
+);
 
-    console.log(
-      "📨 API Messages:",
-      JSON.stringify(
-        apiMessages.map(message => ({
-          role: message.role,
-          contentTypes:
-            Array.isArray(message.content)
-              ? message.content.map(
-                  item => item.type
-                )
-              : "text"
-        }))
-      )
-    );
 
-    /* =========================
-       OPENAI
-    ========================== */
+const PORT =
+    process.env.PORT || 3000;
 
-    const completion =
-      await client.chat.completions.create({
-        model: "gpt-5.6-luna",
-
-        messages: [
-          {
-            role: "system",
-            content: `
-أنت المساعد الرسمي لمنصة التطور چات.
-
-أجب بالعربية بشكل واضح ومفيد.
-
-استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
-أو عندما تكون مناسبة للسياق.
-
-إذا أرسل المستخدم صورة:
-- حلل الصورة بدقة.
-- صف محتواها عند الطلب.
-- اقرأ النص الموجود فيها إن أمكن.
-- أجب عن الأسئلة المتعلقة بالصورة.
-- لا تدّعي رؤية شيء غير واضح.
-- إذا كانت الصورة غير واضحة، أخبر المستخدم بذلك.
-
-لا تدّعي تنفيذ أفعال لم تنفذها فعلياً.
-            `
-          },
-          ...apiMessages
-        ]
-      });
-
-    /* =========================
-       RESPONSE
-    ========================== */
-
-    const reply =
-      completion?.choices?.[0]?.message?.content ||
-      "ما حصلت جواب نصي من النموذج.";
-
-    console.log(
-      "✅ OpenAI Response received"
-    );
-
-    return res.status(200).json({
-      reply
-    });
-
-  } catch (error) {
-    console.error(
-      "❌ OPENAI ERROR:"
-    );
-
-    console.error(error);
-
-    const errorMessage =
-      error?.error?.message ||
-      error?.message ||
-      "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.";
-
-    return res.status(500).json({
-      error: errorMessage
-    });
-  }
-});
-
-/* =========================
-   START SERVER
-========================= */
 
 app.listen(
-  port,
-  () => {
-    console.log(
-      `✅ التطور چات يعمل على المنفذ ${port}`
-    );
-  }
+    PORT,
+    () => {
+
+        console.log(
+            `التطور چات يعمل على http://localhost:${PORT}`
+        );
+
+    }
 );
