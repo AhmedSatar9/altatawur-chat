@@ -440,10 +440,13 @@ async function sendMessage() {
 
                     body: JSON.stringify({
 
-                        messages:
-                            conversation
+    conversation_id:
+        currentConversationId,
 
-                    })
+    messages:
+        conversation
+
+})
 
                 }
             );
