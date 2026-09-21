@@ -80,8 +80,7 @@ export default async function handler(req, res) {
         const {
     data: userData,
     error: userError
-} =
-    await supabaseAdmin.auth.getUser(token);
+} = await supabaseAuth.auth.getUser(token);
 
 
 if (userError) {
