@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -20,10 +21,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-
-        /* =====================================================
-           RESET
-        ===================================================== */
 
         * {
             box-sizing: border-box;
@@ -81,10 +78,7 @@
             display: none !important;
         }
 
-
-        /* =====================================================
-           APP
-        ===================================================== */
+        /* APP */
 
         .app {
             width: 100%;
@@ -96,10 +90,7 @@
             overflow: hidden;
         }
 
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
+        /* HEADER */
 
         .topbar {
             flex: 0 0 auto;
@@ -127,9 +118,6 @@
             position: relative;
             z-index: 20;
         }
-
-
-        /* BRAND */
 
         .brand {
             display: flex;
@@ -209,9 +197,6 @@
                 rgba(101, 223, 189, 0.55);
         }
 
-
-        /* HEADER BUTTONS */
-
         .header-actions {
             display: flex;
             align-items: center;
@@ -258,42 +243,29 @@
 
         .menu-button {
             width: 46px;
-
             padding: 0;
-
             font-size: 22px;
         }
 
-
-        /* =====================================================
-           CHAT AREA
-        ===================================================== */
+        /* CHAT */
 
         .chat-area {
             flex: 1;
-
             min-height: 0;
-
             width: 100%;
-
             position: relative;
 
             display: flex;
             flex-direction: column;
         }
 
-
-        /* MESSAGES */
-
         .messages {
             flex: 1;
 
             width: 100%;
-
             max-width: 980px;
 
-            margin:
-                0 auto;
+            margin: 0 auto;
 
             padding:
                 24px
@@ -306,6 +278,7 @@
             scroll-behavior: smooth;
 
             scrollbar-width: thin;
+
             scrollbar-color:
                 rgba(120, 130, 170, 0.30)
                 transparent;
@@ -326,8 +299,7 @@
             border-radius: 20px;
         }
 
-
-        /* EMPTY STATE */
+        /* WELCOME */
 
         .welcome {
             min-height: 100%;
@@ -429,20 +401,13 @@
 
             font-size: 14px;
             line-height: 1.5;
-
-            transition:
-                background 0.15s ease,
-                transform 0.15s ease;
         }
 
         .suggestion:active {
             transform: scale(0.98);
         }
 
-
-        /* =====================================================
-           MESSAGE BUBBLES
-        ===================================================== */
+        /* MESSAGES */
 
         .message-row {
             width: 100%;
@@ -509,10 +474,7 @@
                 rgba(255, 80, 105, 0.25);
         }
 
-
-        /* =====================================================
-           COMPOSER
-        ===================================================== */
+        /* COMPOSER */
 
         .composer-wrap {
             position: absolute;
@@ -541,16 +503,14 @@
             width: 100%;
             max-width: 980px;
 
-            margin:
-                0 auto;
+            margin: 0 auto;
 
             display: flex;
             align-items: flex-end;
 
             gap: 9px;
 
-            padding:
-                9px;
+            padding: 9px;
 
             pointer-events: auto;
 
@@ -627,10 +587,6 @@
                 );
 
             cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                opacity 0.15s ease;
         }
 
         .send-button:active {
@@ -639,18 +595,13 @@
 
         .send-button:disabled {
             opacity: 0.45;
-
             cursor: wait;
         }
 
-
-        /* =====================================================
-           SIDE MENU
-        ===================================================== */
+        /* MENU */
 
         .menu-overlay {
             position: fixed;
-
             inset: 0;
 
             z-index: 90;
@@ -687,11 +638,9 @@
 
             height: 100dvh;
 
-            padding:
-                22px;
+            padding: 22px;
 
-            background:
-                #0b1124;
+            background: #0b1124;
 
             border-left:
                 1px solid
@@ -715,9 +664,6 @@
                 translateX(0);
         }
 
-
-        /* MENU HEADER */
-
         .menu-header {
             display: flex;
             align-items: center;
@@ -726,7 +672,6 @@
 
         .menu-header h2 {
             margin: 0;
-
             font-size: 26px;
         }
 
@@ -754,9 +699,6 @@
             cursor: pointer;
         }
 
-
-        /* ACCOUNT */
-
         .account-card {
             margin-top: 25px;
 
@@ -773,8 +715,7 @@
 
             border-radius: 19px;
 
-            background:
-                #11182d;
+            background: #11182d;
         }
 
         .account-avatar {
@@ -824,9 +765,6 @@
             font-size: 15px;
         }
 
-
-        /* MENU BUTTONS */
-
         .side-action {
             width: 100%;
             height: 56px;
@@ -868,18 +806,13 @@
                 );
         }
 
-
-        /* =====================================================
-           TOAST
-        ===================================================== */
+        /* TOAST */
 
         .toast {
             position: fixed;
 
             left: 50%;
-
-            bottom:
-                105px;
+            bottom: 105px;
 
             z-index: 200;
 
@@ -928,10 +861,7 @@
                 translateY(0);
         }
 
-
-        /* =====================================================
-           MOBILE
-        ===================================================== */
+        /* MOBILE */
 
         @media (max-width: 700px) {
 
@@ -1043,7 +973,6 @@
 
             .message-input {
                 font-size: 15px;
-
                 min-height: 47px;
             }
 
@@ -1063,11 +992,6 @@
             }
         }
 
-
-        /* =====================================================
-           VERY SMALL PHONES
-        ===================================================== */
-
         @media (max-width: 380px) {
 
             .brand-info h1 {
@@ -1084,20 +1008,16 @@
             .message-bubble {
                 max-width: 92%;
             }
+
         }
 
     </style>
-</head>
 
+</head>
 
 <body>
 
 <div class="app">
-
-
-    <!-- =====================================================
-         HEADER
-    ===================================================== -->
 
     <header class="topbar">
 
@@ -1125,7 +1045,6 @@
 
         </div>
 
-
         <div class="header-actions">
 
             <button
@@ -1135,7 +1054,6 @@
             >
                 + محادثة جديدة
             </button>
-
 
             <button
                 id="menuButton"
@@ -1150,19 +1068,12 @@
 
     </header>
 
-
-    <!-- =====================================================
-         CHAT
-    ===================================================== -->
-
     <main class="chat-area">
 
         <section
             id="messages"
             class="messages"
         >
-
-            <!-- WELCOME -->
 
             <div
                 id="welcome"
@@ -1183,7 +1094,6 @@
                         اسألني عن أي موضوع، وأنا أساعدك بالمعلومات والأفكار والحلول.
                     </p>
 
-
                     <div class="suggestions">
 
                         <button
@@ -1194,7 +1104,6 @@
                             💡 اقترحلي فكرة مشروع
                         </button>
 
-
                         <button
                             class="suggestion"
                             type="button"
@@ -1203,7 +1112,6 @@
                             ✍️ اكتبلي إعلان
                         </button>
 
-
                         <button
                             class="suggestion"
                             type="button"
@@ -1211,7 +1119,6 @@
                         >
                             🤖 اشرحلي الذكاء الاصطناعي
                         </button>
-
 
                         <button
                             class="suggestion"
@@ -1229,11 +1136,6 @@
 
         </section>
 
-
-        <!-- =================================================
-             COMPOSER
-        ================================================= -->
-
         <div class="composer-wrap">
 
             <div class="composer">
@@ -1245,7 +1147,6 @@
                     placeholder="اكتب سؤالك هنا..."
                     autocomplete="off"
                 ></textarea>
-
 
                 <button
                     id="sendButton"
@@ -1264,20 +1165,10 @@
 
 </div>
 
-
-<!-- =========================================================
-     MENU OVERLAY
-========================================================= -->
-
 <div
     id="menuOverlay"
     class="menu-overlay hidden"
 ></div>
-
-
-<!-- =========================================================
-     SIDE MENU
-========================================================= -->
 
 <aside
     id="sideMenu"
@@ -1302,7 +1193,6 @@
 
     </div>
 
-
     <div class="account-card">
 
         <div class="account-avatar">
@@ -1323,7 +1213,6 @@
 
     </div>
 
-
     <button
         id="newChatSide"
         class="side-action new-side-chat"
@@ -1331,7 +1220,6 @@
     >
         + محادثة جديدة
     </button>
-
 
     <button
         id="logoutButton"
@@ -1343,11 +1231,6 @@
 
 </aside>
 
-
-<!-- =========================================================
-     TOAST
-========================================================= -->
-
 <div
     id="toast"
     class="toast"
@@ -1356,9 +1239,9 @@
 
 <script>
 
-    /* =========================================================
+    /* =====================================================
        SUPABASE
-    ========================================================= */
+    ===================================================== */
 
     const SUPABASE_URL =
         "https://wxsricscchalzvazdbzd.supabase.co";
@@ -1369,13 +1252,20 @@
     const supabaseClient =
         window.supabase.createClient(
             SUPABASE_URL,
-            SUPABASE_PUBLISHABLE_KEY
+            SUPABASE_PUBLISHABLE_KEY,
+            {
+                auth: {
+                    autoRefreshToken: true,
+                    persistSession: true,
+                    detectSessionInUrl: true
+                }
+            }
         );
 
 
-    /* =========================================================
+    /* =====================================================
        ELEMENTS
-    ========================================================= */
+    ===================================================== */
 
     const messages =
         document.getElementById("messages");
@@ -1417,9 +1307,9 @@
         document.getElementById("toast");
 
 
-    /* =========================================================
+    /* =====================================================
        STATE
-    ========================================================= */
+    ===================================================== */
 
     let currentUser = null;
 
@@ -1432,15 +1322,11 @@
     let toastTimer = null;
 
 
-    /* =========================================================
+    /* =====================================================
        TOAST
-    ========================================================= */
+    ===================================================== */
 
     function showToast(text) {
-
-        if (!toast) {
-            return;
-        }
 
         toast.textContent = text;
 
@@ -1458,9 +1344,9 @@
     }
 
 
-    /* =========================================================
+    /* =====================================================
        MENU
-    ========================================================= */
+    ===================================================== */
 
     function openMenu() {
 
@@ -1508,21 +1394,17 @@
     );
 
 
-    /* =========================================================
-       RESET UI
-    ========================================================= */
+    /* =====================================================
+       RESET CHAT UI
+    ===================================================== */
 
     function resetChatUI() {
 
         messages.innerHTML = "";
 
-        messages.appendChild(
-            welcome
-        );
+        messages.appendChild(welcome);
 
-        welcome.classList.remove(
-            "hidden"
-        );
+        welcome.classList.remove("hidden");
 
         messageInput.value = "";
 
@@ -1534,15 +1416,19 @@
     }
 
 
-    /* =========================================================
+    /* =====================================================
        NEW CHAT
-    ========================================================= */
+    ===================================================== */
 
     function startNewChat() {
 
         currentConversationId = null;
 
         conversation = [];
+
+        localStorage.removeItem(
+            "altatawur_current_conversation"
+        );
 
         resetChatUI();
 
@@ -1569,118 +1455,92 @@
     );
 
 
-    /* =========================================================
-       ADD MESSAGE TO UI
-    ========================================================= */
+    /* =====================================================
+       ADD MESSAGE
+    ===================================================== */
 
     function addMessage(
         text,
         role
     ) {
 
-        if (welcome) {
-
-            welcome.classList.add(
-                "hidden"
-            );
-
-        }
-
+        welcome.classList.add(
+            "hidden"
+        );
 
         const row =
             document.createElement("div");
-
 
         row.className =
             `message-row ${role}`;
 
-
         const bubble =
             document.createElement("div");
-
 
         bubble.className =
             "message-bubble";
 
-
         bubble.textContent =
             text;
-
 
         row.appendChild(
             bubble
         );
 
-
         messages.appendChild(
             row
         );
 
-
         scrollToBottom();
-
 
         return row;
 
     }
 
 
-    /* =========================================================
+    /* =====================================================
        LOADING
-    ========================================================= */
+    ===================================================== */
 
     function showLoading() {
 
-        if (welcome) {
-
-            welcome.classList.add(
-                "hidden"
-            );
-
-        }
-
+        welcome.classList.add(
+            "hidden"
+        );
 
         const row =
             document.createElement("div");
 
-
         row.className =
             "message-row assistant";
-
 
         const bubble =
             document.createElement("div");
 
-
         bubble.className =
             "message-bubble loading";
 
-
         bubble.textContent =
             "جاري التفكير...";
-
 
         row.appendChild(
             bubble
         );
 
-
         messages.appendChild(
             row
         );
 
-
         scrollToBottom();
-
 
         return row;
 
     }
 
 
-    /* =========================================================
+    /* =====================================================
        SCROLL
-    ========================================================= */
+    ===================================================== */
 
     function scrollToBottom() {
 
@@ -1694,15 +1554,14 @@
     }
 
 
-    /* =========================================================
+    /* =====================================================
        AUTO RESIZE
-    ========================================================= */
+    ===================================================== */
 
     function resizeInput() {
 
         messageInput.style.height =
             "auto";
-
 
         messageInput.style.height =
             Math.min(
@@ -1719,9 +1578,9 @@
     );
 
 
-    /* =========================================================
+    /* =====================================================
        GET SESSION
-    ========================================================= */
+    ===================================================== */
 
     async function getValidSession() {
 
@@ -1731,15 +1590,18 @@
         } =
             await supabaseClient.auth.getSession();
 
-
         if (error) {
+
+            console.error(
+                "GET SESSION ERROR:",
+                error
+            );
 
             throw new Error(
                 "تعذر التحقق من جلسة تسجيل الدخول."
             );
 
         }
-
 
         if (!data?.session) {
 
@@ -1749,124 +1611,26 @@
 
         }
 
-
         return data.session;
 
     }
 
 
-    /* =========================================================
-       CREATE CONVERSATION
-    ========================================================= */
+    /* =====================================================
+       LOAD CONVERSATION
+    ===================================================== */
 
-    async function createConversation(firstMessage) {
-
-        if (!currentUser) {
-
-            throw new Error(
-                "لا يوجد مستخدم مسجل الدخول."
-            );
-
-        }
-
-
-        /*
-         * نستخدم أول جزء من الرسالة كعنوان
-         */
-
-        let title =
-            firstMessage
-                .replace(/\s+/g, " ")
-                .trim();
-
-
-        if (title.length > 60) {
-
-            title =
-                title.substring(
-                    0,
-                    60
-                ) + "...";
-
-        }
-
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("conversations")
-                .insert({
-
-                    user_id:
-                        currentUser.id,
-
-                    title:
-                        title ||
-                        "محادثة جديدة"
-
-                })
-                .select(
-                    "id,title,created_at,updated_at"
-                )
-                .single();
-
-
-        if (error) {
-
-            console.error(
-                "CREATE CONVERSATION ERROR:",
-                error
-            );
-
-
-            throw new Error(
-                "تعذر إنشاء المحادثة: " +
-                error.message
-            );
-
-        }
-
+    async function openConversation(
+        conversationId
+    ) {
 
         currentConversationId =
-            data.id;
-
-
-        /*
-         * نخزنها أيضاً محلياً حتى تبقى المحادثة
-         * الحالية معروفة بعد تحديث الصفحة.
-         */
+            conversationId;
 
         localStorage.setItem(
             "altatawur_current_conversation",
-            currentConversationId
+            conversationId
         );
-
-
-        return data;
-
-    }
-
-
-    /* =========================================================
-       SAVE MESSAGE
-    ========================================================= */
-
-    async function saveMessage(
-        conversationId,
-        role,
-        content
-    ) {
-
-        if (!conversationId) {
-
-            throw new Error(
-                "معرّف المحادثة غير موجود."
-            );
-
-        }
-
 
         const {
             data,
@@ -1874,90 +1638,77 @@
         } =
             await supabaseClient
                 .from("messages")
-                .insert({
-
-                    conversation_id:
-                        conversationId,
-
-                    role:
-                        role,
-
-                    content:
-                        content
-
-                })
                 .select(
                     "id,conversation_id,role,content,created_at"
                 )
-                .single();
-
+                .eq(
+                    "conversation_id",
+                    conversationId
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                );
 
         if (error) {
 
             console.error(
-                "SAVE MESSAGE ERROR:",
+                "LOAD MESSAGES ERROR:",
                 error
             );
 
-
-            throw new Error(
-                "تعذر حفظ الرسالة: " +
-                error.message
+            showToast(
+                "تعذر تحميل رسائل المحادثة."
             );
+
+            return;
 
         }
 
+        conversation = [];
 
-        return data;
+        resetChatUI();
 
-    }
-
-
-    /* =========================================================
-       UPDATE CONVERSATION TIME
-    ========================================================= */
-
-    async function touchConversation(
-        conversationId
-    ) {
-
-        if (!conversationId) {
+        if (!data || data.length === 0) {
             return;
         }
 
+        for (const message of data) {
 
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("conversations")
-                .update({
+            if (
+                message.role !== "user" &&
+                message.role !== "assistant"
+            ) {
+                continue;
+            }
 
-                    updated_at:
-                        new Date().toISOString()
+            conversation.push({
 
-                })
-                .eq(
-                    "id",
-                    conversationId
-                );
+                role:
+                    message.role,
 
+                content:
+                    message.content
 
-        if (error) {
+            });
 
-            console.warn(
-                "UPDATE CONVERSATION ERROR:",
-                error
+            addMessage(
+                message.content,
+                message.role
             );
 
         }
 
+        scrollToBottom();
+
     }
 
 
-    /* =========================================================
+    /* =====================================================
        LOAD LAST CONVERSATION
-    ========================================================= */
+    ===================================================== */
 
     async function loadLastConversation() {
 
@@ -1965,25 +1716,18 @@
             return;
         }
 
-
         try {
-
-            /*
-             * أولاً نحاول المحادثة المحفوظة
-             * كالمحادثة المفتوحة حالياً.
-             */
 
             const savedId =
                 localStorage.getItem(
                     "altatawur_current_conversation"
                 );
 
-
             if (savedId) {
 
                 const {
-                    data: savedConversation,
-                    error: savedConversationError
+                    data,
+                    error
                 } =
                     await supabaseClient
                         .from("conversations")
@@ -2000,14 +1744,13 @@
                         )
                         .maybeSingle();
 
-
                 if (
-                    !savedConversationError &&
-                    savedConversation
+                    !error &&
+                    data
                 ) {
 
                     await openConversation(
-                        savedConversation.id
+                        data.id
                     );
 
                     return;
@@ -2015,12 +1758,6 @@
                 }
 
             }
-
-
-            /*
-             * إذا ماكو محادثة محفوظة،
-             * نجيب آخر محادثة لهذا الحساب.
-             */
 
             const {
                 data,
@@ -2043,7 +1780,6 @@
                     )
                     .limit(1);
 
-
             if (error) {
 
                 console.error(
@@ -2054,7 +1790,6 @@
                 return;
 
             }
-
 
             if (
                 data &&
@@ -2079,123 +1814,14 @@
     }
 
 
-    /* =========================================================
-       OPEN CONVERSATION
-    ========================================================= */
-
-    async function openConversation(
-        conversationId
-    ) {
-
-        currentConversationId =
-            conversationId;
-
-
-        localStorage.setItem(
-            "altatawur_current_conversation",
-            conversationId
-        );
-
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("messages")
-                .select(
-                    "id,conversation_id,role,content,created_at"
-                )
-                .eq(
-                    "conversation_id",
-                    conversationId
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: true
-                    }
-                );
-
-
-        if (error) {
-
-            console.error(
-                "LOAD MESSAGES ERROR:",
-                error
-            );
-
-            showToast(
-                "تعذر تحميل رسائل المحادثة."
-            );
-
-            return;
-
-        }
-
-
-        conversation = [];
-
-
-        resetChatUI();
-
-
-        if (
-            !data ||
-            data.length === 0
-        ) {
-
-            return;
-
-        }
-
-
-        for (
-            const message
-            of data
-        ) {
-
-            /*
-             * نخلي فقط user / assistant
-             */
-
-            if (
-                message.role !== "user" &&
-                message.role !== "assistant"
-            ) {
-
-                continue;
-
-            }
-
-
-            conversation.push({
-
-                role:
-                    message.role,
-
-                content:
-                    message.content
-
-            });
-
-
-            addMessage(
-                message.content,
-                message.role
-            );
-
-        }
-
-
-        scrollToBottom();
-
-    }
-
-
-    /* =========================================================
+    /* =====================================================
        SEND MESSAGE
-    ========================================================= */
+       
+       مهم جداً:
+       لا ننشئ conversation من هنا.
+       لا نحفظ الرسالة من هنا.
+       الـ API هو المسؤول عن الاثنين.
+    ===================================================== */
 
     async function sendMessage() {
 
@@ -2203,15 +1829,12 @@
             return;
         }
 
-
         const text =
             messageInput.value.trim();
-
 
         if (!text) {
             return;
         }
-
 
         if (!currentUser) {
 
@@ -2223,49 +1846,27 @@
 
         }
 
-
         isSending = true;
 
         sendButton.disabled = true;
 
-
         let loading = null;
-
 
         try {
 
-            /*
-             * =================================================
-             * 1. إذا ماكو محادثة مفتوحة، ننشئ وحدة.
-             * =================================================
-             */
-
-            if (!currentConversationId) {
-
-                await createConversation(
-                    text
-                );
-
-            }
+            const session =
+                await getValidSession();
 
 
-            /*
-             * =================================================
-             * 2. نعرض رسالة المستخدم.
-             * =================================================
-             */
+            /* ---------------------------------------------
+               عرض رسالة المستخدم مباشرة
+            --------------------------------------------- */
 
             addMessage(
                 text,
                 "user"
             );
 
-
-            /*
-             * =================================================
-             * 3. نضيفها للـ conversation التي سترسل للـ API.
-             * =================================================
-             */
 
             conversation.push({
 
@@ -2278,59 +1879,23 @@
             });
 
 
-            /*
-             * =================================================
-             * 4. نحفظ رسالة المستخدم في Supabase.
-             * =================================================
-             */
-
-            await saveMessage(
-                currentConversationId,
-                "user",
-                text
-            );
-
-
-            await touchConversation(
-                currentConversationId
-            );
-
-
-            /*
-             * تنظيف الحقل
-             */
-
             messageInput.value = "";
 
             messageInput.style.height =
                 "auto";
 
 
-            /*
-             * =================================================
-             * 5. Loading
-             * =================================================
-             */
+            /* ---------------------------------------------
+               Loading
+            --------------------------------------------- */
 
             loading =
                 showLoading();
 
 
-            /*
-             * =================================================
-             * 6. Session
-             * =================================================
-             */
-
-            const session =
-                await getValidSession();
-
-
-            /*
-             * =================================================
-             * 7. API
-             * =================================================
-             */
+            /* ---------------------------------------------
+               إرسال الطلب إلى API
+            --------------------------------------------- */
 
             const response =
                 await fetch(
@@ -2356,8 +1921,8 @@
                                 conversation_id:
                                     currentConversationId,
 
-                                messages:
-                                    conversation
+                                message:
+                                    text
 
                             })
 
@@ -2366,7 +1931,6 @@
 
 
             let result = {};
-
 
             try {
 
@@ -2383,20 +1947,16 @@
             if (!response.ok) {
 
                 throw new Error(
-
                     result?.error ||
                     "حدث خطأ في الخادم."
-
                 );
 
             }
 
 
-            /*
-             * =================================================
-             * 8. إزالة Loading
-             * =================================================
-             */
+            /* ---------------------------------------------
+               إزالة Loading
+            --------------------------------------------- */
 
             if (loading) {
 
@@ -2407,11 +1967,28 @@
             }
 
 
-            /*
-             * =================================================
-             * 9. استخراج الرد
-             * =================================================
-             */
+            /* ---------------------------------------------
+               ID المحادثة
+            --------------------------------------------- */
+
+            if (
+                result?.conversation_id
+            ) {
+
+                currentConversationId =
+                    result.conversation_id;
+
+                localStorage.setItem(
+                    "altatawur_current_conversation",
+                    currentConversationId
+                );
+
+            }
+
+
+            /* ---------------------------------------------
+               الرد
+            --------------------------------------------- */
 
             const answer =
                 result?.message ||
@@ -2420,23 +1997,11 @@
                 "لم يصل رد من المساعد.";
 
 
-            /*
-             * =================================================
-             * 10. عرض الرد
-             * =================================================
-             */
-
             addMessage(
                 answer,
                 "assistant"
             );
 
-
-            /*
-             * =================================================
-             * 11. إضافته للـ conversation
-             * =================================================
-             */
 
             conversation.push({
 
@@ -2449,24 +2014,6 @@
             });
 
 
-            /*
-             * =================================================
-             * 12. حفظ رد المساعد في Supabase
-             * =================================================
-             */
-
-            await saveMessage(
-                currentConversationId,
-                "assistant",
-                answer
-            );
-
-
-            await touchConversation(
-                currentConversationId
-            );
-
-
         } catch (error) {
 
             console.error(
@@ -2474,23 +2021,13 @@
                 error
             );
 
-
             if (loading) {
-
                 loading.remove();
-
             }
-
-
-            /*
-             * إذا فشل إنشاء المحادثة،
-             * لا نخلي ID وهمي.
-             */
 
             const errorText =
                 error?.message ||
                 "حدث خطأ. حاول مرة أخرى.";
-
 
             const row =
                 addMessage(
@@ -2498,12 +2035,10 @@
                     "assistant"
                 );
 
-
             const bubble =
                 row.querySelector(
                     ".message-bubble"
                 );
-
 
             if (bubble) {
 
@@ -2512,7 +2047,6 @@
                 );
 
             }
-
 
         } finally {
 
@@ -2533,9 +2067,9 @@
     );
 
 
-    /* =========================================================
-       ENTER TO SEND
-    ========================================================= */
+    /* =====================================================
+       ENTER
+    ===================================================== */
 
     messageInput.addEventListener(
         "keydown",
@@ -2556,9 +2090,9 @@
     );
 
 
-    /* =========================================================
+    /* =====================================================
        SUGGESTIONS
-    ========================================================= */
+    ===================================================== */
 
     document
         .querySelectorAll(".suggestion")
@@ -2585,16 +2119,15 @@
         });
 
 
-    /* =========================================================
-       LOAD USER PROFILE
-    ========================================================= */
+    /* =====================================================
+       USER PROFILE
+    ===================================================== */
 
     async function loadUserProfile() {
 
         if (!currentUser) {
             return;
         }
-
 
         try {
 
@@ -2612,7 +2145,6 @@
                         currentUser.id
                     )
                     .single();
-
 
             if (
                 !error &&
@@ -2641,7 +2173,6 @@
                 error
             );
 
-
             usernameDisplay.textContent =
                 currentUser.user_metadata?.username ||
                 currentUser.email ||
@@ -2652,9 +2183,9 @@
     }
 
 
-    /* =========================================================
+    /* =====================================================
        LOGOUT
-    ========================================================= */
+    ===================================================== */
 
     async function logout() {
 
@@ -2664,7 +2195,6 @@
         logoutButton.textContent =
             "جاري تسجيل الخروج...";
 
-
         try {
 
             const {
@@ -2672,21 +2202,17 @@
             } =
                 await supabaseClient.auth.signOut();
 
-
             if (error) {
                 throw error;
             }
-
 
             localStorage.removeItem(
                 "altatawur_current_conversation"
             );
 
-
             window.location.replace(
                 "/login.html"
             );
-
 
         } catch (error) {
 
@@ -2695,13 +2221,11 @@
                 error
             );
 
-
             logoutButton.disabled =
                 false;
 
             logoutButton.textContent =
                 "تسجيل الخروج";
-
 
             showToast(
                 "تعذر تسجيل الخروج. حاول مرة أخرى."
@@ -2718,9 +2242,9 @@
     );
 
 
-    /* =========================================================
+    /* =====================================================
        AUTH STATE
-    ========================================================= */
+    ===================================================== */
 
     supabaseClient.auth.onAuthStateChange(
         (
@@ -2736,7 +2260,6 @@
                     "altatawur_current_conversation"
                 );
 
-
                 window.location.replace(
                     "/login.html"
                 );
@@ -2747,9 +2270,9 @@
     );
 
 
-    /* =========================================================
+    /* =====================================================
        INITIALIZE
-    ========================================================= */
+    ===================================================== */
 
     async function initialize() {
 
@@ -2758,23 +2281,14 @@
             const session =
                 await getValidSession();
 
-
             currentUser =
                 session.user;
 
-
             await loadUserProfile();
-
-
-            /*
-             * تحميل آخر محادثة لهذا الحساب
-             */
 
             await loadLastConversation();
 
-
             messageInput.focus();
-
 
         } catch (error) {
 
@@ -2782,7 +2296,6 @@
                 "INITIALIZE ERROR:",
                 error
             );
-
 
             window.location.replace(
                 "/login.html"
@@ -2793,13 +2306,14 @@
     }
 
 
-    /* =========================================================
+    /* =====================================================
        START
-    ========================================================= */
+    ===================================================== */
 
     initialize();
 
 </script>
 
 </body>
+
 </html>
