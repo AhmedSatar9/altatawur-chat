@@ -18,88 +18,83 @@ const SUPABASE_SECRET_KEY =
 const OPENAI_API_KEY =
     process.env.OPENAI_API_KEY;
 
-
-// ======================================================
-// VALIDATE ENVIRONMENT
-// ======================================================
-
-if (!SUPABASE_URL) {
-    console.error("Missing SUPABASE_URL");
-}
-
-if (!SUPABASE_PUBLISHABLE_KEY) {
-    console.error("Missing SUPABASE_PUBLISHABLE_KEY");
-}
-
-if (!SUPABASE_SECRET_KEY) {
-    console.error("Missing SUPABASE_SECRET_KEY");
-}
-
-if (!OPENAI_API_KEY) {
-    console.error("Missing OPENAI_API_KEY");
-}
+const OPENAI_MODEL =
+    process.env.OPENAI_MODEL ||
+    "gpt-5.6-luna";
 
 
 // ======================================================
-// OPENAI
+// OPENAI CLIENT
 // ======================================================
 
-const openai = new OpenAI({
-    apiKey: OPENAI_API_KEY
-});
+const openai =
+    new OpenAI({
+        apiKey:
+            OPENAI_API_KEY
+    });
 
 
 // ======================================================
 // SUPABASE AUTH CLIENT
-// يستخدم للتحقق من Access Token الخاص بالمستخدم
+// يستخدم فقط للتحقق من المستخدم
 // ======================================================
 
-const supabaseAuth = createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-            detectSessionInUrl: false
+const supabaseAuth =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+                detectSessionInUrl: false
+            }
         }
-    }
-);
+    );
 
 
 // ======================================================
 // SUPABASE ADMIN CLIENT
-// يستخدم فقط على السيرفر لحفظ المحادثات
+// يستخدم فقط على السيرفر
 // ======================================================
 
-const supabaseAdmin = createClient(
-    SUPABASE_URL,
-    SUPABASE_SECRET_KEY,
-    {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-            detectSessionInUrl: false
+const supabaseAdmin =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_SECRET_KEY,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+                detectSessionInUrl: false
+            }
         }
-    }
-);
+    );
 
 
 // ======================================================
 // API HANDLER
 // ======================================================
 
-export default async function handler(req, res) {
+export default async function handler(
+    req,
+    res
+) {
 
     // ==================================================
     // METHOD
     // ==================================================
 
-    if (req.method !== "POST") {
+    if (
+        req.method !== "POST"
+    ) {
 
-        return res.status(405).json({
-            error: "Method Not Allowed"
-        });
+        return res
+            .status(405)
+            .json({
+                error:
+                    "Method Not Allowed"
+            });
 
     }
 
@@ -120,24 +115,30 @@ export default async function handler(req, res) {
                 "SUPABASE ENVIRONMENT VARIABLES ARE MISSING"
             );
 
-            return res.status(500).json({
-                error:
-                    "إعدادات Supabase غير مكتملة في Vercel."
-            });
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "إعدادات Supabase غير مكتملة في Vercel."
+                });
 
         }
 
 
-        if (!OPENAI_API_KEY) {
+        if (
+            !OPENAI_API_KEY
+        ) {
 
             console.error(
                 "OPENAI_API_KEY IS MISSING"
             );
 
-            return res.status(500).json({
-                error:
-                    "مفتاح OpenAI غير موجود في إعدادات Vercel."
-            });
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "مفتاح OpenAI غير موجود في إعدادات Vercel."
+                });
 
         }
 
@@ -152,27 +153,35 @@ export default async function handler(req, res) {
 
         if (
             !authorization ||
-            !authorization.startsWith("Bearer ")
+            !authorization.startsWith(
+                "Bearer "
+            )
         ) {
 
-            return res.status(401).json({
-                error:
-                    "يجب تسجيل الدخول أولاً."
-            });
+            return res
+                .status(401)
+                .json({
+                    error:
+                        "يجب تسجيل الدخول أولاً."
+                });
 
         }
 
 
         const token =
-            authorization.substring(7).trim();
+            authorization
+                .substring(7)
+                .trim();
 
 
         if (!token) {
 
-            return res.status(401).json({
-                error:
-                    "رمز تسجيل الدخول غير موجود."
-            });
+            return res
+                .status(401)
+                .json({
+                    error:
+                        "رمز تسجيل الدخول غير موجود."
+                });
 
         }
 
@@ -185,32 +194,42 @@ export default async function handler(req, res) {
             data: userData,
             error: userError
         } =
-            await supabaseAuth.auth.getUser(
-                token
-            );
+            await supabaseAuth
+                .auth
+                .getUser(
+                    token
+                );
 
 
-        if (userError) {
+        if (
+            userError
+        ) {
 
             console.error(
                 "SUPABASE GET USER ERROR:",
                 userError
             );
 
-            return res.status(401).json({
-                error:
-                    "جلسة تسجيل الدخول غير صالحة."
-            });
+            return res
+                .status(401)
+                .json({
+                    error:
+                        "جلسة تسجيل الدخول غير صالحة."
+                });
 
         }
 
 
-        if (!userData?.user) {
+        if (
+            !userData?.user
+        ) {
 
-            return res.status(401).json({
-                error:
-                    "لم يتم العثور على المستخدم."
-            });
+            return res
+                .status(401)
+                .json({
+                    error:
+                        "لم يتم العثور على المستخدم."
+                });
 
         }
 
@@ -228,13 +247,33 @@ export default async function handler(req, res) {
 
 
         const requestedConversationId =
-            body.conversation_id || null;
+            body.conversation_id ||
+            null;
 
 
-        const incomingMessages =
-            Array.isArray(body.messages)
-                ? body.messages
-                : [];
+        const currentMessage =
+            String(
+                body.message || ""
+            )
+                .trim()
+                .slice(
+                    0,
+                    12000
+                );
+
+
+        if (
+            !currentMessage
+        ) {
+
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "لم يتم إرسال رسالة."
+                });
+
+        }
 
 
         // ==================================================
@@ -245,18 +284,24 @@ export default async function handler(req, res) {
             requestedConversationId;
 
 
-        // --------------------------------------------------
-        // IF conversation ID EXISTS
-        // --------------------------------------------------
+        // ==================================================
+        // CHECK EXISTING CONVERSATION
+        // ==================================================
 
-        if (conversationId) {
+        if (
+            conversationId
+        ) {
 
             const {
-                data: existingConversation,
-                error: conversationError
+                data:
+                    existingConversation,
+                error:
+                    conversationError
             } =
                 await supabaseAdmin
-                    .from("conversations")
+                    .from(
+                        "conversations"
+                    )
                     .select(
                         "id,user_id,title"
                     )
@@ -271,78 +316,89 @@ export default async function handler(req, res) {
                     .maybeSingle();
 
 
-            if (conversationError) {
+            if (
+                conversationError
+            ) {
 
                 console.error(
                     "CONVERSATION CHECK ERROR:",
                     conversationError
                 );
 
-                return res.status(500).json({
-                    error:
-                        "تعذر التحقق من المحادثة."
-                });
+                return res
+                    .status(500)
+                    .json({
+                        error:
+                            "تعذر التحقق من المحادثة."
+                    });
 
             }
 
 
-            if (!existingConversation) {
+            if (
+                !existingConversation
+            ) {
 
-                return res.status(403).json({
-                    error:
-                        "هذه المحادثة غير موجودة أو لا تملك صلاحية الوصول إليها."
-                });
+                return res
+                    .status(403)
+                    .json({
+                        error:
+                            "هذه المحادثة غير موجودة أو لا تملك صلاحية الوصول إليها."
+                    });
 
             }
 
         }
 
 
-        // --------------------------------------------------
+        // ==================================================
         // CREATE NEW CONVERSATION
-        // --------------------------------------------------
+        // ==================================================
 
-        if (!conversationId) {
+        if (
+            !conversationId
+        ) {
 
             let title =
-                "محادثة جديدة";
+                currentMessage
+                    .replace(
+                        /\s+/g,
+                        " "
+                    )
+                    .trim()
+                    .slice(
+                        0,
+                        80
+                    );
 
 
-            const firstUserMessage =
-                incomingMessages.find(
-                    message =>
-                        message?.role === "user" &&
-                        String(
-                            message?.content || ""
-                        ).trim()
-                );
-
-
-            if (firstUserMessage) {
+            if (
+                !title
+            ) {
 
                 title =
-                    String(
-                        firstUserMessage.content
-                    )
-                        .trim()
-                        .slice(0, 80);
+                    "محادثة جديدة";
 
             }
 
 
             const {
-                data: newConversation,
-                error: createConversationError
+                data:
+                    newConversation,
+                error:
+                    createConversationError
             } =
                 await supabaseAdmin
-                    .from("conversations")
+                    .from(
+                        "conversations"
+                    )
                     .insert({
 
                         user_id:
                             user.id,
 
                         title:
-                            title || "محادثة جديدة"
+                            title
 
                     })
                     .select(
@@ -351,19 +407,23 @@ export default async function handler(req, res) {
                     .single();
 
 
-            if (createConversationError) {
+            if (
+                createConversationError
+            ) {
 
                 console.error(
                     "CREATE CONVERSATION ERROR:",
                     createConversationError
                 );
 
-                return res.status(500).json({
-                    error:
-                        "تعذر إنشاء المحادثة.",
-                    details:
-                        createConversationError.message
-                });
+                return res
+                    .status(500)
+                    .json({
+                        error:
+                            "تعذر إنشاء المحادثة.",
+                        details:
+                            createConversationError.message
+                    });
 
             }
 
@@ -375,68 +435,17 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // GET CURRENT USER MESSAGE
-        // ==================================================
-
-        const cleanedIncomingMessages =
-            incomingMessages
-                .map((message) => {
-
-                    const role =
-                        message?.role === "assistant"
-                            ? "assistant"
-                            : "user";
-
-
-                    const content =
-                        String(
-                            message?.content || ""
-                        )
-                            .trim()
-                            .slice(0, 12000);
-
-
-                    return {
-                        role,
-                        content
-                    };
-
-                })
-                .filter(
-                    message =>
-                        message.content.length > 0
-                );
-
-
-        const lastUserMessage =
-            [...cleanedIncomingMessages]
-                .reverse()
-                .find(
-                    message =>
-                        message.role === "user"
-                );
-
-
-        if (!lastUserMessage) {
-
-            return res.status(400).json({
-                error:
-                    "لم يتم إرسال رسالة."
-            });
-
-        }
-
-
-        // ==================================================
-        // SAVE USER MESSAGE
+        // SAVE CURRENT USER MESSAGE
         // ==================================================
 
         const {
-            data: savedUserMessage,
-            error: saveUserMessageError
+            error:
+                saveUserMessageError
         } =
             await supabaseAdmin
-                .from("messages")
+                .from(
+                    "messages"
+                )
                 .insert({
 
                     conversation_id:
@@ -446,42 +455,46 @@ export default async function handler(req, res) {
                         "user",
 
                     content:
-                        lastUserMessage.content
+                        currentMessage
 
-                })
-                .select(
-                    "id,conversation_id,role,content,created_at"
-                )
-                .single();
+                });
 
 
-        if (saveUserMessageError) {
+        if (
+            saveUserMessageError
+        ) {
 
             console.error(
                 "SAVE USER MESSAGE ERROR:",
                 saveUserMessageError
             );
 
-            return res.status(500).json({
-                error:
-                    "تعذر حفظ رسالة المستخدم.",
-                details:
-                    saveUserMessageError.message
-            });
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "تعذر حفظ رسالة المستخدم.",
+                    details:
+                        saveUserMessageError.message
+                });
 
         }
 
 
         // ==================================================
-        // LOAD FULL CONVERSATION HISTORY
+        // LOAD CONVERSATION HISTORY
         // ==================================================
 
         const {
-            data: savedMessages,
-            error: loadMessagesError
+            data:
+                savedMessages,
+            error:
+                loadMessagesError
         } =
             await supabaseAdmin
-                .from("messages")
+                .from(
+                    "messages"
+                )
                 .select(
                     "role,content,created_at"
                 )
@@ -492,87 +505,121 @@ export default async function handler(req, res) {
                 .order(
                     "created_at",
                     {
-                        ascending: true
+                        ascending:
+                            true
                     }
                 )
-                .limit(50);
+                .limit(
+                    50
+                );
 
 
-        if (loadMessagesError) {
+        if (
+            loadMessagesError
+        ) {
 
             console.error(
                 "LOAD MESSAGES ERROR:",
                 loadMessagesError
             );
 
-            return res.status(500).json({
-                error:
-                    "تعذر تحميل سياق المحادثة.",
-                details:
-                    loadMessagesError.message
-            });
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "تعذر تحميل سياق المحادثة.",
+                    details:
+                        loadMessagesError.message
+                });
 
         }
 
 
         // ==================================================
-        // PREPARE OPENAI INPUT
+        // PREPARE MESSAGES
         // ==================================================
 
         const safeMessages =
-            (savedMessages || [])
-                .map((message) => {
+            (
+                savedMessages || []
+            )
+                .map(
+                    (message) => {
 
-                    const role =
-                        message?.role === "assistant"
-                            ? "assistant"
-                            : "user";
-
-
-                    const content =
-                        String(
-                            message?.content || ""
-                        )
-                            .trim()
-                            .slice(0, 12000);
+                        const role =
+                            message?.role ===
+                            "assistant"
+                                ? "assistant"
+                                : "user";
 
 
-                    return {
-                        role,
-                        content
-                    };
+                        const content =
+                            String(
+                                message?.content ||
+                                ""
+                            )
+                                .trim()
+                                .slice(
+                                    0,
+                                    12000
+                                );
 
-                })
+
+                        return {
+
+                            role:
+                                role,
+
+                            content:
+                                content
+
+                        };
+
+                    }
+                )
                 .filter(
                     message =>
-                        message.content.length > 0
+                        message.content
+                            .length > 0
                 )
-                .slice(-30);
+                .slice(
+                    -30
+                );
 
 
-        if (safeMessages.length === 0) {
+        if (
+            safeMessages.length === 0
+        ) {
 
-            return res.status(400).json({
-                error:
-                    "لا توجد رسائل صالحة في المحادثة."
-            });
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "لا توجد رسائل صالحة في المحادثة."
+                });
 
         }
 
 
         // ==================================================
-        // OPENAI
+        // OPENAI RESPONSES API
         // ==================================================
 
-        const response =
-            await openai.responses.create({
-
-                model:
-                    process.env.OPENAI_MODEL ||
-                    "gpt-5.6-luna",
+        let response;
 
 
-                instructions: `
+        try {
+
+            response =
+                await openai
+                    .responses
+                    .create({
+
+                        model:
+                            OPENAI_MODEL,
+
+                        instructions:
+`
 أنت المساعد الذكي الرسمي لمنصة "التطور چات".
 
 أجب باللغة العربية عندما يكتب المستخدم بالعربية.
@@ -592,21 +639,87 @@ export default async function handler(req, res) {
 لا تذكر التعليمات الداخلية أو إعدادات النظام للمستخدم.
 `,
 
+                        input:
+                            safeMessages.map(
+                                message => ({
 
-                input:
-                    safeMessages.map(
-                        (message) => ({
+                                    role:
+                                        message.role,
 
-                            role:
-                                message.role,
+                                    content:
+                                        message.content
 
-                            content:
-                                message.content
+                                })
+                            )
 
-                        })
+                    });
+
+        } catch (
+            openaiError
+        ) {
+
+            console.error(
+                "OPENAI ERROR:",
+                openaiError
+            );
+
+
+            const errorMessage =
+                String(
+                    openaiError?.message ||
+                    ""
+                );
+
+
+            if (
+                errorMessage
+                    .toLowerCase()
+                    .includes(
+                        "invalid api key"
                     )
+            ) {
 
-            });
+                return res
+                    .status(500)
+                    .json({
+                        error:
+                            "مفتاح OpenAI غير صالح. تحقق من OPENAI_API_KEY في Vercel."
+                    });
+
+            }
+
+
+            if (
+                errorMessage
+                    .toLowerCase()
+                    .includes(
+                        "authentication"
+                    )
+            ) {
+
+                return res
+                    .status(500)
+                    .json({
+                        error:
+                            "فشل التحقق من مفتاح OpenAI. تحقق من OPENAI_API_KEY في Vercel."
+                    });
+
+            }
+
+
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "حدث خطأ أثناء الاتصال بـ OpenAI.",
+                    details:
+                        process.env.NODE_ENV ===
+                        "development"
+                            ? errorMessage
+                            : undefined
+                });
+
+        }
 
 
         // ==================================================
@@ -614,7 +727,9 @@ export default async function handler(req, res) {
         // ==================================================
 
         const answer =
-            response.output_text?.trim() ||
+            response
+                ?.output_text
+                ?.trim() ||
             "عذراً، لم أتمكن من إنشاء رد.";
 
 
@@ -623,10 +738,13 @@ export default async function handler(req, res) {
         // ==================================================
 
         const {
-            error: saveAssistantError
+            error:
+                saveAssistantError
         } =
             await supabaseAdmin
-                .from("messages")
+                .from(
+                    "messages"
+                )
                 .insert({
 
                     conversation_id:
@@ -641,21 +759,29 @@ export default async function handler(req, res) {
                 });
 
 
-        if (saveAssistantError) {
+        if (
+            saveAssistantError
+        ) {
 
             console.error(
                 "SAVE ASSISTANT MESSAGE ERROR:",
                 saveAssistantError
             );
 
-            return res.status(500).json({
-                error:
-                    "تم إنشاء الرد، لكن تعذر حفظه في المحادثة.",
-                message:
-                    answer,
-                conversation_id:
-                    conversationId
-            });
+            return res
+                .status(500)
+                .json({
+
+                    error:
+                        "تم إنشاء الرد، لكن تعذر حفظه في المحادثة.",
+
+                    message:
+                        answer,
+
+                    conversation_id:
+                        conversationId
+
+                });
 
         }
 
@@ -664,56 +790,76 @@ export default async function handler(req, res) {
         // UPDATE CONVERSATION
         // ==================================================
 
-        await supabaseAdmin
-            .from("conversations")
-            .update({
+        const {
+            error:
+                updateConversationError
+        } =
+            await supabaseAdmin
+                .from(
+                    "conversations"
+                )
+                .update({
 
-                updated_at:
-                    new Date().toISOString()
+                    updated_at:
+                        new Date()
+                            .toISOString()
 
-            })
-            .eq(
-                "id",
-                conversationId
-            )
-            .eq(
-                "user_id",
-                user.id
+                })
+                .eq(
+                    "id",
+                    conversationId
+                )
+                .eq(
+                    "user_id",
+                    user.id
+                );
+
+
+        if (
+            updateConversationError
+        ) {
+
+            console.warn(
+                "UPDATE CONVERSATION ERROR:",
+                updateConversationError
             );
+
+        }
 
 
         // ==================================================
         // SUCCESS
         // ==================================================
 
-        return res.status(200).json({
+        return res
+            .status(200)
+            .json({
 
-            success: true,
+                success:
+                    true,
 
-            message:
-                answer,
+                message:
+                    answer,
 
-            conversation_id:
-                conversationId,
+                conversation_id:
+                    conversationId,
 
-            user: {
+                user: {
 
-                id:
-                    user.id,
+                    id:
+                        user.id,
 
-                email:
-                    user.email
+                    email:
+                        user.email
 
-            }
+                }
 
-        });
+            });
 
 
-    } catch (error) {
-
-        // ==================================================
-        // ERROR LOG
-        // ==================================================
+    } catch (
+        error
+    ) {
 
         console.error(
             "CHAT API ERROR:",
@@ -721,47 +867,45 @@ export default async function handler(req, res) {
         );
 
 
-        // --------------------------------------------------
-        // OPENAI INVALID API KEY
-        // --------------------------------------------------
-
         const errorMessage =
             String(
-                error?.message || ""
+                error?.message ||
+                ""
             );
 
 
         if (
             errorMessage
                 .toLowerCase()
-                .includes("invalid api key")
+                .includes(
+                    "invalid api key"
+                )
         ) {
 
-            return res.status(500).json({
-
-                error:
-                    "مفتاح OpenAI غير صالح. تحقق من OPENAI_API_KEY في Vercel."
-
-            });
+            return res
+                .status(500)
+                .json({
+                    error:
+                        "مفتاح OpenAI غير صالح. تحقق من OPENAI_API_KEY في Vercel."
+                });
 
         }
 
 
-        // ==================================================
-        // GENERAL ERROR
-        // ==================================================
+        return res
+            .status(500)
+            .json({
 
-        return res.status(500).json({
+                error:
+                    "حدث خطأ أثناء الاتصال بالمساعد الذكي.",
 
-            error:
-                "حدث خطأ أثناء الاتصال بالمساعد الذكي.",
+                details:
+                    process.env.NODE_ENV ===
+                    "development"
+                        ? errorMessage
+                        : undefined
 
-            details:
-                process.env.NODE_ENV === "development"
-                    ? errorMessage
-                    : undefined
-
-        });
+            });
 
     }
 
