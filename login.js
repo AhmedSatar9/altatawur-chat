@@ -1,5 +1,5 @@
 const SUPABASE_URL =
-    "https://YOUR_PROJECT.supabase.co";
+    "https://wxsricscchalzvazdbzd.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
     "YOUR_SUPABASE_PUBLISHABLE_KEY";
