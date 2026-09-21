@@ -1,538 +1,494 @@
-// ==========================================
-// SUPABASE CONFIG
-// ==========================================
-const SUPABASE_URL =
-    "https://wxsricscchalzvazdbzd.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_5oPDD77Veu5OczxaZje7vg_orfNjB5t";
-// ==========================================
-// SUPABASE CLIENT
-// ==========================================
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
-// ==========================================
-// ELEMENTS
-// ==========================================
-const loginTab =
-    document.getElementById("loginTab");
-const registerTab =
-    document.getElementById("registerTab");
-const loginForm =
-    document.getElementById("loginForm");
-const registerForm =
-    document.getElementById("registerForm");
-const message =
-    document.getElementById("message");
-const loginButton =
-    document.getElementById("loginButton");
-const registerButton =
-    document.getElementById("registerButton");
-// ==========================================
-// MESSAGE
-// ==========================================
-function showMessage(
-    text,
-    type = "error"
-) {
-    if (!message) {
-        return;
-    }
-    message.textContent = text;
-    message.className =
-        "message show " + type;
-}
-function hideMessage() {
-    if (!message) {
-        return;
-    }
-    message.textContent = "";
-    message.className =
-        "message";
-}
-// ==========================================
-// SWITCH TO LOGIN
-// ==========================================
-function showLoginForm() {
-    if (loginTab) {
-        loginTab.classList.add("active");
-    }
-    if (registerTab) {
-        registerTab.classList.remove("active");
-    }
-    if (loginForm) {
-        loginForm.classList.add("active");
-    }
-    if (registerForm) {
-        registerForm.classList.remove("active");
-    }
-    hideMessage();
-}
-// ==========================================
-// SWITCH TO REGISTER
-// ==========================================
-function showRegisterForm() {
-    if (registerTab) {
-        registerTab.classList.add("active");
-    }
-    if (loginTab) {
-        loginTab.classList.remove("active");
-    }
-    if (registerForm) {
-        registerForm.classList.add("active");
-    }
-    if (loginForm) {
-        loginForm.classList.remove("active");
-    }
-    hideMessage();
-}
-// ==========================================
-// TAB EVENTS
-// ==========================================
-if (loginTab) {
-    loginTab.addEventListener(
-        "click",
-        showLoginForm
-    );
-}
-if (registerTab) {
-    registerTab.addEventListener(
-        "click",
-        showRegisterForm
-    );
-}
-// ==========================================
-// LOGIN
-// ==========================================
-if (loginForm) {
-    loginForm.addEventListener(
-        "submit",
-        async function (event) {
-            event.preventDefault();
-            hideMessage();
-            const emailInput =
-                document.getElementById(
-                    "loginEmail"
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>التطور چات - تسجيل الدخول</title>
+    <!-- ==============================
+         SUPABASE
+    =============================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- ==============================
+         PAGE STYLE
+    =============================== -->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+        body {
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "SF Pro Display",
+                "Segoe UI",
+                Tahoma,
+                Arial,
+                sans-serif;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(124, 77, 255, 0.18),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at bottom left,
+                    rgba(32, 211, 238, 0.12),
+                    transparent 35%
+                ),
+                #050812;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        button,
+        input {
+            font-family: inherit;
+        }
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* =================================
+           PAGE
+        ================================= */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-wrapper {
+            width: 100%;
+            max-width: 520px;
+        }
+        /* =================================
+           CARD
+        ================================= */
+        .auth-card {
+            width: 100%;
+            padding: 36px;
+            border-radius: 30px;
+            background:
+                rgba(14, 20, 39, 0.94);
+            border:
+                1px solid
+                rgba(128, 145, 190, 0.20);
+            box-shadow:
+                0 30px 100px
+                rgba(0, 0, 0, 0.40);
+            text-align: center;
+        }
+        /* =================================
+           LOGO
+        ================================= */
+        .logo-box {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 23px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #8055f6,
+                    #21c7e9
                 );
-            const passwordInput =
-                document.getElementById(
-                    "loginPassword"
+            color: #ffffff;
+            font-size: 42px;
+            font-weight: 800;
+            box-shadow:
+                0 15px 35px
+                rgba(45, 180, 235, 0.22);
+        }
+        /* =================================
+           TITLE
+        ================================= */
+        .auth-card h1 {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.3;
+        }
+        .auth-subtitle {
+            margin:
+                10px
+                0
+                28px;
+            color: #929ab4;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        /* =================================
+           MESSAGE
+        ================================= */
+        .message {
+            display: none;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            border-radius: 17px;
+            font-size: 15px;
+            line-height: 1.7;
+            text-align: right;
+        }
+        .message.show {
+            display: block;
+        }
+        .message.error {
+            color: #ffb2bd;
+            background:
+                rgba(255, 65, 92, 0.08);
+            border:
+                1px solid
+                rgba(255, 65, 92, 0.30);
+        }
+        .message.success {
+            color: #79e8c0;
+            background:
+                rgba(57, 220, 163, 0.08);
+            border:
+                1px solid
+                rgba(57, 220, 163, 0.30);
+        }
+        /* =================================
+           TABS
+        ================================= */
+        .auth-tabs {
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border-radius: 18px;
+            background: #070c19;
+        }
+        .auth-tab {
+            flex: 1;
+            height: 52px;
+            border: 0;
+            border-radius: 14px;
+            background: transparent;
+            color: #8f97ae;
+            font-size: 16px;
+            cursor: pointer;
+            transition:
+                0.2s ease;
+        }
+        .auth-tab.active {
+            background: #121a31;
+            color: #ffffff;
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.15);
+        }
+        /* =================================
+           FORMS
+        ================================= */
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            text-align: right;
+            gap: 9px;
+        }
+        .auth-form.active {
+            display: flex;
+        }
+        .auth-form label {
+            margin-top: 7px;
+            color: #d7dbea;
+            font-size: 15px;
+        }
+        .auth-form input {
+            width: 100%;
+            height: 58px;
+            padding:
+                0
+                17px;
+            border-radius: 17px;
+            border:
+                1px solid
+                rgba(129, 143, 180, 0.20);
+            outline: none;
+            background: #070c19;
+            color: #ffffff;
+            font-size: 16px;
+            direction: rtl;
+            transition:
+                0.2s ease;
+        }
+        .auth-form input::placeholder {
+            color: #59627a;
+        }
+        .auth-form input:focus {
+            border-color: #45c8ed;
+            box-shadow:
+                0 0 0 3px
+                rgba(69, 200, 237, 0.10);
+        }
+        /* =================================
+           BUTTON
+        ================================= */
+        .primary-button {
+            width: 100%;
+            height: 60px;
+            margin-top: 17px;
+            border: 0;
+            border-radius: 18px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            background:
+                linear-gradient(
+                    100deg,
+                    #8055f6,
+                    #22c8e9
                 );
-            const email =
-                emailInput
-                    ? emailInput.value
-                        .trim()
-                        .toLowerCase()
-                    : "";
-            const password =
-                passwordInput
-                    ? passwordInput.value
-                    : "";
-            // ----------------------------------
-            // VALIDATION
-            // ----------------------------------
-            if (!email) {
-                showMessage(
-                    "أدخل البريد الإلكتروني.",
-                    "error"
-                );
-                if (emailInput) {
-                    emailInput.focus();
-                }
-                return;
+            box-shadow:
+                0 10px 30px
+                rgba(72, 164, 230, 0.16);
+            transition:
+                transform 0.15s ease,
+                opacity 0.15s ease;
+        }
+        .primary-button:active {
+            transform: scale(0.98);
+        }
+        .primary-button:disabled {
+            opacity: 0.60;
+            cursor: wait;
+        }
+        /* =================================
+           TERMS
+        ================================= */
+        .terms {
+            margin:
+                25px
+                0
+                0;
+            color: #727c97;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        /* =================================
+           BACK LINK
+        ================================= */
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #aeb7cf;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: #ffffff;
+        }
+        /* =================================
+           MOBILE
+        ================================= */
+        @media (max-width: 600px) {
+            .auth-page {
+                padding: 14px;
             }
-            if (!password) {
-                showMessage(
-                    "أدخل كلمة المرور.",
-                    "error"
-                );
-                if (passwordInput) {
-                    passwordInput.focus();
-                }
-                return;
+            .auth-card {
+                padding:
+                    28px
+                    18px;
+                border-radius: 24px;
             }
-            // ----------------------------------
-            // LOADING
-            // ----------------------------------
-            if (loginButton) {
-                loginButton.disabled = true;
-                loginButton.textContent =
-                    "جاري تسجيل الدخول...";
+            .logo-box {
+                width: 68px;
+                height: 68px;
+                border-radius: 20px;
+                font-size: 37px;
             }
-            try {
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient.auth
-                        .signInWithPassword({
-                            email: email,
-                            password: password
-                        });
-                if (error) {
-                    throw error;
-                }
-                if (
-                    !data ||
-                    !data.session
-                ) {
-                    throw new Error(
-                        "لم يتم إنشاء جلسة تسجيل الدخول."
-                    );
-                }
-                // ----------------------------------
-                // LOGIN SUCCESS
-                // ----------------------------------
-                showMessage(
-                    "تم تسجيل الدخول بنجاح...",
-                    "success"
-                );
-                setTimeout(
-                    function () {
-                        window.location.href = "/";
-                    },
-                    500
-                );
-            } catch (error) {
-                console.error(
-                    "LOGIN ERROR:",
-                    error
-                );
-                const errorMessage =
-                    String(
-                        error?.message || ""
-                    ).toLowerCase();
-                let errorText =
-                    "حدث خطأ أثناء تسجيل الدخول.";
-                if (
-                    errorMessage.includes(
-                        "invalid login credentials"
-                    )
-                ) {
-                    errorText =
-                        "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-                }
-                else if (
-                    errorMessage.includes(
-                        "email not confirmed"
-                    )
-                ) {
-                    errorText =
-                        "يجب تأكيد البريد الإلكتروني أولاً. تحقق من بريدك.";
-                }
-                else if (
-                    errorMessage.includes(
-                        "too many requests"
-                    )
-                ) {
-                    errorText =
-                        "محاولات كثيرة. حاول مرة أخرى بعد قليل.";
-                }
-                else if (
-                    error?.message
-                ) {
-                    errorText =
-                        error.message;
-                }
-                showMessage(
-                    errorText,
-                    "error"
-                );
-            } finally {
-                if (loginButton) {
-                    loginButton.disabled = false;
-                    loginButton.textContent =
-                        "تسجيل الدخول";
-                }
+            .auth-card h1 {
+                font-size: 29px;
+            }
+            .auth-subtitle {
+                font-size: 14px;
+                margin-bottom: 22px;
+            }
+            .auth-form input {
+                height: 56px;
+            }
+            .primary-button {
+                height: 58px;
+                font-size: 17px;
             }
         }
-    );
-}
-// ==========================================
-// REGISTER
-// ==========================================
-if (registerForm) {
-    registerForm.addEventListener(
-        "submit",
-        async function (event) {
-            event.preventDefault();
-            hideMessage();
-            const usernameInput =
-                document.getElementById(
-                    "registerUsername"
-                );
-            const emailInput =
-                document.getElementById(
-                    "registerEmail"
-                );
-            const passwordInput =
-                document.getElementById(
-                    "registerPassword"
-                );
-            const confirmPasswordInput =
-                document.getElementById(
-                    "registerConfirmPassword"
-                );
-            const username =
-                usernameInput
-                    ? usernameInput.value.trim()
-                    : "";
-            const email =
-                emailInput
-                    ? emailInput.value
-                        .trim()
-                        .toLowerCase()
-                    : "";
-            const password =
-                passwordInput
-                    ? passwordInput.value
-                    : "";
-            const confirmPassword =
-                confirmPasswordInput
-                    ? confirmPasswordInput.value
-                    : "";
-            // ==================================
-            // VALIDATION
-            // ==================================
-            if (username.length < 2) {
-                showMessage(
-                    "اسم المستخدم يجب أن يحتوي على حرفين على الأقل.",
-                    "error"
-                );
-                if (usernameInput) {
-                    usernameInput.focus();
-                }
-                return;
-            }
-            if (username.length > 30) {
-                showMessage(
-                    "اسم المستخدم يجب ألا يتجاوز 30 حرفاً.",
-                    "error"
-                );
-                if (usernameInput) {
-                    usernameInput.focus();
-                }
-                return;
-            }
-            if (!email) {
-                showMessage(
-                    "أدخل البريد الإلكتروني.",
-                    "error"
-                );
-                if (emailInput) {
-                    emailInput.focus();
-                }
-                return;
-            }
-            if (password.length < 8) {
-                showMessage(
-                    "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل.",
-                    "error"
-                );
-                if (passwordInput) {
-                    passwordInput.focus();
-                }
-                return;
-            }
-            if (password !== confirmPassword) {
-                showMessage(
-                    "كلمتا المرور غير متطابقتين.",
-                    "error"
-                );
-                if (confirmPasswordInput) {
-                    confirmPasswordInput.focus();
-                }
-                return;
-            }
-            // ==================================
-            // LOADING
-            // ==================================
-            if (registerButton) {
-                registerButton.disabled = true;
-                registerButton.textContent =
-                    "جاري إنشاء الحساب...";
-            }
-            try {
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient.auth
-                        .signUp({
-                            email: email,
-                            password: password,
-                            options: {
-                                data: {
-                                    username:
-                                        username
-                                },
-                                emailRedirectTo:
-                                    window.location.origin +
-                                    "/login.html"
-                            }
-                        });
-                if (error) {
-                    throw error;
-                }
-                // ==================================
-                // EXISTING USER
-                // ==================================
-                if (
-                    data?.user &&
-                    Array.isArray(
-                        data.user.identities
-                    ) &&
-                    data.user.identities.length === 0
-                ) {
-                    throw new Error(
-                        "هذا البريد الإلكتروني مستخدم مسبقاً."
-                    );
-                }
-                // ==================================
-                // SESSION CREATED
-                // ==================================
-                if (data?.session) {
-                    showMessage(
-                        "تم إنشاء الحساب بنجاح. سيتم تحويلك الآن...",
-                        "success"
-                    );
-                    if (registerForm) {
-                        registerForm.reset();
-                    }
-                    setTimeout(
-                        function () {
-                            window.location.href =
-                                "/";
-                        },
-                        800
-                    );
-                    return;
-                }
-                // ==================================
-                // EMAIL CONFIRMATION
-                // ==================================
-                showMessage(
-                    "تم إنشاء حسابك بنجاح. تحقق من بريدك الإلكتروني واضغط رابط التأكيد، وبعدها سجّل الدخول.",
-                    "success"
-                );
-                if (registerForm) {
-                    registerForm.reset();
-                }
-                setTimeout(
-                    function () {
-                        showLoginForm();
-                    },
-                    2500
-                );
-            } catch (error) {
-                console.error(
-                    "REGISTER ERROR:",
-                    error
-                );
-                const errorMessage =
-                    String(
-                        error?.message || ""
-                    ).toLowerCase();
-                let errorText =
-                    "تعذر إنشاء الحساب.";
-                if (
-                    errorMessage.includes(
-                        "user already registered"
-                    ) ||
-                    errorMessage.includes(
-                        "already registered"
-                    )
-                ) {
-                    errorText =
-                        "هذا البريد الإلكتروني مستخدم مسبقاً.";
-                }
-                else if (
-                    errorMessage.includes(
-                        "password"
-                    ) &&
-                    errorMessage.includes(
-                        "weak"
-                    )
-                ) {
-                    errorText =
-                        "كلمة المرور ضعيفة. اختر كلمة مرور أقوى.";
-                }
-                else if (
-                    errorMessage.includes(
-                        "invalid email"
-                    )
-                ) {
-                    errorText =
-                        "البريد الإلكتروني غير صحيح.";
-                }
-                else if (
-                    error?.message
-                ) {
-                    errorText =
-                        error.message;
-                }
-                showMessage(
-                    errorText,
-                    "error"
-                );
-            } finally {
-                if (registerButton) {
-                    registerButton.disabled = false;
-                    registerButton.textContent =
-                        "إنشاء الحساب";
-                }
-            }
-        }
-    );
-}
-// ==========================================
-// CHECK EXISTING SESSION
-// ==========================================
-async function checkSession() {
-    try {
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth
-                .getSession();
-        if (error) {
-            console.error(
-                "SESSION ERROR:",
-                error
-            );
-            return;
-        }
-        if (data?.session) {
-            window.location.href = "/";
-        }
-    } catch (error) {
-        console.error(
-            "SESSION CHECK ERROR:",
-            error
-        );
-    }
-}
-// ==========================================
-// AUTH STATE LISTENER
-// ==========================================
-supabaseClient.auth.onAuthStateChange(
-    function (event, session) {
-        if (
-            event === "SIGNED_IN" &&
-            session
-        ) {
-            /*
-             * لا نحول هنا مباشرة أثناء signUp،
-             * لأن Supabase قد يرسل SIGNED_IN
-             * حسب إعدادات تأكيد البريد.
-             */
-        }
-    }
-);
-// ==========================================
-// START
-// ==========================================
-checkSession();
+    </style>
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <!-- ==========================
+                 LOGO
+            =========================== -->
+            <div class="logo-box">
+                ت
+            </div>
+            <!-- ==========================
+                 TITLE
+            =========================== -->
+            <h1>
+                التطور چات
+            </h1>
+            <p class="auth-subtitle">
+                سجّل دخولك حتى تبدأ محادثاتك
+                مع المساعد الذكي.
+            </p>
+            <!-- ==========================
+                 MESSAGE
+            =========================== -->
+            <div
+                id="message"
+                class="message"
+            ></div>
+            <!-- ==========================
+                 TABS
+            =========================== -->
+            <div class="auth-tabs">
+                <button
+                    id="loginTab"
+                    class="auth-tab active"
+                    type="button"
+                >
+                    تسجيل الدخول
+                </button>
+                <button
+                    id="registerTab"
+                    class="auth-tab"
+                    type="button"
+                >
+                    إنشاء حساب
+                </button>
+            </div>
+            <!-- ==========================
+                 LOGIN
+            =========================== -->
+            <form
+                id="loginForm"
+                class="auth-form active"
+            >
+                <label for="loginEmail">
+                    البريد الإلكتروني
+                </label>
+                <input
+                    id="loginEmail"
+                    type="email"
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    required
+                >
+                <label for="loginPassword">
+                    كلمة المرور
+                </label>
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    required
+                >
+                <button
+                    id="loginButton"
+                    class="primary-button"
+                    type="submit"
+                >
+                    تسجيل الدخول
+                </button>
+            </form>
+            <!-- ==========================
+                 REGISTER
+            =========================== -->
+            <form
+                id="registerForm"
+                class="auth-form"
+            >
+                <label for="registerUsername">
+                    اسم المستخدم
+                </label>
+                <input
+                    id="registerUsername"
+                    type="text"
+                    placeholder="اكتب اسم المستخدم"
+                    autocomplete="username"
+                    minlength="2"
+                    maxlength="30"
+                    required
+                >
+                <label for="registerEmail">
+                    البريد الإلكتروني
+                </label>
+                <input
+                    id="registerEmail"
+                    type="email"
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    required
+                >
+                <label for="registerPassword">
+                    كلمة المرور
+                </label>
+                <input
+                    id="registerPassword"
+                    type="password"
+                    placeholder="8 أحرف على الأقل"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+                <label for="registerConfirmPassword">
+                    تأكيد كلمة المرور
+                </label>
+                <input
+                    id="registerConfirmPassword"
+                    type="password"
+                    placeholder="أعد كتابة كلمة المرور"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+                <button
+                    id="registerButton"
+                    class="primary-button"
+                    type="submit"
+                >
+                    إنشاء الحساب
+                </button>
+            </form>
+            <!-- ==========================
+                 TERMS
+            =========================== -->
+            <p class="terms">
+                باستخدامك التطور چات، أنت توافق
+                على استخدام الخدمة وفق إعدادات المنصة.
+            </p>
+            <!-- ==========================
+                 BACK
+            =========================== -->
+            <a
+                href="/"
+                class="back-link"
+            >
+                العودة إلى التطور چات
+            </a>
+        </div>
+    </div>
+</div>
+<!-- ==================================
+     LOGIN JAVASCRIPT
+=================================== -->
+<script src="login.js"></script>
+</body>
+</html>
