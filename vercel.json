@@ -6,6 +6,14 @@
       "dest": "/api/chat.js"
     },
     {
+      "src": "/login.html",
+      "dest": "/login.html"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
