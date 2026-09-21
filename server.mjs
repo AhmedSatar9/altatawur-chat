@@ -6,12 +6,21 @@ import { fileURLToPath } from "node:url";
 
 const app = express();
 
+
+// ==========================================
+// PATH
+// ==========================================
+
 const __filename =
     fileURLToPath(import.meta.url);
 
 const __dirname =
     path.dirname(__filename);
 
+
+// ==========================================
+// JSON
+// ==========================================
 
 app.use(
     express.json({
@@ -20,8 +29,14 @@ app.use(
 );
 
 
+// ==========================================
+// STATIC FILES
+// ==========================================
+
 app.use(
-    express.static(__dirname)
+    express.static(__dirname, {
+        index: false
+    })
 );
 
 
@@ -63,10 +78,30 @@ app.get(
 
 
 // ==========================================
-// MAIN APP
+// LOGIN.HTML
 // ==========================================
 
-app.use(
+app.get(
+    "/login.html",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                "login.html"
+            )
+        );
+
+    }
+);
+
+
+// ==========================================
+// MAIN PAGE
+// ==========================================
+
+app.get(
+    "/",
     (req, res) => {
 
         res.sendFile(
@@ -79,6 +114,25 @@ app.use(
     }
 );
 
+
+// ==========================================
+// 404
+// ==========================================
+
+app.use(
+    (req, res) => {
+
+        res.status(404).send(
+            "Page not found"
+        );
+
+    }
+);
+
+
+// ==========================================
+// SERVER
+// ==========================================
 
 const PORT =
     process.env.PORT || 3000;
