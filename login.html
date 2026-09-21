@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
 
@@ -8,49 +9,30 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <title>التطور چات</title>
+  <title>تسجيل الدخول — التطور چات</title>
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-    /* =========================
-       SUPABASE
-    ========================== */
-
-    const SUPABASE_URL =
-      "https://wxsricscchalzvazdbzd.supabase.co";
-
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
-
-    const supabase =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-      );
-
-    /* مهم جداً:
-       تعريف المتغيرات هنا حتى تكون
-       متاحة لكل السكربتات */
-    let currentSession = null;
-    let currentUser = null;
-  </script>
 
   <style>
     :root {
       --bg: #070912;
       --panel: #0d1222;
       --panel2: #11182a;
-      --border: rgba(255,255,255,.09);
+      --border: rgba(255, 255, 255, 0.10);
+
       --text: #f5f7ff;
       --muted: #8d96aa;
+
       --purple: #8b5cf6;
       --cyan: #22d3ee;
-      --gradient: linear-gradient(
-        135deg,
-        #8b5cf6,
-        #22d3ee
-      );
+
+      --gradient:
+        linear-gradient(
+          135deg,
+          #8b5cf6,
+          #22d3ee
+        );
     }
 
     * {
@@ -62,14 +44,11 @@
     html,
     body {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       background: var(--bg);
-      overflow: hidden;
-      overscroll-behavior: none;
     }
 
     body {
-      color: var(--text);
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -77,238 +56,138 @@
         Arial,
         sans-serif;
 
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    button,
-    textarea,
-    input {
-      font-family: inherit;
-    }
-
-    button {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .app {
-      width: 100%;
-      height: 100dvh;
-      min-height: 100dvh;
-      max-height: 100dvh;
+      color: var(--text);
 
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
 
-      overflow: hidden;
+      padding: 20px;
+
       position: relative;
+
+      overflow-x: hidden;
     }
 
     /* =========================
-       HEADER
+       BACKGROUND
     ========================== */
 
-    header {
-      height: 92px;
-      min-height: 92px;
+    body::before {
+      content: "";
 
-      padding: 14px 24px;
+      position: fixed;
 
-      border-bottom:
-        1px solid var(--border);
+      width: 520px;
+      height: 520px;
+
+      border-radius: 50%;
 
       background:
-        rgba(13,18,34,.94);
+        radial-gradient(
+          circle,
+          rgba(139, 92, 246, 0.18),
+          transparent 68%
+        );
 
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      top: -200px;
+      right: -180px;
 
-      position: relative;
-      z-index: 100;
-
-      flex-shrink: 0;
+      pointer-events: none;
     }
 
+    body::after {
+      content: "";
+
+      position: fixed;
+
+      width: 520px;
+      height: 520px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(34, 211, 238, 0.11),
+          transparent 68%
+        );
+
+      bottom: -230px;
+      left: -190px;
+
+      pointer-events: none;
+    }
+
+    /* =========================
+       CARD
+    ========================== */
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+
+      background:
+        rgba(13, 18, 34, 0.96);
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 28px;
+
+      padding: 30px;
+
+      box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.42);
+
+      position: relative;
+
+      z-index: 2;
+    }
+
+    /* =========================
+       BRAND
+    ========================== */
+
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      text-align: center;
+
+      margin-bottom: 25px;
     }
 
     .logo {
-      width: 58px;
-      height: 58px;
+      width: 78px;
+      height: 78px;
 
-      border-radius: 17px;
+      border-radius: 24px;
 
-      background:
-        var(--gradient);
+      background: var(--gradient);
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      font-size: 31px;
-      font-weight: 800;
+      font-size: 40px;
+      font-weight: 900;
+
+      margin: 0 auto 16px;
 
       box-shadow:
-        0 10px 30px
-        rgba(100,90,255,.18);
+        0 18px 50px rgba(100, 90, 255, 0.25);
     }
 
-    .brand-info h1 {
-      font-size: 24px;
-      margin-bottom: 3px;
+    h1 {
+      font-size: 28px;
+
+      margin-bottom: 7px;
     }
 
-    .status {
-      color: #6ee7b7;
+    .subtitle {
+      color: var(--muted);
+
       font-size: 14px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      direction: ltr;
-    }
-
-    .new-chat {
-      height: 48px;
-
-      padding: 0 16px;
-
-      border-radius: 14px;
-
-      border:
-        1px solid var(--border);
-
-      background: transparent;
-
-      color: var(--muted);
-
-      font-size: 15px;
-
-      cursor: pointer;
-
-      white-space: nowrap;
-
-      transition: .2s ease;
-    }
-
-    .new-chat:hover {
-      color: white;
-
-      border-color:
-        rgba(255,255,255,.18);
-
-      background:
-        rgba(255,255,255,.04);
-    }
-
-    .menu {
-      width: 48px;
-      height: 48px;
-
-      border:
-        1px solid var(--border);
-
-      background: transparent;
-
-      border-radius: 14px;
-
-      color: white;
-
-      font-size: 25px;
-
-      cursor: pointer;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* =========================
-       CHAT
-    ========================== */
-
-    .chat {
-      width: 100%;
-      max-width: 900px;
-
-      margin: 0 auto;
-
-      padding: 35px 20px 25px;
-
-      flex: 1;
-      min-height: 0;
-
-      overflow-y: auto;
-      overflow-x: hidden;
-
-      overscroll-behavior: contain;
-
-      -webkit-overflow-scrolling: touch;
-
-      scrollbar-width: thin;
-    }
-
-    .welcome {
-      text-align: center;
-
-      padding:
-        70px 10px 30px;
-    }
-
-    .welcome-logo {
-      width: 110px;
-      height: 110px;
-
-      border-radius: 32px;
-
-      background:
-        var(--gradient);
-
-      margin:
-        0 auto 28px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 55px;
-      font-weight: 800;
-
-      box-shadow:
-        0 20px 60px
-        rgba(100,90,255,.18);
-    }
-
-    .welcome h2 {
-      font-size: 38px;
-      margin-bottom: 15px;
-    }
-
-    .welcome h2 span {
-      background:
-        var(--gradient);
-
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .welcome p {
-      color: var(--muted);
-
-      font-size: 18px;
 
       line-height: 1.8;
-
-      max-width: 650px;
-
-      margin: auto;
     }
 
     /* =========================
@@ -316,1076 +195,316 @@
     ========================== */
 
     .message {
-      display: flex;
+      display: none;
 
-      gap: 12px;
+      padding: 12px 14px;
 
-      margin: 25px 0;
+      border-radius: 13px;
 
-      align-items: flex-start;
-    }
-
-    .message.user {
-      flex-direction: row-reverse;
-    }
-
-    .avatar {
-      width: 46px;
-      height: 46px;
-
-      min-width: 46px;
-
-      border-radius: 14px;
-
-      background:
-        var(--gradient);
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .message.assistant .avatar {
-      background: #182137;
-    }
-
-    .bubble {
-      max-width: 75%;
-
-      padding: 15px 19px;
-
-      border-radius: 20px;
-
-      background:
-        var(--panel2);
-
-      border:
-        1px solid var(--border);
+      font-size: 13px;
 
       line-height: 1.8;
 
-      font-size: 16px;
-
-      white-space: pre-wrap;
-
-      overflow-wrap: anywhere;
+      margin-bottom: 14px;
     }
 
-    .message.user .bubble {
-      background: #111a30;
-    }
-
-    .message-image {
+    .message.show {
       display: block;
+    }
 
-      width: 100%;
-
-      max-width: 360px;
-      max-height: 420px;
-
-      object-fit: contain;
-
-      border-radius: 14px;
-
-      margin-bottom: 10px;
+    .message.success {
+      background:
+        rgba(110, 231, 183, 0.08);
 
       border:
-        1px solid
-        rgba(255,255,255,.08);
+        1px solid rgba(110, 231, 183, 0.22);
+
+      color: #9af0c9;
     }
 
-    .message-file {
-      display: flex;
-      align-items: center;
-
-      gap: 10px;
-
-      padding: 10px 12px;
-
-      margin-bottom: 8px;
-
-      border-radius: 12px;
-
+    .message.error {
       background:
-        rgba(255,255,255,.04);
+        rgba(255, 107, 129, 0.08);
 
-      color: #dbe1ef;
+      border:
+        1px solid rgba(255, 107, 129, 0.22);
 
-      font-size: 14px;
+      color: #ffb0bd;
     }
 
     /* =========================
-       ATTACHMENT
+       TABS
     ========================== */
 
-    .attachment-preview {
-      display: none;
+    .tabs {
+      display: grid;
 
-      width: 100%;
-      max-width: 900px;
+      grid-template-columns: 1fr 1fr;
 
-      margin:
-        0 auto 10px;
+      gap: 7px;
 
-      padding: 10px;
+      background: #090e1b;
 
-      background:
-        rgba(13,18,34,.96);
+      padding: 5px;
 
-      border:
-        1px solid
-        rgba(255,255,255,.10);
+      border-radius: 15px;
 
-      border-radius: 17px;
+      margin-bottom: 20px;
     }
 
-    .attachment-preview.active {
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-    }
-
-    .attachment-icon {
-      width: 42px;
-      height: 42px;
-
-      border-radius: 12px;
-
-      background:
-        rgba(139,92,246,.15);
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 21px;
-
-      flex-shrink: 0;
-    }
-
-    .attachment-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .attachment-name {
-      font-size: 14px;
-
-      white-space: nowrap;
-
-      overflow: hidden;
-
-      text-overflow: ellipsis;
-    }
-
-    .attachment-size {
-      color: var(--muted);
-
-      font-size: 12px;
-
-      margin-top: 2px;
-    }
-
-    .remove-attachment {
-      width: 34px;
-      height: 34px;
-
-      border: none;
-
-      border-radius: 10px;
+    .tab {
+      border: 0;
 
       background: transparent;
 
-      color: #8d96aa;
+      color: var(--muted);
 
-      font-size: 20px;
-
-      cursor: pointer;
-    }
-
-    .remove-attachment:hover {
-      color: #ff6b81;
-
-      background:
-        rgba(255,107,129,.08);
-    }
-
-    .attachment-image {
-      width: 52px;
-      height: 52px;
+      padding: 12px;
 
       border-radius: 11px;
 
-      object-fit: cover;
-
-      display: none;
-
-      flex-shrink: 0;
-    }
-
-    /* =========================
-       TYPING
-    ========================== */
-
-    .typing {
-      display: flex;
-
-      gap: 5px;
-
-      align-items: center;
-    }
-
-    .typing span {
-      width: 7px;
-      height: 7px;
-
-      border-radius: 50%;
-
-      background: #8b5cf6;
-
-      animation:
-        bounce 1s infinite;
-    }
-
-    .typing span:nth-child(2) {
-      animation-delay: .15s;
-    }
-
-    .typing span:nth-child(3) {
-      animation-delay: .3s;
-    }
-
-    @keyframes bounce {
-      0%,
-      60%,
-      100% {
-        transform:
-          translateY(0);
-      }
-
-      30% {
-        transform:
-          translateY(-6px);
-      }
-    }
-
-    /* =========================
-       INPUT
-    ========================== */
-
-    .input-area {
-      position: relative;
-
-      width: 100%;
-
-      flex-shrink: 0;
-
-      padding:
-        12px 20px
-        calc(
-          14px +
-          env(safe-area-inset-bottom)
-        );
-
-      background:
-        linear-gradient(
-          transparent,
-          rgba(7,9,18,.96) 30%
-        );
-
-      z-index: 200;
-    }
-
-    .input-box {
-      max-width: 900px;
-
-      margin: 0 auto;
-
-      background:
-        var(--panel);
-
-      border:
-        1px solid
-        rgba(255,255,255,.12);
-
-      border-radius: 25px;
-
-      padding: 10px;
-
-      display: flex;
-
-      align-items: flex-end;
-
-      gap: 8px;
-
-      box-shadow:
-        0 -5px 30px
-        rgba(0,0,0,.15);
-    }
-
-    .attach-button {
-      width: 52px;
-      height: 52px;
-
-      border: none;
-
-      border-radius: 16px;
-
-      background: transparent;
-
-      color: #aab2c5;
-
-      font-size: 24px;
-
       cursor: pointer;
 
-      flex-shrink: 0;
+      font-size: 14px;
 
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      transition: .2s ease;
+      transition: 0.2s ease;
     }
 
-    .attach-button:hover {
-      color: white;
+    .tab.active {
+      background: var(--panel2);
 
-      background:
-        rgba(255,255,255,.06);
-    }
-
-    .attach-button:active {
-      transform:
-        scale(.94);
-    }
-
-    #fileInput {
-      display: none;
-    }
-
-    textarea {
-      flex: 1;
-
-      resize: none;
-
-      border: none;
-
-      outline: none;
-
-      background: transparent;
-
-      color: white;
-
-      font-size: 16px;
-
-      line-height: 1.6;
-
-      min-height: 52px;
-
-      max-height: 150px;
-
-      padding:
-        13px 12px;
-    }
-
-    textarea::placeholder {
-      color: #69738b;
-    }
-
-    .send {
-      width: 54px;
-      height: 54px;
-
-      border: none;
-
-      border-radius: 17px;
-
-      background:
-        var(--gradient);
-
-      color: white;
-
-      font-size: 26px;
-
-      cursor: pointer;
-
-      flex-shrink: 0;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      transition: .2s ease;
-    }
-
-    .send:hover:not(:disabled) {
-      transform:
-        translateY(-1px);
+      color: #fff;
 
       box-shadow:
-        0 8px 25px
-        rgba(139,92,246,.25);
+        0 5px 20px rgba(0, 0, 0, 0.16);
     }
 
-    .send:active:not(:disabled) {
-      transform:
-        scale(.94);
-    }
-
-    .send:disabled {
-      opacity: .5;
-
-      cursor: not-allowed;
+    .tab:active {
+      transform: scale(0.98);
     }
 
     /* =========================
-       SIDE MENU
+       FORM
     ========================== */
 
-    .side-overlay {
-      position: fixed;
-
-      inset: 0;
-
-      background:
-        rgba(0,0,0,.55);
-
-      backdrop-filter:
-        blur(3px);
-
-      z-index: 300;
-
-      opacity: 0;
-
-      visibility: hidden;
-
-      transition: .25s ease;
-    }
-
-    .side-overlay.active {
-      opacity: 1;
-
-      visibility: visible;
-    }
-
-    .side-panel {
-      position: fixed;
-
-      top: 0;
-      right: 0;
-      bottom: 0;
-
-      width: 330px;
-
-      max-width: 88vw;
-
-      background: #0b1020;
-
-      border-left:
-        1px solid var(--border);
-
-      z-index: 301;
-
-      transform:
-        translateX(100%);
-
-      transition: .28s ease;
-
+    .form {
       display: flex;
 
       flex-direction: column;
+
+      gap: 14px;
     }
 
-    .side-panel.active {
-      transform:
-        translateX(0);
-    }
-
-    .side-header {
-      height: 82px;
-
-      padding:
-        16px 18px;
-
-      border-bottom:
-        1px solid var(--border);
-
+    .field {
       display: flex;
 
-      align-items: center;
+      flex-direction: column;
 
-      justify-content: space-between;
+      gap: 7px;
     }
 
-    .side-header h3 {
-      font-size: 20px;
-    }
-
-    .close-menu {
-      width: 42px;
-      height: 42px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 12px;
-
-      background: transparent;
-
-      color: white;
-
-      font-size: 22px;
-
-      cursor: pointer;
-    }
-
-    /* ACCOUNT */
-
-    .account-box {
-      margin:
-        14px 16px 8px;
-
-      padding: 12px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 15px;
-
-      background:
-        rgba(255,255,255,.03);
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      direction: rtl;
-    }
-
-    .account-avatar {
-      width: 42px;
-      height: 42px;
-
-      border-radius: 12px;
-
-      background:
-        var(--gradient);
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      font-weight: 800;
-
-      flex-shrink: 0;
-    }
-
-    .account-info {
-      min-width: 0;
-
-      flex: 1;
-    }
-
-    .account-label {
-      color: var(--muted);
-
-      font-size: 11px;
-
-      margin-bottom: 3px;
-    }
-
-    .account-email {
+    .field label {
       font-size: 13px;
 
-      overflow: hidden;
+      color: #cfd5e5;
+    }
 
-      text-overflow: ellipsis;
+    .field input {
+      width: 100%;
 
-      white-space: nowrap;
+      height: 52px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 14px;
+
+      background: #090e1b;
+
+      color: #fff;
+
+      outline: none;
+
+      padding:
+        0 14px;
+
+      font-size: 15px;
 
       direction: ltr;
 
-      text-align: right;
+      text-align: left;
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
-    /* LOGIN BUTTON */
-
-    .login-button {
-      margin:
-        8px 16px;
-
-      padding: 14px;
-
-      border: none;
-
-      border-radius: 14px;
-
-      background:
-        var(--gradient);
-
-      color: white;
-
-      cursor: pointer;
-
-      font-size: 15px;
-
-      font-weight: 700;
-
-      transition: .2s ease;
+    .field input::placeholder {
+      color: #586177;
     }
 
-    .login-button:hover {
-      transform:
-        translateY(-1px);
+    .field input:focus {
+      border-color:
+        rgba(139, 92, 246, 0.7);
 
       box-shadow:
-        0 8px 25px
-        rgba(139,92,246,.25);
+        0 0 0 3px
+        rgba(139, 92, 246, 0.10);
     }
 
-    .login-button:active {
-      transform:
-        scale(.98);
-    }
+    /* =========================
+       SUBMIT
+    ========================== */
 
-    /* NEW CHAT */
+    .submit {
+      width: 100%;
 
-    .side-new {
-      margin:
-        8px 16px 16px;
+      height: 53px;
 
-      padding: 14px;
-
-      border:
-        1px solid
-        rgba(139,92,246,.35);
+      border: 0;
 
       border-radius: 15px;
 
-      background:
-        rgba(139,92,246,.08);
+      background: var(--gradient);
 
-      color: white;
+      color: #fff;
+
+      font-size: 16px;
+
+      font-weight: 700;
 
       cursor: pointer;
 
-      font-size: 15px;
+      margin-top: 5px;
+
+      transition:
+        transform 0.15s ease,
+        opacity 0.2s ease;
+    }
+
+    .submit:hover {
+      transform: translateY(-1px);
+    }
+
+    .submit:active {
+      transform: scale(0.985);
+    }
+
+    .submit:disabled {
+      opacity: 0.55;
+
+      cursor: not-allowed;
+
+      transform: none;
+    }
+
+    /* =========================
+       VERIFY
+    ========================== */
+
+    .verify {
+      display: none;
 
       text-align: center;
+
+      padding: 12px 0 4px;
     }
 
-    /* CONVERSATIONS */
-
-    .conversation-list {
-      flex: 1;
-
-      overflow-y: auto;
-
-      padding:
-        0 12px 20px;
+    .verify.show {
+      display: block;
     }
 
-    .conversation-empty {
+    .verify-icon {
+      font-size: 42px;
+
+      margin-bottom: 12px;
+    }
+
+    .verify h2 {
+      font-size: 21px;
+
+      margin-bottom: 9px;
+    }
+
+    .verify p {
       color: var(--muted);
 
+      font-size: 13px;
+
+      line-height: 1.9;
+    }
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    .terms {
       text-align: center;
 
-      padding:
-        40px 20px;
+      color: #68738b;
+
+      font-size: 11px;
 
       line-height: 1.8;
 
-      font-size: 14px;
+      margin-top: 18px;
     }
 
-    .conversation-item {
-      width: 100%;
+    .back {
+      display: block;
 
-      border:
-        1px solid transparent;
+      text-align: center;
 
-      background: transparent;
+      color: #9ea8bb;
 
-      color: white;
+      text-decoration: none;
 
-      border-radius: 14px;
+      font-size: 13px;
 
-      padding:
-        13px 12px;
+      margin-top: 18px;
 
-      margin-bottom: 7px;
-
-      cursor: pointer;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      text-align: right;
-
-      transition: .2s ease;
+      transition: 0.2s;
     }
 
-    .conversation-item:hover {
-      background:
-        rgba(255,255,255,.04);
-
-      border-color:
-        var(--border);
-    }
-
-    .conversation-item.active {
-      background:
-        rgba(139,92,246,.10);
-
-      border-color:
-        rgba(139,92,246,.25);
-    }
-
-    .conversation-title {
-      flex: 1;
-
-      min-width: 0;
-
-      overflow: hidden;
-
-      text-overflow: ellipsis;
-
-      white-space: nowrap;
-
-      font-size: 14px;
-    }
-
-    .delete-conversation {
-      width: 32px;
-      height: 32px;
-
-      flex-shrink: 0;
-
-      border: none;
-
-      border-radius: 9px;
-
-      background: transparent;
-
-      color: #788198;
-
-      cursor: pointer;
-
-      font-size: 16px;
-    }
-
-    .delete-conversation:hover {
-      color: #ff6b81;
-
-      background:
-        rgba(255,107,129,.08);
-    }
-
-    /* LOGOUT */
-
-    .logout-button {
-      margin:
-        0 16px 14px;
-
-      padding: 12px;
-
-      border:
-        1px solid
-        rgba(255,107,129,.22);
-
-      border-radius: 14px;
-
-      background:
-        rgba(255,107,129,.06);
-
-      color: #ff9aaa;
-
-      cursor: pointer;
-
-      font-size: 14px;
-    }
-
-    .logout-button:hover {
-      background:
-        rgba(255,107,129,.10);
+    .back:hover {
+      color: #fff;
     }
 
     /* =========================
        MOBILE
     ========================== */
 
-    @media (max-width: 600px) {
+    @media (max-width: 480px) {
 
-      html,
       body {
-        width: 100%;
-        height: 100%;
-
-        overflow: hidden;
-
-        position: fixed;
-
-        inset: 0;
+        padding: 13px;
       }
 
-      .app {
-        width: 100%;
+      .card {
+        padding: 23px 18px;
 
-        height: 100dvh;
-
-        min-height: 100dvh;
-
-        max-height: 100dvh;
-
-        overflow: hidden;
+        border-radius: 23px;
       }
 
-      header {
-        height: 82px;
+      .logo {
+        width: 69px;
+        height: 69px;
 
-        min-height: 82px;
+        border-radius: 21px;
 
-        padding:
-          12px 16px;
-
-        flex-shrink: 0;
+        font-size: 35px;
       }
 
       .brand {
-        gap: 10px;
+        margin-bottom: 19px;
       }
 
-      .logo {
-        width: 50px;
-        height: 50px;
-
-        border-radius: 15px;
-
-        font-size: 27px;
+      h1 {
+        font-size: 25px;
       }
 
-      .brand-info h1 {
-        font-size: 21px;
-      }
-
-      .status {
+      .subtitle {
         font-size: 13px;
-      }
-
-      .header-actions {
-        gap: 7px;
-      }
-
-      .new-chat {
-        height: 44px;
-
-        padding:
-          0 11px;
-
-        font-size: 12px;
-
-        border-radius: 13px;
-      }
-
-      .menu {
-        width: 44px;
-        height: 44px;
-
-        border-radius: 13px;
-
-        font-size: 23px;
-      }
-
-      .chat {
-        width: 100%;
-
-        padding:
-          20px 12px 20px;
-
-        flex: 1;
-
-        min-height: 0;
-
-        overflow-y: auto;
-
-        overflow-x: hidden;
-
-        overscroll-behavior-y:
-          contain;
-
-        -webkit-overflow-scrolling:
-          touch;
-      }
-
-      .welcome {
-        padding-top: 60px;
-      }
-
-      .welcome-logo {
-        width: 90px;
-        height: 90px;
-
-        font-size: 45px;
-
-        border-radius: 28px;
-      }
-
-      .welcome h2 {
-        font-size: 29px;
-      }
-
-      .welcome p {
-        font-size: 15px;
-      }
-
-      .bubble {
-        max-width: 82%;
-
-        font-size: 15px;
-      }
-
-      .avatar {
-        width: 44px;
-        height: 44px;
-
-        min-width: 44px;
-      }
-
-      .input-area {
-        position: relative;
-
-        width: 100%;
-
-        flex-shrink: 0;
-
-        padding:
-          10px 12px
-          calc(
-            12px +
-            env(safe-area-inset-bottom)
-          );
-
-        background:
-          linear-gradient(
-            transparent,
-            rgba(7,9,18,.98) 25%
-          );
-      }
-
-      .input-box {
-        width: 100%;
-
-        border-radius: 23px;
-
-        margin: 0;
-
-        padding: 8px;
-      }
-
-      .attach-button {
-        width: 45px;
-
-        height: 52px;
-
-        font-size: 22px;
-      }
-
-      textarea {
-        min-height: 52px;
-
-        max-height: 120px;
-
-        padding:
-          13px 8px;
-      }
-
-      .send {
-        width: 52px;
-
-        height: 52px;
-      }
-
-      .side-panel {
-        width: 310px;
-      }
-
-      .message-image {
-        max-width: 260px;
-      }
-    }
-
-    @media (max-width: 380px) {
-
-      header {
-        height: 76px;
-
-        min-height: 76px;
-      }
-
-      .new-chat {
-        padding:
-          0 8px;
-
-        font-size: 11px;
-      }
-
-      .brand-info h1 {
-        font-size: 18px;
-      }
-
-      .status {
-        font-size: 12px;
-      }
-
-      .logo {
-        width: 46px;
-        height: 46px;
-      }
-
-      .menu {
-        width: 42px;
-        height: 42px;
-      }
-
-      .chat {
-        padding:
-          15px 10px 15px;
-      }
-
-      .input-area {
-        padding:
-          8px 10px
-          calc(
-            10px +
-            env(safe-area-inset-bottom)
-          );
-      }
-
-      .input-box {
-        border-radius: 21px;
-      }
-
-      .attach-button {
-        width: 40px;
-      }
-
-      .send {
-        width: 50px;
-        height: 50px;
       }
     }
   </style>
@@ -1393,11 +512,11 @@
 
 <body>
 
-<div class="app">
+  <main class="card">
 
-  <!-- HEADER -->
-
-  <header>
+    <!-- =========================
+         BRAND
+    ========================== -->
 
     <div class="brand">
 
@@ -1405,2324 +524,718 @@
         ت
       </div>
 
-      <div class="brand-info">
+      <h1>
+        التطور چات
+      </h1>
 
-        <h1>
-          التطور چات
-        </h1>
+      <p class="subtitle">
+        سجّل دخولك حتى تبدأ محادثاتك مع المساعد الذكي.
+      </p>
 
-        <div
-          class="status"
-          id="headerStatus"
+    </div>
+
+
+    <!-- =========================
+         MESSAGE
+    ========================== -->
+
+    <div
+      id="message"
+      class="message"
+      role="alert"
+    ></div>
+
+
+    <!-- =========================
+         AUTH SECTION
+    ========================== -->
+
+    <section id="authSection">
+
+      <div class="tabs">
+
+        <button
+          class="tab active"
+          id="loginTab"
+          type="button"
         >
-          ● متصل الآن
+          تسجيل الدخول
+        </button>
+
+        <button
+          class="tab"
+          id="signupTab"
+          type="button"
+        >
+          إنشاء حساب
+        </button>
+
+      </div>
+
+
+      <form
+        class="form"
+        id="authForm"
+        novalidate
+      >
+
+        <!-- EMAIL -->
+
+        <div class="field">
+
+          <label for="email">
+            البريد الإلكتروني
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            required
+            placeholder="example@email.com"
+          >
+
         </div>
 
-      </div>
 
-    </div>
+        <!-- PASSWORD -->
 
-    <div class="header-actions">
+        <div class="field">
 
-      <button
-        type="button"
-        class="new-chat"
-        id="headerNewChat"
-      >
-        + محادثة جديدة
-      </button>
+          <label for="password">
+            كلمة المرور
+          </label>
 
-      <button
-        type="button"
-        class="menu"
-        id="menuButton"
-        aria-label="القائمة"
-      >
-        ☰
-      </button>
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            minlength="6"
+            required
+            placeholder="••••••••"
+          >
 
-    </div>
-
-  </header>
-
-
-  <!-- CHAT -->
-
-  <main
-    class="chat"
-    id="chat"
-  ></main>
-
-
-  <!-- INPUT -->
-
-  <div class="input-area">
-
-    <div
-      class="attachment-preview"
-      id="attachmentPreview"
-    >
-
-      <img
-        class="attachment-image"
-        id="attachmentImage"
-        alt=""
-      >
-
-      <div
-        class="attachment-icon"
-        id="attachmentIcon"
-      >
-        📎
-      </div>
-
-      <div class="attachment-info">
-
-        <div
-          class="attachment-name"
-          id="attachmentName"
-        ></div>
-
-        <div
-          class="attachment-size"
-          id="attachmentSize"
-        ></div>
-
-      </div>
-
-      <button
-        type="button"
-        class="remove-attachment"
-        id="removeAttachmentButton"
-        aria-label="إزالة المرفق"
-      >
-        ×
-      </button>
-
-    </div>
-
-
-    <div class="input-box">
-
-      <input
-        type="file"
-        id="fileInput"
-        accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.csv"
-      >
-
-      <button
-        type="button"
-        class="attach-button"
-        id="attachButton"
-        aria-label="إضافة مرفق"
-        title="إضافة مرفق"
-      >
-        📎
-      </button>
-
-      <textarea
-        id="messageInput"
-        placeholder="اكتب رسالتك هنا..."
-        rows="1"
-      ></textarea>
-
-      <button
-        type="button"
-        class="send"
-        id="sendButton"
-        aria-label="إرسال"
-      >
-        ↑
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- SIDE MENU -->
-
-<div
-  class="side-overlay"
-  id="sideOverlay"
-></div>
-
-
-<aside
-  class="side-panel"
-  id="sidePanel"
->
-
-  <div class="side-header">
-
-    <h3>
-      محادثاتي
-    </h3>
-
-    <button
-      type="button"
-      class="close-menu"
-      id="closeMenu"
-    >
-      ×
-    </button>
-
-  </div>
-
-
-  <!-- ACCOUNT -->
-
-  <div class="account-box">
-
-    <div
-      class="account-avatar"
-      id="accountAvatar"
-    >
-      ز
-    </div>
-
-    <div class="account-info">
-
-      <div class="account-label">
-        الحالة
-      </div>
-
-      <div
-        class="account-email"
-        id="accountEmail"
-      >
-        مستخدم زائر
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- LOGIN -->
-
-  <button
-    type="button"
-    class="login-button"
-    id="loginButton"
-  >
-    🔐 تسجيل الدخول
-  </button>
-
-
-  <!-- NEW CHAT -->
-
-  <button
-    type="button"
-    class="side-new"
-    id="sideNewChat"
-  >
-    ＋ محادثة جديدة
-  </button>
-
-
-  <!-- LOGOUT -->
-
-  <button
-    type="button"
-    class="logout-button"
-    id="logoutButton"
-    style="display:none;"
-  >
-    ↪ تسجيل الخروج
-  </button>
-
-
-  <!-- CONVERSATIONS -->
-
-  <div
-    class="conversation-list"
-    id="conversationList"
-  ></div>
-
-</aside>
-
-
-<script>
-
-  /* =====================================================
-     ELEMENTS
-  ===================================================== */
-
-  const chat =
-    document.getElementById("chat");
-
-  const input =
-    document.getElementById(
-      "messageInput"
-    );
-
-  const sendButton =
-    document.getElementById(
-      "sendButton"
-    );
-
-  const attachButton =
-    document.getElementById(
-      "attachButton"
-    );
-
-  const fileInput =
-    document.getElementById(
-      "fileInput"
-    );
-
-  const attachmentPreview =
-    document.getElementById(
-      "attachmentPreview"
-    );
-
-  const attachmentName =
-    document.getElementById(
-      "attachmentName"
-    );
-
-  const attachmentSize =
-    document.getElementById(
-      "attachmentSize"
-    );
-
-  const attachmentImage =
-    document.getElementById(
-      "attachmentImage"
-    );
-
-  const attachmentIcon =
-    document.getElementById(
-      "attachmentIcon"
-    );
-
-  const removeAttachmentButton =
-    document.getElementById(
-      "removeAttachmentButton"
-    );
-
-  const sidePanel =
-    document.getElementById(
-      "sidePanel"
-    );
-
-  const sideOverlay =
-    document.getElementById(
-      "sideOverlay"
-    );
-
-  const closeMenuButton =
-    document.getElementById(
-      "closeMenu"
-    );
-
-  const sideNewChat =
-    document.getElementById(
-      "sideNewChat"
-    );
-
-  const conversationList =
-    document.getElementById(
-      "conversationList"
-    );
-
-  const headerNewChat =
-    document.getElementById(
-      "headerNewChat"
-    );
-
-  const menuButton =
-    document.getElementById(
-      "menuButton"
-    );
-
-  const accountEmail =
-    document.getElementById(
-      "accountEmail"
-    );
-
-  const accountAvatar =
-    document.getElementById(
-      "accountAvatar"
-    );
-
-  const logoutButton =
-    document.getElementById(
-      "logoutButton"
-    );
-
-  const loginButton =
-    document.getElementById(
-      "loginButton"
-    );
-
-  const headerStatus =
-    document.getElementById(
-      "headerStatus"
-    );
-
-
-  /* =====================================================
-     STORAGE
-  ===================================================== */
-
-  let STORAGE_KEY = "";
-  let ACTIVE_KEY = "";
-
-  let conversations = [];
-
-  let activeConversationId =
-    null;
-
-
-  function loadUserStorage() {
-
-    const userKey =
-      currentUser?.id ||
-      "guest";
-
-    STORAGE_KEY =
-      `altatawur_conversations_${userKey}`;
-
-    ACTIVE_KEY =
-      `altatawur_active_conversation_${userKey}`;
-
-    try {
-
-      conversations =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
-
-      if (
-        !Array.isArray(
-          conversations
-        )
-      ) {
-        conversations = [];
-      }
-
-    } catch (error) {
-
-      console.error(
-        "Storage read error:",
-        error
-      );
-
-      conversations = [];
-    }
-
-    activeConversationId =
-      localStorage.getItem(
-        ACTIVE_KEY
-      ) || null;
-  }
-
-
-  /* =====================================================
-     STATE
-  ===================================================== */
-
-  let selectedFile = null;
-
-  let selectedFileData = null;
-
-  let isSending = false;
-
-
-  /* =====================================================
-     ACCOUNT UI
-  ===================================================== */
-
-  function updateAccountUI() {
-
-    if (currentUser) {
-
-      accountEmail.textContent =
-        currentUser.email ||
-        "مستخدم";
-
-      accountAvatar.textContent =
-        "أ";
-
-      loginButton.style.display =
-        "none";
-
-      logoutButton.style.display =
-        "block";
-
-      headerStatus.textContent =
-        "● متصل الآن";
-
-    } else {
-
-      accountEmail.textContent =
-        "مستخدم زائر";
-
-      accountAvatar.textContent =
-        "ز";
-
-      loginButton.style.display =
-        "block";
-
-      logoutButton.style.display =
-        "none";
-
-      headerStatus.textContent =
-        "● متصل الآن";
-    }
-  }
-
-
-  /* =====================================================
-     SAVE
-  ===================================================== */
-
-  function saveConversations() {
-
-    try {
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(
-          conversations
-        )
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Storage Error:",
-        error
-      );
-
-      alert(
-        "تعذر حفظ المحادثة محلياً. قد تكون مساحة التخزين ممتلئة."
-      );
-    }
-  }
-
-
-  function saveActiveId() {
-
-    if (
-      activeConversationId
-    ) {
-
-      localStorage.setItem(
-        ACTIVE_KEY,
-        activeConversationId
-      );
-
-    } else {
-
-      localStorage.removeItem(
-        ACTIVE_KEY
-      );
-    }
-  }
-
-
-  /* =====================================================
-     ID
-  ===================================================== */
-
-  function createId() {
-
-    return (
-      Date.now().toString() +
-      Math.random()
-        .toString(36)
-        .slice(2)
-    );
-  }
-
-
-  /* =====================================================
-     ACTIVE CONVERSATION
-  ===================================================== */
-
-  function getActiveConversation() {
-
-    return conversations.find(
-      conversation =>
-        conversation.id ===
-        activeConversationId
-    );
-  }
-
-
-  /* =====================================================
-     WELCOME
-  ===================================================== */
-
-  function showWelcome() {
-
-    chat.innerHTML = `
-
-      <section class="welcome">
-
-        <div class="welcome-logo">
-          ت
         </div>
 
-        <h2>
-          أهلاً بك في
-          <span>
-            التطور چات
-          </span>
-        </h2>
 
-        <p>
-          مساعدك الذكي للإجابة عن الأسئلة،
-          شرح المواضيع، كتابة النصوص
-          وتوليد الأفكار.
-        </p>
+        <!-- SUBMIT -->
 
-      </section>
+        <button
+          class="submit"
+          id="submitButton"
+          type="submit"
+        >
+          تسجيل الدخول
+        </button>
 
-    `;
-  }
+      </form>
+
+    </section>
 
 
-  /* =====================================================
-     SCROLL
-  ===================================================== */
+    <!-- =========================
+         VERIFY SECTION
+    ========================== -->
 
-  function scrollChatToBottom() {
+    <section
+      class="verify"
+      id="verifySection"
+    >
 
-    requestAnimationFrame(
-      function() {
+      <div class="verify-icon">
+        📩
+      </div>
 
-        chat.scrollTo({
-          top:
-            chat.scrollHeight,
-          behavior:
-            "smooth"
-        });
+      <h2>
+        تحقق من بريدك الإلكتروني
+      </h2>
 
-      }
-    );
-  }
+      <p>
+        أرسلنا لك رسالة تأكيد.
+        افتح بريدك واضغط رابط التأكيد،
+        وبعدها ارجع للموقع وسجّل دخولك.
+      </p>
+
+      <button
+        class="submit"
+        id="backToLogin"
+        type="button"
+        style="margin-top:18px;"
+      >
+        العودة لتسجيل الدخول
+      </button>
+
+    </section>
 
 
-  /* =====================================================
-     ADD MESSAGE
-  ===================================================== */
+    <!-- =========================
+         FOOTER
+    ========================== -->
 
-  function addMessage(
-    role,
-    text,
-    attachment = null
-  ) {
+    <p class="terms">
+      باستخدامك التطور چات،
+      أنت توافق على استخدام الخدمة وفق إعدادات المنصة.
+    </p>
+
+    <a
+      class="back"
+      href="/"
+    >
+      العودة إلى التطور چات
+    </a>
+
+  </main>
+
+
+  <script>
+
+    /* =========================================
+       SUPABASE CONFIG
+    ========================================== */
+
+    const SUPABASE_URL =
+      "https://wxsricscchalzvazdbzd.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
+
+
+    /* =========================================
+       CREATE SUPABASE CLIENT
+    ========================================== */
+
+    const supabase =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    /* =========================================
+       ELEMENTS
+    ========================================== */
+
+    const loginTab =
+      document.getElementById("loginTab");
+
+    const signupTab =
+      document.getElementById("signupTab");
+
+    const authForm =
+      document.getElementById("authForm");
+
+    const emailInput =
+      document.getElementById("email");
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const submitButton =
+      document.getElementById("submitButton");
 
     const message =
-      document.createElement(
-        "div"
-      );
+      document.getElementById("message");
 
-    message.className =
-      `message ${role}`;
+    const authSection =
+      document.getElementById("authSection");
 
+    const verifySection =
+      document.getElementById("verifySection");
 
-    const avatar =
-      document.createElement(
-        "div"
-      );
-
-    avatar.className =
-      "avatar";
-
-    avatar.textContent =
-      role === "user"
-        ? "أ"
-        : "ت";
+    const backToLogin =
+      document.getElementById("backToLogin");
 
 
-    const bubble =
-      document.createElement(
-        "div"
-      );
+    /* =========================================
+       STATE
+    ========================================== */
 
-    bubble.className =
-      "bubble";
+    let mode = "login";
 
 
-    if (
-      attachment &&
-      attachment.type === "image" &&
-      attachment.data
+    /* =========================================
+       MESSAGE
+    ========================================== */
+
+    function showMessage(
+      text,
+      type = "error"
     ) {
 
-      const img =
-        document.createElement(
-          "img"
-        );
+      message.textContent = text;
 
-      img.className =
-        "message-image";
+      message.className =
+        `message show ${type}`;
+    }
 
-      img.src =
-        attachment.data;
 
-      img.alt =
-        attachment.name ||
-        "صورة";
+    function clearMessage() {
 
-      bubble.appendChild(
-        img
+      message.textContent = "";
+
+      message.className =
+        "message";
+    }
+
+
+    /* =========================================
+       CHANGE LOGIN / SIGNUP MODE
+    ========================================== */
+
+    function setMode(nextMode) {
+
+      mode = nextMode;
+
+      clearMessage();
+
+      loginTab.classList.toggle(
+        "active",
+        mode === "login"
       );
-    }
 
-
-    if (
-      attachment &&
-      attachment.type !== "image"
-    ) {
-
-      const fileBox =
-        document.createElement(
-          "div"
-        );
-
-      fileBox.className =
-        "message-file";
-
-      fileBox.textContent =
-        `📎 ${
-          attachment.name ||
-          "ملف مرفق"
-        }`;
-
-      bubble.appendChild(
-        fileBox
+      signupTab.classList.toggle(
+        "active",
+        mode === "signup"
       );
+
+      submitButton.textContent =
+        mode === "login"
+          ? "تسجيل الدخول"
+          : "إنشاء الحساب";
+
+      passwordInput.autocomplete =
+        mode === "login"
+          ? "current-password"
+          : "new-password";
     }
 
 
-    if (text) {
-
-      const textElement =
-        document.createElement(
-          "div"
-        );
-
-      textElement.textContent =
-        text;
-
-      bubble.appendChild(
-        textElement
-      );
-    }
-
-
-    message.appendChild(
-      avatar
-    );
-
-    message.appendChild(
-      bubble
-    );
-
-    chat.appendChild(
-      message
-    );
-
-    scrollChatToBottom();
-
-    return message;
-  }
-
-
-  /* =====================================================
-     RENDER
-  ===================================================== */
-
-  function renderConversation() {
-
-    const conversation =
-      getActiveConversation();
-
-    if (
-      !conversation ||
-      !Array.isArray(
-        conversation.messages
-      ) ||
-      !conversation.messages.length
-    ) {
-
-      showWelcome();
-
-      return;
-    }
-
-
-    chat.innerHTML = "";
-
-
-    conversation.messages.forEach(
-      message => {
-
-        addMessage(
-          message.role,
-          message.content || "",
-          message.attachment ||
-            null
-        );
-
+    loginTab.addEventListener(
+      "click",
+      () => {
+        setMode("login");
       }
     );
 
 
-    requestAnimationFrame(
-      function() {
-
-        chat.scrollTop =
-          chat.scrollHeight;
-
+    signupTab.addEventListener(
+      "click",
+      () => {
+        setMode("signup");
       }
     );
-  }
 
 
-  /* =====================================================
-     CONVERSATION LIST
-  ===================================================== */
+    /* =========================================
+       BACK TO LOGIN
+    ========================================== */
 
-  function renderConversationList() {
+    backToLogin.addEventListener(
+      "click",
+      () => {
 
-    conversationList.innerHTML =
-      "";
-
-
-    if (!conversations.length) {
-
-      conversationList.innerHTML = `
-
-        <div class="conversation-empty">
-
-          ما عندك محادثات محفوظة حالياً.
-
-          <br>
-
-          ابدأ محادثة جديدة
-          من الزر أعلاه.
-
-        </div>
-
-      `;
-
-      return;
-    }
-
-
-    conversations
-      .slice()
-      .reverse()
-      .forEach(
-        conversation => {
-
-          const item =
-            document.createElement(
-              "div"
-            );
-
-          item.className =
-            "conversation-item" +
-            (
-              conversation.id ===
-              activeConversationId
-                ? " active"
-                : ""
-            );
-
-
-          const title =
-            document.createElement(
-              "div"
-            );
-
-          title.className =
-            "conversation-title";
-
-          title.textContent =
-            conversation.title ||
-            "محادثة جديدة";
-
-
-          const deleteButton =
-            document.createElement(
-              "button"
-            );
-
-          deleteButton.type =
-            "button";
-
-          deleteButton.className =
-            "delete-conversation";
-
-          deleteButton.textContent =
-            "🗑";
-
-
-          deleteButton.onclick =
-            function(event) {
-
-              event.stopPropagation();
-
-              deleteConversation(
-                conversation.id
-              );
-
-            };
-
-
-          item.appendChild(
-            title
-          );
-
-          item.appendChild(
-            deleteButton
-          );
-
-
-          item.onclick =
-            function() {
-
-              openConversation(
-                conversation.id
-              );
-
-            };
-
-
-          conversationList.appendChild(
-            item
-          );
-
-        }
-      );
-  }
-
-
-  /* =====================================================
-     OPEN
-  ===================================================== */
-
-  function openConversation(id) {
-
-    activeConversationId =
-      id;
-
-    saveActiveId();
-
-    renderConversation();
-
-    renderConversationList();
-
-    closeMenu();
-
-    input.focus();
-  }
-
-
-  /* =====================================================
-     NEW CHAT
-  ===================================================== */
-
-  function newChat() {
-
-    const newConversation = {
-
-      id:
-        createId(),
-
-      title:
-        "محادثة جديدة",
-
-      messages:
-        [],
-
-      createdAt:
-        Date.now()
-
-    };
-
-
-    conversations.push(
-      newConversation
-    );
-
-
-    activeConversationId =
-      newConversation.id;
-
-
-    saveConversations();
-
-    saveActiveId();
-
-    renderConversation();
-
-    renderConversationList();
-
-
-    input.value =
-      "";
-
-    input.style.height =
-      "52px";
-
-
-    removeAttachment();
-
-    input.focus();
-  }
-
-
-  /* =====================================================
-     DELETE
-  ===================================================== */
-
-  function deleteConversation(id) {
-
-    conversations =
-      conversations.filter(
-        conversation =>
-          conversation.id !==
-          id
-      );
-
-
-    if (
-      activeConversationId ===
-      id
-    ) {
-
-      if (
-        conversations.length
-      ) {
-
-        activeConversationId =
-          conversations[
-            conversations.length - 1
-          ].id;
-
-      } else {
-
-        activeConversationId =
-          null;
-      }
-    }
-
-
-    saveConversations();
-
-    saveActiveId();
-
-    renderConversation();
-
-    renderConversationList();
-  }
-
-
-  /* =====================================================
-     TYPING
-  ===================================================== */
-
-  function addTyping() {
-
-    removeTyping();
-
-
-    const message =
-      document.createElement(
-        "div"
-      );
-
-    message.className =
-      "message assistant";
-
-    message.id =
-      "typingMessage";
-
-
-    const avatar =
-      document.createElement(
-        "div"
-      );
-
-    avatar.className =
-      "avatar";
-
-    avatar.textContent =
-      "ت";
-
-
-    const bubble =
-      document.createElement(
-        "div"
-      );
-
-    bubble.className =
-      "bubble";
-
-
-    bubble.innerHTML = `
-
-      <div class="typing">
-
-        <span></span>
-        <span></span>
-        <span></span>
-
-      </div>
-
-    `;
-
-
-    message.appendChild(
-      avatar
-    );
-
-    message.appendChild(
-      bubble
-    );
-
-    chat.appendChild(
-      message
-    );
-
-    scrollChatToBottom();
-  }
-
-
-  function removeTyping() {
-
-    const typing =
-      document.getElementById(
-        "typingMessage"
-      );
-
-    if (typing) {
-      typing.remove();
-    }
-  }
-
-
-  /* =====================================================
-     ATTACHMENT
-  ===================================================== */
-
-  attachButton.addEventListener(
-    "click",
-    function(event) {
-
-      event.preventDefault();
-
-      fileInput.click();
-
-    }
-  );
-
-
-  fileInput.addEventListener(
-    "change",
-    handleFileSelect
-  );
-
-
-  removeAttachmentButton.addEventListener(
-    "click",
-    removeAttachment
-  );
-
-
-  function formatFileSize(bytes) {
-
-    if (bytes < 1024) {
-      return bytes + " B";
-    }
-
-    if (
-      bytes <
-      1024 * 1024
-    ) {
-
-      return (
-        (
-          bytes / 1024
-        ).toFixed(1) +
-        " KB"
-      );
-
-    }
-
-    if (
-      bytes <
-      1024 *
-      1024 *
-      1024
-    ) {
-
-      return (
-        (
-          bytes /
-          (1024 * 1024)
-        ).toFixed(1) +
-        " MB"
-      );
-
-    }
-
-    return (
-      (
-        bytes /
-        (1024 * 1024 * 1024)
-      ).toFixed(1) +
-      " GB"
-    );
-  }
-
-
-  function readFileAsDataURL(file) {
-
-    return new Promise(
-      (
-        resolve,
-        reject
-      ) => {
-
-        const reader =
-          new FileReader();
-
-
-        reader.onload =
-          () =>
-            resolve(
-              reader.result
-            );
-
-
-        reader.onerror =
-          () =>
-            reject(
-              new Error(
-                "تعذر قراءة الملف."
-              )
-            );
-
-
-        reader.readAsDataURL(
-          file
+        verifySection.classList.remove(
+          "show"
         );
 
-      }
-    );
-  }
-
-
-  async function resizeImage(
-    file,
-    maxSize = 1600,
-    quality = 0.82
-  ) {
-
-    const dataUrl =
-      await readFileAsDataURL(
-        file
-      );
-
-
-    return new Promise(
-      (
-        resolve,
-        reject
-      ) => {
-
-        const img =
-          new Image();
-
-
-        img.onload =
-          function() {
-
-            let width =
-              img.width;
-
-            let height =
-              img.height;
-
-
-            if (
-              width > maxSize ||
-              height > maxSize
-            ) {
-
-              const ratio =
-                Math.min(
-                  maxSize /
-                    width,
-                  maxSize /
-                    height
-                );
-
-
-              width =
-                Math.round(
-                  width *
-                  ratio
-                );
-
-
-              height =
-                Math.round(
-                  height *
-                  ratio
-                );
-            }
-
-
-            const canvas =
-              document.createElement(
-                "canvas"
-              );
-
-
-            canvas.width =
-              width;
-
-            canvas.height =
-              height;
-
-
-            const ctx =
-              canvas.getContext(
-                "2d"
-              );
-
-
-            ctx.drawImage(
-              img,
-              0,
-              0,
-              width,
-              height
-            );
-
-
-            resolve(
-              canvas.toDataURL(
-                "image/jpeg",
-                quality
-              )
-            );
-
-          };
-
-
-        img.onerror =
-          () =>
-            reject(
-              new Error(
-                "تعذر معالجة الصورة."
-              )
-            );
-
-
-        img.src =
-          dataUrl;
-
-      }
-    );
-  }
-
-
-  async function handleFileSelect(event) {
-
-    const file =
-      event.target.files[0];
-
-
-    if (!file) {
-      return;
-    }
-
-
-    if (
-      file.size >
-      20 * 1024 * 1024
-    ) {
-
-      alert(
-        "حجم الملف أكبر من 20MB."
-      );
-
-      removeAttachment();
-
-      return;
-    }
-
-
-    selectedFile =
-      file;
-
-
-    attachmentName.textContent =
-      file.name;
-
-
-    attachmentSize.textContent =
-      formatFileSize(
-        file.size
-      );
-
-
-    attachmentPreview.classList.add(
-      "active"
-    );
-
-
-    if (
-      file.type.startsWith(
-        "image/"
-      )
-    ) {
-
-      try {
-
-        const compressedImage =
-          await resizeImage(
-            file
-          );
-
-
-        selectedFileData = {
-
-          type:
-            "image",
-
-          name:
-            file.name,
-
-          mime:
-            "image/jpeg",
-
-          data:
-            compressedImage
-
-        };
-
-
-        attachmentImage.src =
-          compressedImage;
-
-
-        attachmentImage.style.display =
+        authSection.style.display =
           "block";
 
+        setMode("login");
 
-        attachmentIcon.style.display =
-          "none";
+        emailInput.focus();
+      }
+    );
 
 
-      } catch (error) {
+    /* =========================================
+       VALIDATION
+    ========================================== */
 
-        console.error(
-          error
+    function validateForm() {
+
+      const email =
+        emailInput.value.trim();
+
+      const password =
+        passwordInput.value;
+
+
+      if (!email) {
+
+        showMessage(
+          "اكتب البريد الإلكتروني."
         );
 
-        alert(
-          "تعذر تجهيز الصورة."
-        );
+        emailInput.focus();
 
-        removeAttachment();
+        return false;
       }
 
 
-    } else {
+      if (!emailInput.checkValidity()) {
 
-      try {
-
-        const data =
-          await readFileAsDataURL(
-            file
-          );
-
-
-        selectedFileData = {
-
-          type:
-            "file",
-
-          name:
-            file.name,
-
-          mime:
-            file.type ||
-            "application/octet-stream",
-
-          data:
-            data
-
-        };
-
-
-      } catch (error) {
-
-        console.error(
-          error
+        showMessage(
+          "اكتب بريد إلكتروني صحيح."
         );
 
-        alert(
-          "تعذر قراءة الملف."
-        );
+        emailInput.focus();
 
-        removeAttachment();
-
-        return;
+        return false;
       }
 
 
-      attachmentImage.style.display =
-        "none";
+      if (!password) {
 
-
-      attachmentIcon.style.display =
-        "flex";
-
-
-      attachmentIcon.textContent =
-        file.type ===
-        "application/pdf"
-          ? "📄"
-          : "📎";
-    }
-  }
-
-
-  function removeAttachment() {
-
-    selectedFile =
-      null;
-
-    selectedFileData =
-      null;
-
-
-    fileInput.value =
-      "";
-
-
-    attachmentPreview.classList.remove(
-      "active"
-    );
-
-
-    attachmentImage.src =
-      "";
-
-
-    attachmentImage.style.display =
-      "none";
-
-
-    attachmentIcon.style.display =
-      "flex";
-
-
-    attachmentIcon.textContent =
-      "📎";
-
-
-    attachmentName.textContent =
-      "";
-
-
-    attachmentSize.textContent =
-      "";
-  }
-
-
-  /* =====================================================
-     SEND MESSAGE
-  ===================================================== */
-
-  async function sendMessage() {
-
-    if (isSending) {
-      return;
-    }
-
-
-    /*
-      إذا المستخدم زائر:
-      نحوله إلى صفحة تسجيل الدخول
-    */
-
-    if (!currentSession) {
-
-      window.location.href =
-        "/login.html";
-
-      return;
-    }
-
-
-    const text =
-      input.value.trim();
-
-
-    if (
-      !text &&
-      !selectedFileData
-    ) {
-      return;
-    }
-
-
-    if (
-      !activeConversationId
-    ) {
-
-      const newConversation = {
-
-        id:
-          createId(),
-
-        title:
-          text
-            ? text.slice(
-                0,
-                35
-              )
-            : (
-              selectedFile
-                ? selectedFile.name.slice(
-                    0,
-                    35
-                  )
-                : "محادثة جديدة"
-            ),
-
-        messages:
-          [],
-
-        createdAt:
-          Date.now()
-
-      };
-
-
-      conversations.push(
-        newConversation
-      );
-
-
-      activeConversationId =
-        newConversation.id;
-
-
-      saveActiveId();
-    }
-
-
-    const conversation =
-      getActiveConversation();
-
-
-    if (!conversation) {
-      return;
-    }
-
-
-    const messageText =
-      text;
-
-
-    const attachment =
-      selectedFileData
-        ? {
-            ...selectedFileData
-          }
-        : null;
-
-
-    conversation.messages.push({
-
-      role:
-        "user",
-
-      content:
-        messageText,
-
-      attachment:
-        attachment
-
-    });
-
-
-    if (
-      conversation.messages.length ===
-      1
-    ) {
-
-      const titleText =
-        messageText ||
-        (
-          attachment
-            ? attachment.name
-            : "محادثة جديدة"
+        showMessage(
+          "اكتب كلمة المرور."
         );
 
+        passwordInput.focus();
 
-      conversation.title =
-        titleText.length > 35
-          ? titleText.slice(
-              0,
-              35
-            ) + "..."
-          : titleText;
-    }
-
-
-    saveConversations();
-
-    renderConversationList();
-
-
-    addMessage(
-      "user",
-      messageText,
-      attachment
-    );
-
-
-    input.value =
-      "";
-
-    input.style.height =
-      "52px";
-
-
-    removeAttachment();
-
-
-    isSending =
-      true;
-
-
-    sendButton.disabled =
-      true;
-
-
-    sendButton.textContent =
-      "…";
-
-
-    addTyping();
-
-
-    try {
-
-      const apiMessages =
-        conversation.messages
-          .slice(-30)
-          .map(
-            message => {
-
-              if (
-                message.attachment &&
-                message.attachment.type ===
-                  "image" &&
-                message.attachment.data
-              ) {
-
-                const content = [];
-
-
-                if (
-                  message.content
-                ) {
-
-                  content.push({
-
-                    type:
-                      "input_text",
-
-                    text:
-                      message.content
-
-                  });
-                }
-
-
-                content.push({
-
-                  type:
-                    "input_image",
-
-                  image_url:
-                    message.attachment.data
-
-                });
-
-
-                return {
-
-                  role:
-                    message.role,
-
-                  content:
-                    content
-
-                };
-              }
-
-
-              return {
-
-                role:
-                  message.role,
-
-                content:
-                  String(
-                    message.content ||
-                    ""
-                  )
-
-              };
-            }
-          );
-
-
-      const response =
-        await fetch(
-          "/api/chat",
-          {
-
-            method:
-              "POST",
-
-            headers: {
-
-              "Content-Type":
-                "application/json",
-
-              "Authorization":
-                `Bearer ${currentSession.access_token}`
-
-            },
-
-            body:
-              JSON.stringify({
-
-                messages:
-                  apiMessages
-
-              })
-
-          }
-        );
-
-
-      let data = {};
-
-
-      try {
-
-        data =
-          await response.json();
-
-      } catch (jsonError) {
-
-        console.error(
-          "JSON Error:",
-          jsonError
-        );
+        return false;
       }
 
 
-      removeTyping();
+      if (password.length < 6) {
 
-
-      if (
-        response.status === 401
-      ) {
-
-        await supabase.auth.signOut();
-
-        window.location.href =
-          "/login.html";
-
-        return;
-      }
-
-
-      if (!response.ok) {
-
-        throw new Error(
-
-          data.error ||
-          `خطأ من الخادم (${response.status})`
-
+        showMessage(
+          "كلمة المرور يجب أن تكون 6 أحرف على الأقل."
         );
+
+        passwordInput.focus();
+
+        return false;
       }
 
 
-      const reply =
-        data.reply ||
-        "ما حصلت جواب من الذكاء الاصطناعي.";
-
-
-      conversation.messages.push({
-
-        role:
-          "assistant",
-
-        content:
-          reply
-
-      });
-
-
-      saveConversations();
-
-
-      addMessage(
-        "assistant",
-        reply
-      );
-
-
-    } catch (error) {
-
-      removeTyping();
-
-
-      console.error(
-        "Send Error:",
-        error
-      );
-
-
-      addMessage(
-
-        "assistant",
-
-        "عذراً، صار خطأ بالاتصال بالخادم.\n\n" +
-        (
-          error?.message ||
-          "حاول مرة ثانية."
-        )
-
-      );
-
-
-    } finally {
-
-      isSending =
-        false;
-
-      sendButton.disabled =
-        false;
-
-      sendButton.textContent =
-        "↑";
-
-      input.focus();
-
-    }
-  }
-
-
-  /* =====================================================
-     SEND BUTTON
-  ===================================================== */
-
-  sendButton.addEventListener(
-    "click",
-    function(event) {
-
-      event.preventDefault();
-
-      sendMessage();
-
-    }
-  );
-
-
-  /* =====================================================
-     MENU
-  ===================================================== */
-
-  function toggleMenu() {
-
-    sidePanel.classList.toggle(
-      "active"
-    );
-
-    sideOverlay.classList.toggle(
-      "active"
-    );
-  }
-
-
-  function closeMenu() {
-
-    sidePanel.classList.remove(
-      "active"
-    );
-
-    sideOverlay.classList.remove(
-      "active"
-    );
-  }
-
-
-  menuButton.addEventListener(
-    "click",
-    toggleMenu
-  );
-
-
-  sideOverlay.addEventListener(
-    "click",
-    closeMenu
-  );
-
-
-  closeMenuButton.addEventListener(
-    "click",
-    closeMenu
-  );
-
-
-  sideNewChat.addEventListener(
-    "click",
-    function() {
-
-      newChat();
-
-      closeMenu();
-
-    }
-  );
-
-
-  headerNewChat.addEventListener(
-    "click",
-    newChat
-  );
-
-
-  /* =====================================================
-     LOGIN BUTTON
-  ===================================================== */
-
-  loginButton.addEventListener(
-    "click",
-    function() {
-
-      window.location.href =
-        "/login.html";
-
-    }
-  );
-
-
-  /* =====================================================
-     LOGOUT
-  ===================================================== */
-
-  async function logout() {
-
-    try {
-
-      await supabase.auth.signOut();
-
-    } catch (error) {
-
-      console.error(
-        "Logout Error:",
-        error
-      );
-
+      return true;
     }
 
-    currentSession =
-      null;
 
-    currentUser =
-      null;
+    /* =========================================
+       AUTH FORM
+    ========================================== */
 
-    updateAccountUI();
-
-    window.location.href =
-      "/login.html";
-  }
-
-
-  logoutButton.addEventListener(
-    "click",
-    logout
-  );
-
-
-  /* =====================================================
-     TEXTAREA
-  ===================================================== */
-
-  input.addEventListener(
-    "input",
-    function() {
-
-      this.style.height =
-        "52px";
-
-      this.style.height =
-        Math.min(
-          this.scrollHeight,
-          150
-        ) + "px";
-
-    }
-  );
-
-
-  /* =====================================================
-     ENTER
-  ===================================================== */
-
-  input.addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key === "Enter" &&
-        !event.shiftKey
-      ) {
+    authForm.addEventListener(
+      "submit",
+      async function(event) {
 
         event.preventDefault();
 
-        sendMessage();
-
-      }
-
-    }
-  );
+        clearMessage();
 
 
-  /* =====================================================
-     KEYBOARD / MOBILE
-  ===================================================== */
-
-  if (
-    window.visualViewport
-  ) {
-
-    window.visualViewport.addEventListener(
-      "resize",
-      function() {
-
-        requestAnimationFrame(
-          function() {
-
-            const active =
-              document.activeElement;
+        if (!validateForm()) {
+          return;
+        }
 
 
-            if (
-              active === input
-            ) {
+        const email =
+          emailInput.value.trim();
 
-              setTimeout(
-                function() {
+        const password =
+          passwordInput.value;
 
-                  scrollChatToBottom();
 
-                },
-                50
-              );
+        submitButton.disabled =
+          true;
 
+
+        submitButton.textContent =
+          mode === "login"
+            ? "جاري تسجيل الدخول..."
+            : "جاري إنشاء الحساب...";
+
+
+        try {
+
+          /* =========================
+             SIGN UP
+          ========================== */
+
+          if (mode === "signup") {
+
+            const {
+              data,
+              error
+            } =
+              await supabase.auth.signUp({
+                email: email,
+                password: password,
+
+                options: {
+                  emailRedirectTo:
+                    `${window.location.origin}/login.html`
+                }
+              });
+
+
+            if (error) {
+              throw error;
             }
 
+
+            /*
+             إذا Supabase أنشأ جلسة مباشرة
+             ندخل للموقع.
+            */
+
+            if (data && data.session) {
+
+              window.location.replace("/");
+
+              return;
+            }
+
+
+            /*
+             إذا يحتاج تأكيد البريد
+            */
+
+            authSection.style.display =
+              "none";
+
+            verifySection.classList.add(
+              "show"
+            );
+
+            showMessage(
+              "تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط التأكيد.",
+              "success"
+            );
+
+            return;
           }
-        );
+
+
+          /* =========================
+             LOGIN
+          ========================== */
+
+          const {
+            data,
+            error
+          } =
+            await supabase.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          /*
+             التأكد من وجود Session
+          */
+
+          if (
+            !data ||
+            !data.session
+          ) {
+
+            throw new Error(
+              "لم يتم إنشاء جلسة تسجيل دخول."
+            );
+          }
+
+
+          /*
+             تسجيل الدخول نجح
+             العودة للصفحة الرئيسية
+          */
+
+          window.location.replace("/");
+
+        }
+
+
+        /* =========================
+           ERROR
+        ========================== */
+
+        catch (error) {
+
+          console.error(
+            "Authentication Error:",
+            error
+          );
+
+
+          const raw =
+            error &&
+            error.message
+              ? error.message
+              : "حدث خطأ، حاول مرة ثانية.";
+
+
+          let text =
+            raw;
+
+
+          if (
+            /invalid login credentials/i
+              .test(raw)
+          ) {
+
+            text =
+              "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+          }
+
+          else if (
+            /email not confirmed/i
+              .test(raw)
+          ) {
+
+            text =
+              "لازم تأكد بريدك الإلكتروني أولاً.";
+
+          }
+
+          else if (
+            /user already registered/i
+              .test(raw)
+          ) {
+
+            text =
+              "هذا البريد مسجل مسبقاً. جرّب تسجيل الدخول.";
+
+          }
+
+          else if (
+            /password/i.test(raw) &&
+            /6/i.test(raw)
+          ) {
+
+            text =
+              "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
+
+          }
+
+          else if (
+            /invalid email/i.test(raw)
+          ) {
+
+            text =
+              "البريد الإلكتروني غير صحيح.";
+
+          }
+
+
+          showMessage(
+            text,
+            "error"
+          );
+
+        }
+
+
+        /* =========================
+           RESET BUTTON
+        ========================== */
+
+        finally {
+
+          submitButton.disabled =
+            false;
+
+          submitButton.textContent =
+            mode === "login"
+              ? "تسجيل الدخول"
+              : "إنشاء الحساب";
+        }
 
       }
     );
-  }
 
 
-  /* =====================================================
-     SUPABASE AUTH STATE
-  ===================================================== */
+    /* =========================================
+       CHECK EXISTING SESSION
+    ========================================== */
 
-  supabase.auth.onAuthStateChange(
-    (event, session) => {
+    async function start() {
 
-      currentSession =
-        session || null;
+      try {
 
-
-      currentUser =
-        session?.user || null;
-
-
-      /*
-        إذا صار تسجيل خروج
-        نخلي الصفحة كزائر
-        بدون إجبار على تسجيل الدخول
-      */
-
-      updateAccountUI();
+        const {
+          data,
+          error
+        } =
+          await supabase.auth.getSession();
 
 
-      if (
-        currentUser
-      ) {
+        if (error) {
 
-        loadUserStorage();
+          console.error(
+            "Session Error:",
+            error
+          );
 
-        renderConversation();
+          return;
+        }
 
-        renderConversationList();
-
-      } else {
 
         /*
-          تخزين الزائر مستقل
+          إذا المستخدم مسجل دخول بالفعل
+          لا نخليه يبقى بصفحة تسجيل الدخول.
         */
 
-        loadUserStorage();
+        if (
+          data &&
+          data.session
+        ) {
 
-        renderConversation();
+          window.location.replace("/");
 
-        renderConversationList();
+          return;
+        }
+
+
+        /*
+          إذا جاي من الصفحة الرئيسية
+          بسبب عدم تأكيد البريد.
+        */
+
+        const params =
+          new URLSearchParams(
+            window.location.search
+          );
+
+
+        if (
+          params.get("verify") === "1"
+        ) {
+
+          showMessage(
+            "تأكد من بريدك الإلكتروني حتى تقدر تدخل للموقع.",
+            "success"
+          );
+        }
 
       }
-    }
-  );
 
-
-  /* =====================================================
-     START APP
-  ===================================================== */
-
-  async function startApp() {
-
-    try {
-
-      /*
-        هنا لا نفرض تسجيل الدخول.
-        المستخدم يدخل مباشرة كزائر.
-      */
-
-      const {
-        data,
-        error
-      } =
-        await supabase.auth.getSession();
-
-
-      if (error) {
+      catch (error) {
 
         console.error(
-          "Session Error:",
+          "Startup Error:",
           error
         );
-
-        currentSession =
-          null;
-
-        currentUser =
-          null;
-
-      } else {
-
-        currentSession =
-          data?.session || null;
-
-        currentUser =
-          data?.session?.user || null;
       }
-
-
-    } catch (error) {
-
-      console.error(
-        "Start App Error:",
-        error
-      );
-
-      currentSession =
-        null;
-
-      currentUser =
-        null;
     }
 
 
-    updateAccountUI();
+    /* =========================================
+       START
+    ========================================== */
 
+    start();
 
-    /*
-      تحميل محادثات المستخدم
-      أو محادثات الزائر
-    */
-
-    loadUserStorage();
-
-
-    if (
-      !conversations.length
-    ) {
-
-      activeConversationId =
-        null;
-
-      saveActiveId();
-
-      showWelcome();
-
-    } else {
-
-      let active =
-        getActiveConversation();
-
-
-      if (!active) {
-
-        activeConversationId =
-          conversations[
-            conversations.length - 1
-          ].id;
-
-        saveActiveId();
-      }
-
-
-      renderConversation();
-    }
-
-
-    renderConversationList();
-  }
-
-
-  /* =====================================================
-     RUN
-  ===================================================== */
-
-  startApp();
-
-</script>
+  </script>
 
 </body>
 </html>
