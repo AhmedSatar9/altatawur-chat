@@ -71,6 +71,9 @@ let conversation = [];
 
 let isSending = false;
 
+let currentConversationId =
+    localStorage.getItem("altatawur_current_conversation_id") || null;
+
 
 // ==========================================
 // REDIRECT
