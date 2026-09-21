@@ -2,7 +2,8 @@ const SUPABASE_URL =
     "https://wxsricscchalzvazdbzd.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-    "YOUR_SUPABASE_PUBLISHABLE_KEY";
+    "NEXT_PUBLIC_SUPABASE_URL=https://wxsricscchalzvazdbzd.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_5oPDD77Veu5OczxaZje7vg_orfNjB5t";
 
 
 const supabaseClient =
