@@ -5,6 +5,39 @@ const client = new OpenAI({
 });
 
 export default async function handler(req, res) {
+  /*
+    =========================
+    CORS
+    =========================
+  */
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST, OPTIONS"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
+
+  /*
+    OPTIONS
+  */
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  /*
+    فقط POST
+  */
+
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method Not Allowed"
@@ -12,6 +45,12 @@ export default async function handler(req, res) {
   }
 
   try {
+    /*
+      =========================
+      MESSAGES
+      =========================
+    */
+
     const messages =
       Array.isArray(req.body?.messages)
         ? req.body.messages
@@ -23,160 +62,234 @@ export default async function handler(req, res) {
       });
     }
 
+    /*
+      نأخذ آخر 30 رسالة فقط
+    */
+
     const recentMessages =
       messages.slice(-30);
 
-    const apiMessages = [];
+    /*
+      =========================
+      تحويل الرسائل
+      =========================
+    */
+
+    const input = [];
 
     for (const message of recentMessages) {
+
       if (!message) {
         continue;
       }
 
-      /* =========================
-         USER
-      ========================== */
+      /*
+        USER
+      */
 
       if (message.role === "user") {
+
         const content = [];
 
+        /*
+          content array
+        */
+
         if (Array.isArray(message.content)) {
+
           for (const item of message.content) {
+
             if (!item) {
               continue;
             }
 
-            /* TEXT */
+            /*
+              TEXT
+            */
 
             if (
               item.type === "input_text" ||
               item.type === "text"
             ) {
+
               if (item.text) {
+
                 content.push({
-                  type: "text",
+                  type: "input_text",
                   text: String(item.text)
                 });
+
               }
+
             }
 
-            /* IMAGE */
+            /*
+              IMAGE
+            */
 
             else if (
               item.type === "input_image"
             ) {
-              const imageUrl =
+
+              let imageUrl =
                 item.image_url;
+
+              /*
+                string
+              */
 
               if (
                 typeof imageUrl === "string" &&
                 imageUrl.length > 0
               ) {
+
                 content.push({
-                  type: "image_url",
-                  image_url: {
-                    url: imageUrl
-                  }
+                  type: "input_image",
+                  image_url: imageUrl
                 });
+
               }
+
+              /*
+                object
+              */
 
               else if (
                 imageUrl &&
                 typeof imageUrl === "object" &&
                 imageUrl.url
               ) {
+
                 content.push({
-                  type: "image_url",
-                  image_url: {
-                    url: String(
-                      imageUrl.url
-                    )
-                  }
+                  type: "input_image",
+                  image_url:
+                    String(imageUrl.url)
                 });
+
               }
+
             }
+
           }
+
         }
+
+        /*
+          attachment احتياطياً
+        */
 
         else if (
           message.attachment &&
           message.attachment.type === "image" &&
           message.attachment.data
         ) {
+
           if (message.content) {
+
             content.push({
-              type: "text",
-              text: String(
-                message.content
-              )
+              type: "input_text",
+              text:
+                String(message.content)
             });
+
           }
 
           content.push({
-            type: "image_url",
-            image_url: {
-              url: String(
+            type: "input_image",
+            image_url:
+              String(
                 message.attachment.data
               )
-            }
           });
+
         }
+
+        /*
+          نص عادي
+        */
 
         else if (message.content) {
+
           content.push({
-            type: "text",
-            text: String(
-              message.content
-            )
+            type: "input_text",
+            text:
+              String(message.content)
           });
+
         }
 
+        /*
+          إضافة رسالة المستخدم
+        */
+
         if (content.length > 0) {
-          apiMessages.push({
+
+          input.push({
             role: "user",
             content
           });
+
         }
+
       }
 
-      /* =========================
-         ASSISTANT
-      ========================== */
+      /*
+        ASSISTANT
+      */
 
       else if (
         message.role === "assistant"
       ) {
+
         if (
           typeof message.content === "string" &&
           message.content.trim()
         ) {
-          apiMessages.push({
+
+          input.push({
             role: "assistant",
-            content: message.content
+            content: [
+              {
+                type: "output_text",
+                text: message.content
+              }
+            ]
           });
+
         }
+
       }
+
     }
 
-    if (!apiMessages.length) {
+    /*
+      =========================
+      التحقق
+      =========================
+    */
+
+    if (!input.length) {
+
       return res.status(400).json({
         error:
           "لم يتم العثور على محتوى صالح."
       });
+
     }
 
-    /* =========================
-       OPENAI
-    ========================== */
+    /*
+      =========================
+      OPENAI
+      =========================
+    */
 
-    const completion =
-      await client.chat.completions.create({
-        model: "gpt-5.6-luna",
+    const response =
+      await client.responses.create({
 
-        messages: [
-          {
-            role: "system",
-            content: `
+        model:
+          "gpt-5.6-luna",
+
+        instructions: `
 أنت المساعد الرسمي لمنصة التطور چات.
 
 أجب بالعربية بشكل واضح ومفيد.
@@ -192,34 +305,50 @@ export default async function handler(req, res) {
 - لا تدّعي رؤية شيء غير واضح.
 - إذا كانت الصورة غير واضحة، أخبر المستخدم بذلك.
 
-لا تدّعي تنفيذ أفعال لم تنفذها فعلياً.
-            `
-          },
-          ...apiMessages
-        ]
+لا تدّعي تنفيذ أي فعل لم تنفذه فعلياً.
+
+كن مفيداً ومباشراً.
+`,
+
+        input
+
       });
 
+    /*
+      =========================
+      RESPONSE
+      =========================
+    */
+
     const reply =
-      completion?.choices?.[0]?.message?.content ||
+      response?.output_text ||
       "ما حصلت جواب نصي من النموذج.";
+
+    console.log(
+      "✅ OpenAI Response received"
+    );
 
     return res.status(200).json({
       reply
     });
 
-  } catch (error) {
+  }
+
+  catch (error) {
+
     console.error(
-      "❌ VERCEL OPENAI ERROR:",
-      error
+      "❌ OPENAI ERROR:"
     );
 
+    console.error(error);
+
     const errorMessage =
-      error?.error?.message ||
       error?.message ||
       "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.";
 
     return res.status(500).json({
       error: errorMessage
     });
+
   }
 }
