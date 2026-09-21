@@ -1,21 +1,37 @@
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+
+const openai =
+    new OpenAI({
+
+        apiKey:
+            process.env.OPENAI_API_KEY
+
+    });
 
 
 const supabaseAdmin =
     createClient(
+
         process.env.SUPABASE_URL,
+
         process.env.SUPABASE_SECRET_KEY,
+
         {
+
             auth: {
-                autoRefreshToken: false,
-                persistSession: false
+
+                autoRefreshToken:
+                    false,
+
+                persistSession:
+                    false
+
             }
+
         }
+
     );
 
 
@@ -31,7 +47,10 @@ export default async function handler(
     if (req.method !== "POST") {
 
         return res.status(405).json({
-            error: "Method Not Allowed"
+
+            error:
+                "Method Not Allowed"
+
         });
 
     }
@@ -40,7 +59,7 @@ export default async function handler(
     try {
 
         // ==================================
-        // AUTH HEADER
+        // AUTHORIZATION
         // ==================================
 
         const authorization =
@@ -55,17 +74,18 @@ export default async function handler(
         ) {
 
             return res.status(401).json({
+
                 error:
                     "يجب تسجيل الدخول أولاً."
+
             });
 
         }
 
 
         const token =
-            authorization.replace(
-                "Bearer ",
-                ""
+            authorization.substring(
+                7
             );
 
 
@@ -74,12 +94,14 @@ export default async function handler(
         // ==================================
 
         const {
+
             data: userData,
+
             error: userError
+
         } =
-            await supabaseAdmin.auth.getUser(
-                token
-            );
+            await supabaseAdmin.auth
+                .getUser(token);
 
 
         if (
@@ -88,8 +110,10 @@ export default async function handler(
         ) {
 
             return res.status(401).json({
+
                 error:
                     "جلسة تسجيل الدخول غير صالحة."
+
             });
 
         }
@@ -114,37 +138,45 @@ export default async function handler(
         ) {
 
             return res.status(400).json({
+
                 error:
                     "لم يتم إرسال أي رسالة."
+
             });
 
         }
 
 
         // ==================================
-        // LIMIT MESSAGE SIZE
+        // SANITIZE MESSAGES
         // ==================================
 
         const safeMessages =
             messages
+
                 .slice(-30)
-                .map((message) => ({
 
-                    role:
-                        message.role ===
-                        "assistant"
-                            ? "assistant"
-                            : "user",
+                .map(
+                    (message) => ({
 
-                    content:
-                        String(
-                            message.content || ""
-                        ).slice(
-                            0,
-                            12000
-                        )
+                        role:
+                            message?.role ===
+                            "assistant"
+                                ? "assistant"
+                                : "user",
 
-                }))
+                        content:
+                            String(
+                                message?.content ||
+                                ""
+                            ).slice(
+                                0,
+                                12000
+                            )
+
+                    })
+                )
+
                 .filter(
                     message =>
                         message.content.trim()
@@ -156,8 +188,10 @@ export default async function handler(
         ) {
 
             return res.status(400).json({
+
                 error:
                     "الرسالة فارغة."
+
             });
 
         }
@@ -174,24 +208,34 @@ export default async function handler(
                     process.env.OPENAI_MODEL ||
                     "gpt-5.6-luna",
 
+
                 instructions:
+
                     `
 أنت المساعد الذكي الرسمي لمنصة "التطور چات".
 
 أجب باللغة العربية عندما يكتب المستخدم بالعربية.
+
 يمكنك استخدام اللهجة العراقية بشكل طبيعي عندما يناسب سياق المستخدم.
 
 كن واضحاً ومفيداً ومباشراً.
+
 لا تدّعي تنفيذ أشياء لم تنفذها.
+
+إذا كان السؤال يحتاج معلومات غير متوفرة لديك، وضّح ذلك للمستخدم.
 `,
+
 
                 input:
                     safeMessages.map(
-                        message => ({
+                        (message) => ({
+
                             role:
                                 message.role,
+
                             content:
                                 message.content
+
                         })
                     )
 
@@ -211,11 +255,17 @@ export default async function handler(
 
             success: true,
 
-            message: answer,
+            message:
+                answer,
 
             user: {
-                id: user.id,
-                email: user.email
+
+                id:
+                    user.id,
+
+                email:
+                    user.email
+
             }
 
         });
