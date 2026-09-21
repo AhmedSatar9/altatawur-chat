@@ -13,6 +13,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    /* =========================
+       SUPABASE
+    ========================== */
+
     const SUPABASE_URL =
       "https://wxsricscchalzvazdbzd.supabase.co";
 
@@ -25,55 +29,11 @@
         SUPABASE_PUBLISHABLE_KEY
       );
 
-    /*
-      =====================================================
-      AUTH STATE
-      =====================================================
-    */
-
+    /* مهم جداً:
+       تعريف المتغيرات هنا حتى تكون
+       متاحة لكل السكربتات */
     let currentSession = null;
     let currentUser = null;
-
-    /*
-      تسجيل الدخول أصبح اختياري.
-      الزائر يدخل للمحادثة مباشرة.
-    */
-
-    async function loadAuthState() {
-      try {
-        const {
-          data,
-          error
-        } = await supabase.auth.getSession();
-
-        if (error) {
-          console.error(
-            "Auth session error:",
-            error
-          );
-
-          currentSession = null;
-          currentUser = null;
-
-          return;
-        }
-
-        currentSession =
-          data?.session || null;
-
-        currentUser =
-          data?.session?.user || null;
-
-      } catch (error) {
-        console.error(
-          "Auth state error:",
-          error
-        );
-
-        currentSession = null;
-        currentUser = null;
-      }
-    }
   </script>
 
   <style>
@@ -155,7 +115,8 @@
 
       padding: 14px 24px;
 
-      border-bottom: 1px solid var(--border);
+      border-bottom:
+        1px solid var(--border);
 
       background:
         rgba(13,18,34,.94);
@@ -182,7 +143,8 @@
 
       border-radius: 17px;
 
-      background: var(--gradient);
+      background:
+        var(--gradient);
 
       display: flex;
       align-items: center;
@@ -192,7 +154,8 @@
       font-weight: 800;
 
       box-shadow:
-        0 10px 30px rgba(100,90,255,.18);
+        0 10px 30px
+        rgba(100,90,255,.18);
     }
 
     .brand-info h1 {
@@ -219,7 +182,8 @@
 
       border-radius: 14px;
 
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       background: transparent;
 
@@ -248,7 +212,8 @@
       width: 48px;
       height: 48px;
 
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       background: transparent;
 
@@ -293,7 +258,8 @@
     .welcome {
       text-align: center;
 
-      padding: 70px 10px 30px;
+      padding:
+        70px 10px 30px;
     }
 
     .welcome-logo {
@@ -302,9 +268,11 @@
 
       border-radius: 32px;
 
-      background: var(--gradient);
+      background:
+        var(--gradient);
 
-      margin: 0 auto 28px;
+      margin:
+        0 auto 28px;
 
       display: flex;
       align-items: center;
@@ -314,7 +282,8 @@
       font-weight: 800;
 
       box-shadow:
-        0 20px 60px rgba(100,90,255,.18);
+        0 20px 60px
+        rgba(100,90,255,.18);
     }
 
     .welcome h2 {
@@ -323,7 +292,8 @@
     }
 
     .welcome h2 span {
-      background: var(--gradient);
+      background:
+        var(--gradient);
 
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -367,7 +337,8 @@
 
       border-radius: 14px;
 
-      background: var(--gradient);
+      background:
+        var(--gradient);
 
       display: flex;
       align-items: center;
@@ -388,9 +359,11 @@
 
       border-radius: 20px;
 
-      background: var(--panel2);
+      background:
+        var(--panel2);
 
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       line-height: 1.8;
 
@@ -420,12 +393,12 @@
       margin-bottom: 10px;
 
       border:
-        1px solid rgba(255,255,255,.08);
+        1px solid
+        rgba(255,255,255,.08);
     }
 
     .message-file {
       display: flex;
-
       align-items: center;
 
       gap: 10px;
@@ -454,7 +427,8 @@
       width: 100%;
       max-width: 900px;
 
-      margin: 0 auto 10px;
+      margin:
+        0 auto 10px;
 
       padding: 10px;
 
@@ -462,7 +436,8 @@
         rgba(13,18,34,.96);
 
       border:
-        1px solid rgba(255,255,255,.10);
+        1px solid
+        rgba(255,255,255,.10);
 
       border-radius: 17px;
     }
@@ -485,7 +460,6 @@
         rgba(139,92,246,.15);
 
       display: flex;
-
       align-items: center;
       justify-content: center;
 
@@ -590,16 +564,18 @@
       0%,
       60%,
       100% {
-        transform: translateY(0);
+        transform:
+          translateY(0);
       }
 
       30% {
-        transform: translateY(-6px);
+        transform:
+          translateY(-6px);
       }
     }
 
     /* =========================
-       INPUT AREA
+       INPUT
     ========================== */
 
     .input-area {
@@ -611,7 +587,10 @@
 
       padding:
         12px 20px
-        calc(14px + env(safe-area-inset-bottom));
+        calc(
+          14px +
+          env(safe-area-inset-bottom)
+        );
 
       background:
         linear-gradient(
@@ -627,10 +606,12 @@
 
       margin: 0 auto;
 
-      background: var(--panel);
+      background:
+        var(--panel);
 
       border:
-        1px solid rgba(255,255,255,.12);
+        1px solid
+        rgba(255,255,255,.12);
 
       border-radius: 25px;
 
@@ -643,7 +624,8 @@
       gap: 8px;
 
       box-shadow:
-        0 -5px 30px rgba(0,0,0,.15);
+        0 -5px 30px
+        rgba(0,0,0,.15);
     }
 
     .attach-button {
@@ -680,7 +662,8 @@
     }
 
     .attach-button:active {
-      transform: scale(.94);
+      transform:
+        scale(.94);
     }
 
     #fileInput {
@@ -705,9 +688,11 @@
       line-height: 1.6;
 
       min-height: 52px;
+
       max-height: 150px;
 
-      padding: 13px 12px;
+      padding:
+        13px 12px;
     }
 
     textarea::placeholder {
@@ -722,7 +707,8 @@
 
       border-radius: 17px;
 
-      background: var(--gradient);
+      background:
+        var(--gradient);
 
       color: white;
 
@@ -741,14 +727,17 @@
     }
 
     .send:hover:not(:disabled) {
-      transform: translateY(-1px);
+      transform:
+        translateY(-1px);
 
       box-shadow:
-        0 8px 25px rgba(139,92,246,.25);
+        0 8px 25px
+        rgba(139,92,246,.25);
     }
 
     .send:active:not(:disabled) {
-      transform: scale(.94);
+      transform:
+        scale(.94);
     }
 
     .send:disabled {
@@ -795,6 +784,7 @@
       bottom: 0;
 
       width: 330px;
+
       max-width: 88vw;
 
       background: #0b1020;
@@ -822,7 +812,8 @@
     .side-header {
       height: 82px;
 
-      padding: 16px 18px;
+      padding:
+        16px 18px;
 
       border-bottom:
         1px solid var(--border);
@@ -856,12 +847,11 @@
       cursor: pointer;
     }
 
-    /* =========================
-       ACCOUNT
-    ========================== */
+    /* ACCOUNT */
 
     .account-box {
-      margin: 14px 16px 10px;
+      margin:
+        14px 16px 8px;
 
       padding: 12px;
 
@@ -888,7 +878,8 @@
 
       border-radius: 12px;
 
-      background: var(--gradient);
+      background:
+        var(--gradient);
 
       display: flex;
 
@@ -902,6 +893,7 @@
 
     .account-info {
       min-width: 0;
+
       flex: 1;
     }
 
@@ -927,66 +919,57 @@
       text-align: right;
     }
 
-    /* =========================
-       LOGIN BUTTON
-    ========================== */
+    /* LOGIN BUTTON */
 
     .login-button {
       margin:
-        0 16px 10px;
+        8px 16px;
 
-      padding: 13px 14px;
+      padding: 14px;
 
-      border:
-        1px solid rgba(34,211,238,.35);
+      border: none;
 
       border-radius: 14px;
 
       background:
-        linear-gradient(
-          135deg,
-          rgba(139,92,246,.14),
-          rgba(34,211,238,.10)
-        );
+        var(--gradient);
 
-      color: #ffffff;
+      color: white;
 
       cursor: pointer;
 
-      font-size: 14px;
+      font-size: 15px;
 
-      font-weight: 600;
+      font-weight: 700;
 
       transition: .2s ease;
     }
 
     .login-button:hover {
-      border-color:
-        rgba(34,211,238,.55);
+      transform:
+        translateY(-1px);
 
-      background:
-        linear-gradient(
-          135deg,
-          rgba(139,92,246,.22),
-          rgba(34,211,238,.16)
-        );
+      box-shadow:
+        0 8px 25px
+        rgba(139,92,246,.25);
     }
 
     .login-button:active {
-      transform: scale(.98);
+      transform:
+        scale(.98);
     }
 
-    /* =========================
-       NEW CHAT
-    ========================== */
+    /* NEW CHAT */
 
     .side-new {
-      margin: 6px 16px 16px;
+      margin:
+        8px 16px 16px;
 
       padding: 14px;
 
       border:
-        1px solid rgba(139,92,246,.35);
+        1px solid
+        rgba(139,92,246,.35);
 
       border-radius: 15px;
 
@@ -1002,9 +985,7 @@
       text-align: center;
     }
 
-    /* =========================
-       CONVERSATIONS
-    ========================== */
+    /* CONVERSATIONS */
 
     .conversation-list {
       flex: 1;
@@ -1020,7 +1001,8 @@
 
       text-align: center;
 
-      padding: 40px 20px;
+      padding:
+        40px 20px;
 
       line-height: 1.8;
 
@@ -1039,7 +1021,8 @@
 
       border-radius: 14px;
 
-      padding: 13px 12px;
+      padding:
+        13px 12px;
 
       margin-bottom: 7px;
 
@@ -1112,9 +1095,7 @@
         rgba(255,107,129,.08);
     }
 
-    /* =========================
-       LOGOUT
-    ========================== */
+    /* LOGOUT */
 
     .logout-button {
       margin:
@@ -1123,7 +1104,8 @@
       padding: 12px;
 
       border:
-        1px solid rgba(255,107,129,.22);
+        1px solid
+        rgba(255,107,129,.22);
 
       border-radius: 14px;
 
@@ -1166,6 +1148,7 @@
         height: 100dvh;
 
         min-height: 100dvh;
+
         max-height: 100dvh;
 
         overflow: hidden;
@@ -1173,9 +1156,11 @@
 
       header {
         height: 82px;
+
         min-height: 82px;
 
-        padding: 12px 16px;
+        padding:
+          12px 16px;
 
         flex-shrink: 0;
       }
@@ -1208,7 +1193,8 @@
       .new-chat {
         height: 44px;
 
-        padding: 0 11px;
+        padding:
+          0 11px;
 
         font-size: 12px;
 
@@ -1228,8 +1214,7 @@
         width: 100%;
 
         padding:
-          20px 12px
-          20px;
+          20px 12px 20px;
 
         flex: 1;
 
@@ -1291,9 +1276,7 @@
           10px 12px
           calc(
             12px +
-            env(
-              safe-area-inset-bottom
-            )
+            env(safe-area-inset-bottom)
           );
 
         background:
@@ -1315,6 +1298,7 @@
 
       .attach-button {
         width: 45px;
+
         height: 52px;
 
         font-size: 22px;
@@ -1331,6 +1315,7 @@
 
       .send {
         width: 52px;
+
         height: 52px;
       }
 
@@ -1343,19 +1328,17 @@
       }
     }
 
-    /* =========================
-       VERY SMALL PHONES
-    ========================== */
-
     @media (max-width: 380px) {
 
       header {
         height: 76px;
+
         min-height: 76px;
       }
 
       .new-chat {
-        padding: 0 8px;
+        padding:
+          0 8px;
 
         font-size: 11px;
       }
@@ -1380,8 +1363,7 @@
 
       .chat {
         padding:
-          15px 10px
-          15px;
+          15px 10px 15px;
       }
 
       .input-area {
@@ -1389,9 +1371,7 @@
           8px 10px
           calc(
             10px +
-            env(
-              safe-area-inset-bottom
-            )
+            env(safe-area-inset-bottom)
           );
       }
 
@@ -1415,9 +1395,7 @@
 
 <div class="app">
 
-  <!-- =========================
-       HEADER
-  ========================== -->
+  <!-- HEADER -->
 
   <header>
 
@@ -1433,7 +1411,10 @@
           التطور چات
         </h1>
 
-        <div class="status">
+        <div
+          class="status"
+          id="headerStatus"
+        >
           ● متصل الآن
         </div>
 
@@ -1464,18 +1445,16 @@
 
   </header>
 
-  <!-- =========================
-       CHAT
-  ========================== -->
+
+  <!-- CHAT -->
 
   <main
     class="chat"
     id="chat"
   ></main>
 
-  <!-- =========================
-       INPUT
-  ========================== -->
+
+  <!-- INPUT -->
 
   <div class="input-area">
 
@@ -1522,6 +1501,7 @@
 
     </div>
 
+
     <div class="input-box">
 
       <input
@@ -1561,14 +1541,14 @@
 
 </div>
 
-<!-- =========================
-     SIDE MENU
-========================== -->
+
+<!-- SIDE MENU -->
 
 <div
   class="side-overlay"
   id="sideOverlay"
 ></div>
+
 
 <aside
   class="side-panel"
@@ -1591,26 +1571,21 @@
 
   </div>
 
+
   <!-- ACCOUNT -->
 
-  <div
-    class="account-box"
-    id="accountBox"
-  >
+  <div class="account-box">
 
     <div
       class="account-avatar"
       id="accountAvatar"
     >
-      أ
+      ز
     </div>
 
     <div class="account-info">
 
-      <div
-        class="account-label"
-        id="accountLabel"
-      >
+      <div class="account-label">
         الحالة
       </div>
 
@@ -1625,6 +1600,7 @@
 
   </div>
 
+
   <!-- LOGIN -->
 
   <button
@@ -1635,6 +1611,7 @@
     🔐 تسجيل الدخول
   </button>
 
+
   <!-- NEW CHAT -->
 
   <button
@@ -1644,6 +1621,7 @@
   >
     ＋ محادثة جديدة
   </button>
+
 
   <!-- LOGOUT -->
 
@@ -1656,6 +1634,7 @@
     ↪ تسجيل الخروج
   </button>
 
+
   <!-- CONVERSATIONS -->
 
   <div
@@ -1665,6 +1644,7 @@
 
 </aside>
 
+
 <script>
 
   /* =====================================================
@@ -1672,9 +1652,7 @@
   ===================================================== */
 
   const chat =
-    document.getElementById(
-      "chat"
-    );
+    document.getElementById("chat");
 
   const input =
     document.getElementById(
@@ -1766,14 +1744,14 @@
       "accountEmail"
     );
 
-  const accountLabel =
-    document.getElementById(
-      "accountLabel"
-    );
-
   const accountAvatar =
     document.getElementById(
       "accountAvatar"
+    );
+
+  const logoutButton =
+    document.getElementById(
+      "logoutButton"
     );
 
   const loginButton =
@@ -1781,9 +1759,9 @@
       "loginButton"
     );
 
-  const logoutButton =
+  const headerStatus =
     document.getElementById(
-      "logoutButton"
+      "headerStatus"
     );
 
 
@@ -1796,18 +1774,11 @@
 
   let conversations = [];
 
-  let activeConversationId = null;
+  let activeConversationId =
+    null;
 
 
   function loadUserStorage() {
-
-    /*
-      إذا المستخدم مسجل:
-      نستخدم ID الخاص به.
-
-      إذا زائر:
-      نستخدم guest.
-    */
 
     const userKey =
       currentUser?.id ||
@@ -1870,20 +1841,31 @@
 
   function updateAccountUI() {
 
-    /*
-      GUEST
-    */
+    if (currentUser) {
 
-    if (!currentUser) {
+      accountEmail.textContent =
+        currentUser.email ||
+        "مستخدم";
 
-      accountLabel.textContent =
-        "الحالة";
+      accountAvatar.textContent =
+        "أ";
+
+      loginButton.style.display =
+        "none";
+
+      logoutButton.style.display =
+        "block";
+
+      headerStatus.textContent =
+        "● متصل الآن";
+
+    } else {
 
       accountEmail.textContent =
         "مستخدم زائر";
 
       accountAvatar.textContent =
-        "أ";
+        "ز";
 
       loginButton.style.display =
         "block";
@@ -1891,34 +1873,9 @@
       logoutButton.style.display =
         "none";
 
-      return;
+      headerStatus.textContent =
+        "● متصل الآن";
     }
-
-
-    /*
-      LOGGED IN
-    */
-
-    accountLabel.textContent =
-      "الحساب";
-
-    accountEmail.textContent =
-      currentUser.email ||
-      "مستخدم";
-
-    accountAvatar.textContent =
-      (
-        currentUser.email ||
-        "م"
-      )
-        .charAt(0)
-        .toUpperCase();
-
-    loginButton.style.display =
-      "none";
-
-    logoutButton.style.display =
-      "block";
   }
 
 
@@ -2045,7 +2002,6 @@
         chat.scrollTo({
           top:
             chat.scrollHeight,
-
           behavior:
             "smooth"
         });
@@ -2097,10 +2053,6 @@
       "bubble";
 
 
-    /*
-      IMAGE
-    */
-
     if (
       attachment &&
       attachment.type === "image" &&
@@ -2128,10 +2080,6 @@
     }
 
 
-    /*
-      FILE
-    */
-
     if (
       attachment &&
       attachment.type !== "image"
@@ -2156,10 +2104,6 @@
       );
     }
 
-
-    /*
-      TEXT
-    */
 
     if (text) {
 
@@ -2196,7 +2140,7 @@
 
 
   /* =====================================================
-     RENDER CONVERSATION
+     RENDER
   ===================================================== */
 
   function renderConversation() {
@@ -2217,7 +2161,9 @@
       return;
     }
 
+
     chat.innerHTML = "";
+
 
     conversation.messages.forEach(
       message => {
@@ -2231,6 +2177,7 @@
 
       }
     );
+
 
     requestAnimationFrame(
       function() {
@@ -2252,9 +2199,8 @@
     conversationList.innerHTML =
       "";
 
-    if (
-      !conversations.length
-    ) {
+
+    if (!conversations.length) {
 
       conversationList.innerHTML = `
 
@@ -2332,6 +2278,7 @@
               deleteConversation(
                 conversation.id
               );
+
             };
 
 
@@ -2350,12 +2297,14 @@
               openConversation(
                 conversation.id
               );
+
             };
 
 
           conversationList.appendChild(
             item
           );
+
         }
       );
   }
@@ -2401,12 +2350,14 @@
 
       createdAt:
         Date.now()
+
     };
 
 
     conversations.push(
       newConversation
     );
+
 
     activeConversationId =
       newConversation.id;
@@ -2438,9 +2389,7 @@
      DELETE
   ===================================================== */
 
-  function deleteConversation(
-    id
-  ) {
+  function deleteConversation(id) {
 
     conversations =
       conversations.filter(
@@ -2561,7 +2510,6 @@
       );
 
     if (typing) {
-
       typing.remove();
     }
   }
@@ -2578,6 +2526,7 @@
       event.preventDefault();
 
       fileInput.click();
+
     }
   );
 
@@ -2594,17 +2543,11 @@
   );
 
 
-  function formatFileSize(
-    bytes
-  ) {
+  function formatFileSize(bytes) {
 
-    if (
-      bytes < 1024
-    ) {
-
+    if (bytes < 1024) {
       return bytes + " B";
     }
-
 
     if (
       bytes <
@@ -2612,12 +2555,13 @@
     ) {
 
       return (
-        (bytes / 1024)
-          .toFixed(1) +
+        (
+          bytes / 1024
+        ).toFixed(1) +
         " KB"
       );
-    }
 
+    }
 
     if (
       bytes <
@@ -2629,33 +2573,24 @@
       return (
         (
           bytes /
-          (
-            1024 *
-            1024
-          )
+          (1024 * 1024)
         ).toFixed(1) +
         " MB"
       );
-    }
 
+    }
 
     return (
       (
         bytes /
-        (
-          1024 *
-          1024 *
-          1024
-        )
+        (1024 * 1024 * 1024)
       ).toFixed(1) +
       " GB"
     );
   }
 
 
-  function readFileAsDataURL(
-    file
-  ) {
+  function readFileAsDataURL(file) {
 
     return new Promise(
       (
@@ -2686,6 +2621,7 @@
         reader.readAsDataURL(
           file
         );
+
       }
     );
   }
@@ -2732,7 +2668,6 @@
                 Math.min(
                   maxSize /
                     width,
-
                   maxSize /
                     height
                 );
@@ -2743,6 +2678,7 @@
                   width *
                   ratio
                 );
+
 
               height =
                 Math.round(
@@ -2786,6 +2722,7 @@
                 quality
               )
             );
+
           };
 
 
@@ -2800,14 +2737,13 @@
 
         img.src =
           dataUrl;
+
       }
     );
   }
 
 
-  async function handleFileSelect(
-    event
-  ) {
+  async function handleFileSelect(event) {
 
     const file =
       event.target.files[0];
@@ -2820,9 +2756,7 @@
 
     if (
       file.size >
-      20 *
-      1024 *
-      1024
+      20 * 1024 * 1024
     ) {
 
       alert(
@@ -2854,10 +2788,6 @@
     );
 
 
-    /*
-      IMAGE
-    */
-
     if (
       file.type.startsWith(
         "image/"
@@ -2885,17 +2815,21 @@
 
           data:
             compressedImage
+
         };
 
 
         attachmentImage.src =
           compressedImage;
 
+
         attachmentImage.style.display =
           "block";
 
+
         attachmentIcon.style.display =
           "none";
+
 
       } catch (error) {
 
@@ -2910,13 +2844,8 @@
         removeAttachment();
       }
 
-    }
 
-    /*
-      FILE
-    */
-
-    else {
+    } else {
 
       try {
 
@@ -2940,7 +2869,9 @@
 
           data:
             data
+
         };
+
 
       } catch (error) {
 
@@ -2960,6 +2891,7 @@
 
       attachmentImage.style.display =
         "none";
+
 
       attachmentIcon.style.display =
         "flex";
@@ -3028,6 +2960,20 @@
     }
 
 
+    /*
+      إذا المستخدم زائر:
+      نحوله إلى صفحة تسجيل الدخول
+    */
+
+    if (!currentSession) {
+
+      window.location.href =
+        "/login.html";
+
+      return;
+    }
+
+
     const text =
       input.value.trim();
 
@@ -3036,15 +2982,9 @@
       !text &&
       !selectedFileData
     ) {
-
       return;
     }
 
-
-    /*
-      إذا ماكو محادثة فعالة،
-      ننشئ واحدة.
-    */
 
     if (
       !activeConversationId
@@ -3075,6 +3015,7 @@
 
         createdAt:
           Date.now()
+
       };
 
 
@@ -3122,6 +3063,7 @@
 
       attachment:
         attachment
+
     });
 
 
@@ -3174,8 +3116,10 @@
     isSending =
       true;
 
+
     sendButton.disabled =
       true;
+
 
     sendButton.textContent =
       "…";
@@ -3186,19 +3130,11 @@
 
     try {
 
-      /*
-        تجهيز الرسائل للـ API
-      */
-
       const apiMessages =
         conversation.messages
           .slice(-30)
           .map(
             message => {
-
-              /*
-                IMAGE
-              */
 
               if (
                 message.attachment &&
@@ -3207,8 +3143,7 @@
                 message.attachment.data
               ) {
 
-                const content =
-                  [];
+                const content = [];
 
 
                 if (
@@ -3222,6 +3157,7 @@
 
                     text:
                       message.content
+
                   });
                 }
 
@@ -3233,6 +3169,7 @@
 
                   image_url:
                     message.attachment.data
+
                 });
 
 
@@ -3243,13 +3180,10 @@
 
                   content:
                     content
+
                 };
               }
 
-
-              /*
-                TEXT
-              */
 
               return {
 
@@ -3261,45 +3195,11 @@
                     message.content ||
                     ""
                   )
+
               };
             }
           );
 
-
-      /*
-        =================================================
-        API HEADERS
-        =================================================
-
-        إذا المستخدم مسجل:
-        نرسل التوكن.
-
-        إذا زائر:
-        نرسل الطلب بدون Authorization.
-      */
-
-      const headers = {
-
-        "Content-Type":
-          "application/json"
-      };
-
-
-      if (
-        currentSession &&
-        currentSession.access_token
-      ) {
-
-        headers.Authorization =
-          `Bearer ${
-            currentSession.access_token
-          }`;
-      }
-
-
-      /*
-        API REQUEST
-      */
 
       const response =
         await fetch(
@@ -3309,8 +3209,15 @@
             method:
               "POST",
 
-            headers:
-              headers,
+            headers: {
+
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                `Bearer ${currentSession.access_token}`
+
+            },
 
             body:
               JSON.stringify({
@@ -3319,6 +3226,7 @@
                   apiMessages
 
               })
+
           }
         );
 
@@ -3343,48 +3251,26 @@
       removeTyping();
 
 
-      /*
-        إذا الـ API قال Unauthorized
-      */
-
       if (
-        response.status ===
-        401
+        response.status === 401
       ) {
 
-        /*
-          إذا المستخدم كان مسجل
-          نسوي تسجيل خروج محلي.
+        await supabase.auth.signOut();
 
-          أما الزائر، نخليه يكمل
-          بدون تحويل إلى login.
-        */
+        window.location.href =
+          "/login.html";
 
-        if (currentUser) {
-
-          await supabase.auth.signOut();
-
-          currentSession =
-            null;
-
-          currentUser =
-            null;
-
-          updateAccountUI();
-        }
-
-
-        throw new Error(
-          "انتهت جلسة تسجيل الدخول. حاول مرة ثانية."
-        );
+        return;
       }
 
 
       if (!response.ok) {
 
         throw new Error(
+
           data.error ||
           `خطأ من الخادم (${response.status})`
+
         );
       }
 
@@ -3426,6 +3312,7 @@
 
 
       addMessage(
+
         "assistant",
 
         "عذراً، صار خطأ بالاتصال بالخادم.\n\n" +
@@ -3433,6 +3320,7 @@
           error?.message ||
           "حاول مرة ثانية."
         )
+
       );
 
 
@@ -3448,6 +3336,7 @@
         "↑";
 
       input.focus();
+
     }
   }
 
@@ -3463,6 +3352,7 @@
       event.preventDefault();
 
       sendMessage();
+
     }
   );
 
@@ -3520,6 +3410,7 @@
       newChat();
 
       closeMenu();
+
     }
   );
 
@@ -3531,20 +3422,16 @@
 
 
   /* =====================================================
-     LOGIN
+     LOGIN BUTTON
   ===================================================== */
 
   loginButton.addEventListener(
     "click",
     function() {
 
-      /*
-        ننقل المستخدم إلى
-        صفحة تسجيل الدخول.
-      */
-
       window.location.href =
         "/login.html";
+
     }
   );
 
@@ -3565,14 +3452,8 @@
         "Logout Error:",
         error
       );
+
     }
-
-
-    /*
-      لا نطرد المستخدم من المحادثة.
-
-      فقط نرجعه إلى وضع الزائر.
-    */
 
     currentSession =
       null;
@@ -3580,155 +3461,16 @@
     currentUser =
       null;
 
-
-    /*
-      نغير مساحة التخزين إلى guest
-    */
-
-    loadUserStorage();
-
-
     updateAccountUI();
 
-    renderConversation();
-
-    renderConversationList();
-
-    closeMenu();
+    window.location.href =
+      "/login.html";
   }
 
 
   logoutButton.addEventListener(
     "click",
     logout
-  );
-
-
-  /* =====================================================
-     AUTH STATE CHANGE
-  ===================================================== */
-
-  supabase.auth.onAuthStateChange(
-    (
-      event,
-      session
-    ) => {
-
-      console.log(
-        "Auth Event:",
-        event
-      );
-
-
-      /*
-        SIGNED_IN
-      */
-
-      if (
-        event ===
-        "SIGNED_IN"
-      ) {
-
-        currentSession =
-          session || null;
-
-        currentUser =
-          session?.user || null;
-
-
-        /*
-          بعد تسجيل الدخول
-          ننتقل إلى مساحة تخزين
-          المستخدم الخاصة.
-        */
-
-        loadUserStorage();
-
-
-        updateAccountUI();
-
-        renderConversation();
-
-        renderConversationList();
-
-        return;
-      }
-
-
-      /*
-        TOKEN REFRESH
-      */
-
-      if (
-        event ===
-        "TOKEN_REFRESHED"
-      ) {
-
-        currentSession =
-          session || null;
-
-        currentUser =
-          session?.user || null;
-
-
-        updateAccountUI();
-
-        return;
-      }
-
-
-      /*
-        SIGNED_OUT
-      */
-
-      if (
-        event ===
-        "SIGNED_OUT"
-      ) {
-
-        currentSession =
-          null;
-
-        currentUser =
-          null;
-
-
-        /*
-          لا redirect إلى login.
-
-          المستخدم يبقى داخل الموقع
-          كزائر.
-        */
-
-        loadUserStorage();
-
-        updateAccountUI();
-
-        renderConversation();
-
-        renderConversationList();
-
-        return;
-      }
-
-
-      /*
-        SESSION UPDATED
-      */
-
-      if (
-        session
-      ) {
-
-        currentSession =
-          session;
-
-        currentUser =
-          session.user;
-
-        updateAccountUI();
-      }
-    }
   );
 
 
@@ -3743,12 +3485,12 @@
       this.style.height =
         "52px";
 
-
       this.style.height =
         Math.min(
           this.scrollHeight,
           150
         ) + "px";
+
     }
   );
 
@@ -3762,15 +3504,16 @@
     function(event) {
 
       if (
-        event.key ===
-          "Enter" &&
+        event.key === "Enter" &&
         !event.shiftKey
       ) {
 
         event.preventDefault();
 
         sendMessage();
+
       }
+
     }
   );
 
@@ -3795,8 +3538,7 @@
 
 
             if (
-              active ===
-              input
+              active === input
             ) {
 
               setTimeout(
@@ -3807,12 +3549,66 @@
                 },
                 50
               );
+
             }
+
           }
         );
+
       }
     );
   }
+
+
+  /* =====================================================
+     SUPABASE AUTH STATE
+  ===================================================== */
+
+  supabase.auth.onAuthStateChange(
+    (event, session) => {
+
+      currentSession =
+        session || null;
+
+
+      currentUser =
+        session?.user || null;
+
+
+      /*
+        إذا صار تسجيل خروج
+        نخلي الصفحة كزائر
+        بدون إجبار على تسجيل الدخول
+      */
+
+      updateAccountUI();
+
+
+      if (
+        currentUser
+      ) {
+
+        loadUserStorage();
+
+        renderConversation();
+
+        renderConversationList();
+
+      } else {
+
+        /*
+          تخزين الزائر مستقل
+        */
+
+        loadUserStorage();
+
+        renderConversation();
+
+        renderConversationList();
+
+      }
+    }
+  );
 
 
   /* =====================================================
@@ -3821,32 +3617,68 @@
 
   async function startApp() {
 
-    /*
-      نقرأ جلسة Supabase
-      لكن لا نجبر المستخدم على تسجيل الدخول.
-    */
+    try {
 
-    await loadAuthState();
+      /*
+        هنا لا نفرض تسجيل الدخول.
+        المستخدم يدخل مباشرة كزائر.
+      */
+
+      const {
+        data,
+        error
+      } =
+        await supabase.auth.getSession();
 
 
-    /*
-      تحديث واجهة الحساب
-    */
+      if (error) {
+
+        console.error(
+          "Session Error:",
+          error
+        );
+
+        currentSession =
+          null;
+
+        currentUser =
+          null;
+
+      } else {
+
+        currentSession =
+          data?.session || null;
+
+        currentUser =
+          data?.session?.user || null;
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Start App Error:",
+        error
+      );
+
+      currentSession =
+        null;
+
+      currentUser =
+        null;
+    }
+
 
     updateAccountUI();
 
 
     /*
       تحميل محادثات المستخدم
-      أو محادثات الزائر.
+      أو محادثات الزائر
     */
 
     loadUserStorage();
 
-
-    /*
-      لا توجد محادثات
-    */
 
     if (
       !conversations.length
@@ -3859,13 +3691,7 @@
 
       showWelcome();
 
-    }
-
-    /*
-      توجد محادثات
-    */
-
-    else {
+    } else {
 
       let active =
         getActiveConversation();
@@ -3886,17 +3712,13 @@
     }
 
 
-    /*
-      قائمة المحادثات
-    */
-
     renderConversationList();
   }
 
 
-  /*
-    تشغيل التطبيق
-  */
+  /* =====================================================
+     RUN
+  ===================================================== */
 
   startApp();
 
