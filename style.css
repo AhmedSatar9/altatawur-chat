@@ -1049,3 +1049,394 @@ input:focus-visible {
     }
 
 }
+/* ==========================================
+   AUTH PAGE
+========================================== */
+
+.auth-page {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 24px;
+
+}
+
+
+.auth-wrapper {
+
+    width: 100%;
+
+    max-width: 620px;
+
+}
+
+
+.auth-card {
+
+    background:
+        rgba(14, 20, 39, 0.94);
+
+    border:
+        1px solid
+        rgba(128, 145, 190, 0.20);
+
+    border-radius: 30px;
+
+    padding: 42px;
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, 0.35);
+
+    text-align: center;
+
+}
+
+
+.auth-card .logo-box {
+
+    width: 78px;
+
+    height: 78px;
+
+    margin:
+        0
+        auto
+        20px;
+
+    border-radius: 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+
+    font-size: 44px;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8055f6,
+            #21c7e9
+        );
+
+    box-shadow:
+        0 15px 35px
+        rgba(45, 180, 235, 0.22);
+
+}
+
+
+.auth-card h1 {
+
+    margin: 0;
+
+    font-size: 38px;
+
+}
+
+
+.auth-subtitle {
+
+    color: #929ab4;
+
+    font-size: 18px;
+
+    margin:
+        12px
+        0
+        30px;
+
+    line-height: 1.7;
+
+}
+
+
+.auth-tabs {
+
+    display: flex;
+
+    background:
+        #070c19;
+
+    border-radius: 20px;
+
+    padding: 6px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.auth-tab {
+
+    flex: 1;
+
+    border: 0;
+
+    background:
+        transparent;
+
+    color: #8f97ae;
+
+    padding: 17px;
+
+    border-radius: 15px;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+
+}
+
+
+.auth-tab.active {
+
+    background:
+        #121a31;
+
+    color: white;
+
+}
+
+
+.auth-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    text-align: right;
+
+    gap: 10px;
+
+}
+
+
+.auth-form label {
+
+    color: #d7dbea;
+
+    font-size: 16px;
+
+    margin-top: 8px;
+
+}
+
+
+.auth-form input {
+
+    width: 100%;
+
+    height: 60px;
+
+    padding:
+        0
+        18px;
+
+    border-radius: 18px;
+
+    border:
+        1px solid
+        rgba(129, 143, 180, 0.20);
+
+    background:
+        #070c19;
+
+    color: white;
+
+    outline: none;
+
+    font-size: 17px;
+
+}
+
+
+.auth-form input:focus {
+
+    border-color:
+        #45c8ed;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(69, 200, 237, 0.10);
+
+}
+
+
+.primary-button {
+
+    margin-top: 20px;
+
+    height: 62px;
+
+    border: 0;
+
+    border-radius: 20px;
+
+    color: white;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            100deg,
+            #8055f6,
+            #22c8e9
+        );
+
+    transition:
+        0.2s ease;
+
+}
+
+
+.primary-button:hover {
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.primary-button:disabled {
+
+    opacity: 0.65;
+
+    cursor: wait;
+
+    transform: none;
+
+}
+
+
+.message {
+
+    padding: 16px;
+
+    margin-bottom: 20px;
+
+    border-radius: 18px;
+
+    font-size: 15px;
+
+    line-height: 1.7;
+
+    text-align: right;
+
+}
+
+
+.message.error {
+
+    color: #ffb2bd;
+
+    background:
+        rgba(255, 65, 92, 0.08);
+
+    border:
+        1px solid
+        rgba(255, 65, 92, 0.30);
+
+}
+
+
+.message.success {
+
+    color: #79e8c0;
+
+    background:
+        rgba(57, 220, 163, 0.08);
+
+    border:
+        1px solid
+        rgba(57, 220, 163, 0.30);
+
+}
+
+
+.terms {
+
+    color: #727c97;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    margin-top: 28px;
+
+}
+
+
+.back-link {
+
+    display: inline-block;
+
+    color: #aeb7cf;
+
+    margin-top: 18px;
+
+    text-decoration: none;
+
+}
+
+
+.back-link:hover {
+
+    color: white;
+
+}
+
+
+@media (max-width: 700px) {
+
+    .auth-page {
+
+        padding: 15px;
+
+    }
+
+
+    .auth-card {
+
+        padding:
+            28px
+            20px;
+
+        border-radius: 24px;
+
+    }
+
+
+    .auth-card h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .auth-subtitle {
+
+        font-size: 16px;
+
+    }
+
+}
