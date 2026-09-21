@@ -2,43 +2,36 @@ import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 
 
-const openai =
-    new OpenAI({
+// ==========================================
+// OPENAI
+// ==========================================
 
-        apiKey:
-            process.env.OPENAI_API_KEY
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
 
-    });
 
+// ==========================================
+// SUPABASE ADMIN
+// ==========================================
 
-const supabaseAdmin =
-    createClient(
-
-        process.env.SUPABASE_URL,
-
-        process.env.SUPABASE_SECRET_KEY,
-
-        {
-
-            auth: {
-
-                autoRefreshToken:
-                    false,
-
-                persistSession:
-                    false
-
-            }
-
+const supabaseAdmin = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SECRET_KEY,
+    {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false
         }
+    }
+);
 
-    );
 
+// ==========================================
+// API HANDLER
+// ==========================================
 
-export default async function handler(
-    req,
-    res
-) {
+export default async function handler(req, res) {
 
     // ======================================
     // METHOD
@@ -47,10 +40,7 @@ export default async function handler(
     if (req.method !== "POST") {
 
         return res.status(405).json({
-
-            error:
-                "Method Not Allowed"
-
+            error: "Method Not Allowed"
         });
 
     }
@@ -59,7 +49,7 @@ export default async function handler(
     try {
 
         // ==================================
-        // AUTHORIZATION
+        // CHECK AUTHORIZATION
         // ==================================
 
         const authorization =
@@ -68,40 +58,29 @@ export default async function handler(
 
         if (
             !authorization ||
-            !authorization.startsWith(
-                "Bearer "
-            )
+            !authorization.startsWith("Bearer ")
         ) {
 
             return res.status(401).json({
-
-                error:
-                    "يجب تسجيل الدخول أولاً."
-
+                error: "يجب تسجيل الدخول أولاً."
             });
 
         }
 
 
         const token =
-            authorization.substring(
-                7
-            );
+            authorization.substring(7);
 
 
         // ==================================
-        // VERIFY USER
+        // VERIFY SUPABASE USER
         // ==================================
 
         const {
-
             data: userData,
-
             error: userError
-
         } =
-            await supabaseAdmin.auth
-                .getUser(token);
+            await supabaseAdmin.auth.getUser(token);
 
 
         if (
@@ -109,11 +88,13 @@ export default async function handler(
             !userData?.user
         ) {
 
+            console.error(
+                "SUPABASE AUTH ERROR:",
+                userError
+            );
+
             return res.status(401).json({
-
-                error:
-                    "جلسة تسجيل الدخول غير صالحة."
-
+                error: "جلسة تسجيل الدخول غير صالحة."
             });
 
         }
@@ -138,48 +119,42 @@ export default async function handler(
         ) {
 
             return res.status(400).json({
-
-                error:
-                    "لم يتم إرسال أي رسالة."
-
+                error: "لم يتم إرسال أي رسالة."
             });
 
         }
 
 
         // ==================================
-        // SANITIZE MESSAGES
+        // CLEAN MESSAGES
         // ==================================
 
         const safeMessages =
             messages
-
                 .slice(-30)
+                .map((message) => {
 
-                .map(
-                    (message) => ({
+                    const role =
+                        message?.role === "assistant"
+                            ? "assistant"
+                            : "user";
 
-                        role:
-                            message?.role ===
-                            "assistant"
-                                ? "assistant"
-                                : "user",
 
-                        content:
-                            String(
-                                message?.content ||
-                                ""
-                            ).slice(
-                                0,
-                                12000
-                            )
+                    const content =
+                        String(
+                            message?.content || ""
+                        ).trim();
 
-                    })
-                )
 
+                    return {
+                        role,
+                        content: content.slice(0, 12000)
+                    };
+
+                })
                 .filter(
                     message =>
-                        message.content.trim()
+                        message.content.length > 0
                 );
 
 
@@ -188,17 +163,14 @@ export default async function handler(
         ) {
 
             return res.status(400).json({
-
-                error:
-                    "الرسالة فارغة."
-
+                error: "الرسالة فارغة."
             });
 
         }
 
 
         // ==================================
-        // OPENAI
+        // OPENAI REQUEST
         // ==================================
 
         const response =
@@ -209,69 +181,68 @@ export default async function handler(
                     "gpt-5.6-luna",
 
 
-                instructions:
-
-                    `
+                instructions: `
 أنت المساعد الذكي الرسمي لمنصة "التطور چات".
 
 أجب باللغة العربية عندما يكتب المستخدم بالعربية.
 
-يمكنك استخدام اللهجة العراقية بشكل طبيعي عندما يناسب سياق المستخدم.
+إذا كان المستخدم يتحدث باللهجة العراقية، يمكنك الرد باللهجة العراقية بشكل طبيعي.
 
 كن واضحاً ومفيداً ومباشراً.
 
-لا تدّعي تنفيذ أشياء لم تنفذها.
+لا تدّعي تنفيذ أي شيء لم تنفذه فعلياً.
 
-إذا كان السؤال يحتاج معلومات غير متوفرة لديك، وضّح ذلك للمستخدم.
+لا تقل إنك أجريت بحثاً أو استخدمت أداة إذا لم تفعل ذلك.
+
+حافظ على سياق المحادثة السابقة عندما يكون ذلك مناسباً.
+
+إذا لم تكن متأكداً من معلومة، وضّح ذلك بدلاً من اختلاق المعلومات.
 `,
 
 
                 input:
                     safeMessages.map(
                         (message) => ({
-
-                            role:
-                                message.role,
-
-                            content:
-                                message.content
-
+                            role: message.role,
+                            content: message.content
                         })
                     )
 
             });
 
 
+        // ==================================
+        // GET ANSWER
+        // ==================================
+
         const answer =
-            response.output_text ||
+            response.output_text?.trim() ||
             "عذراً، لم أتمكن من إنشاء رد.";
 
 
         // ==================================
-        // RESPONSE
+        // SUCCESS RESPONSE
         // ==================================
 
         return res.status(200).json({
 
             success: true,
 
-            message:
-                answer,
+            message: answer,
 
             user: {
-
-                id:
-                    user.id,
-
-                email:
-                    user.email
-
+                id: user.id,
+                email: user.email
             }
 
         });
 
 
     } catch (error) {
+
+        // ==================================
+        // SERVER ERROR
+        // ==================================
 
         console.error(
             "CHAT API ERROR:",
@@ -282,7 +253,7 @@ export default async function handler(
         return res.status(500).json({
 
             error:
-                "حدث خطأ داخلي في الخادم. حاول مرة أخرى."
+                "حدث خطأ أثناء الاتصال بالمساعد الذكي."
 
         });
 
