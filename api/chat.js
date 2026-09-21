@@ -22,40 +22,22 @@ const MAX_IMAGE_LENGTH = 12 * 1024 * 1024;
 
 export default async function handler(req, res) {
 
-  /* =========================
-     METHOD
-  ========================== */
-
   if (req.method !== "POST") {
-
     return res.status(405).json({
       error: "Method Not Allowed"
     });
-
   }
 
   try {
 
-    /* =========================
-       API KEY CHECK
-    ========================== */
-
     if (!process.env.OPENAI_API_KEY) {
-
-      console.error(
-        "OPENAI_API_KEY is missing"
-      );
+      console.error("OPENAI_API_KEY is missing");
 
       return res.status(500).json({
         error:
           "مفتاح OpenAI غير موجود في إعدادات Vercel."
       });
-
     }
-
-    /* =========================
-       REQUEST BODY
-    ========================== */
 
     const messages =
       Array.isArray(req.body?.messages)
@@ -63,23 +45,13 @@ export default async function handler(req, res) {
         : [];
 
     if (!messages.length) {
-
       return res.status(400).json({
         error: "لا توجد رسائل."
       });
-
     }
-
-    /* =========================
-       LAST MESSAGES
-    ========================== */
 
     const recentMessages =
       messages.slice(-MAX_MESSAGES);
-
-    /* =========================
-       BUILD INPUT
-    ========================== */
 
     const input = [];
 
@@ -87,15 +59,7 @@ export default async function handler(req, res) {
 
       if (!message) continue;
 
-      /* =========================
-         USER
-      ========================== */
-
       if (message.role === "user") {
-
-        /* =========================
-           MULTI CONTENT
-        ========================== */
 
         if (Array.isArray(message.content)) {
 
@@ -104,10 +68,6 @@ export default async function handler(req, res) {
           for (const item of message.content) {
 
             if (!item) continue;
-
-            /* =====================
-               TEXT
-            ====================== */
 
             if (
               item.type === "text" ||
@@ -121,30 +81,22 @@ export default async function handler(req, res) {
                 text.length >
                 MAX_TEXT_LENGTH
               ) {
-
                 text =
                   text.slice(
                     0,
                     MAX_TEXT_LENGTH
                   );
-
               }
 
               if (text.trim()) {
-
                 content.push({
                   type: "input_text",
                   text
                 });
-
               }
 
               continue;
             }
-
-            /* =====================
-               IMAGE
-            ====================== */
 
             if (
               item.type === "image_url" ||
@@ -157,7 +109,6 @@ export default async function handler(req, res) {
                 typeof item.image_url ===
                 "string"
               ) {
-
                 imageUrl =
                   item.image_url;
 
@@ -166,15 +117,9 @@ export default async function handler(req, res) {
                 typeof item.image_url.url ===
                 "string"
               ) {
-
                 imageUrl =
                   item.image_url.url;
-
               }
-
-              /* =====================
-                 IMAGE SECURITY
-              ====================== */
 
               if (
                 imageUrl.startsWith(
@@ -189,29 +134,19 @@ export default async function handler(req, res) {
                   image_url: imageUrl,
                   detail: "high"
                 });
-
               }
-
-              continue;
             }
-
           }
 
           if (content.length) {
-
             input.push({
               role: "user",
               content
             });
-
           }
 
           continue;
         }
-
-        /* =========================
-           NORMAL TEXT
-        ========================== */
 
         let text =
           String(
@@ -222,17 +157,14 @@ export default async function handler(req, res) {
           text.length >
           MAX_TEXT_LENGTH
         ) {
-
           text =
             text.slice(
               0,
               MAX_TEXT_LENGTH
             );
-
         }
 
         if (text.trim()) {
-
           input.push({
             role: "user",
             content: [
@@ -242,15 +174,10 @@ export default async function handler(req, res) {
               }
             ]
           });
-
         }
 
         continue;
       }
-
-      /* =========================
-         ASSISTANT
-      ========================== */
 
       if (
         message.role === "assistant"
@@ -265,17 +192,14 @@ export default async function handler(req, res) {
           text.length >
           MAX_TEXT_LENGTH
         ) {
-
           text =
             text.slice(
               0,
               MAX_TEXT_LENGTH
             );
-
         }
 
         if (text.trim()) {
-
           input.push({
             role: "assistant",
             content: [
@@ -285,29 +209,16 @@ export default async function handler(req, res) {
               }
             ]
           });
-
         }
-
       }
-
     }
 
-    /* =========================
-       VALIDATION
-    ========================== */
-
     if (!input.length) {
-
       return res.status(400).json({
         error:
           "لم يتم العثور على محتوى صالح."
       });
-
     }
-
-    /* =========================
-       OPENAI REQUEST
-    ========================== */
 
     const response =
       await client.responses.create({
@@ -316,7 +227,6 @@ export default async function handler(req, res) {
           "gpt-5.6-luna",
 
         instructions: `
-
 أنت المساعد الرسمي لمنصة "التطور چات".
 
 أجب بالعربية بشكل واضح ومفيد.
@@ -349,7 +259,6 @@ export default async function handler(req, res) {
 - لا تكرر السؤال بلا حاجة.
 - لا تدّعي تنفيذ إجراء لم تنفذه.
 - إذا لم تعرف شيئاً، قل ذلك بوضوح.
-
 `,
 
         input,
@@ -357,10 +266,6 @@ export default async function handler(req, res) {
         store: false
 
       });
-
-    /* =========================
-       RESPONSE TEXT
-    ========================== */
 
     const reply =
       response.output_text ||
@@ -377,31 +282,18 @@ export default async function handler(req, res) {
         error:
           "لم يتم استلام رد من الذكاء الاصطناعي."
       });
-
     }
-
-    /* =========================
-       CACHE
-    ========================== */
 
     res.setHeader(
       "Cache-Control",
       "no-store"
     );
 
-    /* =========================
-       SUCCESS
-    ========================== */
-
     return res.status(200).json({
       reply
     });
 
   } catch (error) {
-
-    /* =========================
-       DETAILED ERROR LOG
-    ========================== */
 
     console.error(
       "=============================="
@@ -445,10 +337,6 @@ export default async function handler(req, res) {
       "=============================="
     );
 
-    /* =========================
-       ERROR INFORMATION
-    ========================== */
-
     const status =
       Number(error?.status) || 500;
 
@@ -461,10 +349,6 @@ export default async function handler(req, res) {
     const message =
       error?.message ||
       "حدث خطأ أثناء معالجة الطلب.";
-
-    /* =========================
-       RATE LIMIT
-    ========================== */
 
     if (
       status === 429 &&
@@ -482,12 +366,7 @@ export default async function handler(req, res) {
         debug:
           message
       });
-
     }
-
-    /* =========================
-       QUOTA / BILLING
-    ========================== */
 
     if (
       status === 429 &&
@@ -506,12 +385,7 @@ export default async function handler(req, res) {
         debug:
           message
       });
-
     }
-
-    /* =========================
-       AUTHENTICATION
-    ========================== */
 
     if (status === 401) {
 
@@ -523,12 +397,7 @@ export default async function handler(req, res) {
         debug:
           message
       });
-
     }
-
-    /* =========================
-       PERMISSION
-    ========================== */
 
     if (status === 403) {
 
@@ -540,12 +409,7 @@ export default async function handler(req, res) {
         debug:
           message
       });
-
     }
-
-    /* =========================
-       MODEL ERROR
-    ========================== */
 
     if (status === 404) {
 
@@ -557,22 +421,21 @@ export default async function handler(req, res) {
         debug:
           message
       });
-
     }
 
-    /* =========================
-       GENERIC ERROR
-    ========================== */
-
-    return res.status(status >= 400 ? status : 500).json({
+    return res.status(
+      status >= 400
+        ? status
+        : 500
+    ).json({
       error:
         "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.",
       error_type:
-        type || code || "unknown",
+        type ||
+        code ||
+        "unknown",
       debug:
         message
     });
-
   }
-
 }
