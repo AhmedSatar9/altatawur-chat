@@ -1,32 +1,24 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
-
   <title>تسجيل الدخول — التطور چات</title>
-
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     :root {
       --bg: #070912;
       --panel: #0d1222;
       --panel2: #11182a;
       --border: rgba(255, 255, 255, 0.10);
-
       --text: #f5f7ff;
       --muted: #8d96aa;
-
       --purple: #8b5cf6;
       --cyan: #22d3ee;
-
       --gradient:
         linear-gradient(
           135deg,
@@ -34,20 +26,17 @@
           #22d3ee
         );
     }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     html,
     body {
       width: 100%;
       min-height: 100%;
       background: var(--bg);
     }
-
     body {
       font-family:
         -apple-system,
@@ -55,505 +44,333 @@
         "Segoe UI",
         Arial,
         sans-serif;
-
       color: var(--text);
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       padding: 20px;
-
       position: relative;
-
       overflow-x: hidden;
     }
-
     /* =========================
        BACKGROUND
     ========================== */
-
     body::before {
       content: "";
-
       position: fixed;
-
       width: 520px;
       height: 520px;
-
       border-radius: 50%;
-
       background:
         radial-gradient(
           circle,
           rgba(139, 92, 246, 0.18),
           transparent 68%
         );
-
       top: -200px;
       right: -180px;
-
       pointer-events: none;
     }
-
     body::after {
       content: "";
-
       position: fixed;
-
       width: 520px;
       height: 520px;
-
       border-radius: 50%;
-
       background:
         radial-gradient(
           circle,
           rgba(34, 211, 238, 0.11),
           transparent 68%
         );
-
       bottom: -230px;
       left: -190px;
-
       pointer-events: none;
     }
-
     /* =========================
        CARD
     ========================== */
-
     .card {
       width: 100%;
       max-width: 440px;
-
       background:
         rgba(13, 18, 34, 0.96);
-
       border:
         1px solid var(--border);
-
       border-radius: 28px;
-
       padding: 30px;
-
       box-shadow:
         0 30px 90px rgba(0, 0, 0, 0.42);
-
       position: relative;
-
       z-index: 2;
     }
-
     /* =========================
        BRAND
     ========================== */
-
     .brand {
       text-align: center;
-
       margin-bottom: 25px;
     }
-
     .logo {
       width: 78px;
       height: 78px;
-
       border-radius: 24px;
-
       background: var(--gradient);
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       font-size: 40px;
       font-weight: 900;
-
       margin: 0 auto 16px;
-
       box-shadow:
         0 18px 50px rgba(100, 90, 255, 0.25);
     }
-
     h1 {
       font-size: 28px;
-
       margin-bottom: 7px;
     }
-
     .subtitle {
       color: var(--muted);
-
       font-size: 14px;
-
       line-height: 1.8;
     }
-
     /* =========================
        MESSAGE
     ========================== */
-
     .message {
       display: none;
-
       padding: 12px 14px;
-
       border-radius: 13px;
-
       font-size: 13px;
-
       line-height: 1.8;
-
       margin-bottom: 14px;
     }
-
     .message.show {
       display: block;
     }
-
     .message.success {
       background:
         rgba(110, 231, 183, 0.08);
-
       border:
         1px solid rgba(110, 231, 183, 0.22);
-
       color: #9af0c9;
     }
-
     .message.error {
       background:
         rgba(255, 107, 129, 0.08);
-
       border:
         1px solid rgba(255, 107, 129, 0.22);
-
       color: #ffb0bd;
     }
-
     /* =========================
        TABS
     ========================== */
-
     .tabs {
       display: grid;
-
       grid-template-columns: 1fr 1fr;
-
       gap: 7px;
-
       background: #090e1b;
-
       padding: 5px;
-
       border-radius: 15px;
-
       margin-bottom: 20px;
     }
-
     .tab {
       border: 0;
-
       background: transparent;
-
       color: var(--muted);
-
       padding: 12px;
-
       border-radius: 11px;
-
       cursor: pointer;
-
       font-size: 14px;
-
       transition: 0.2s ease;
     }
-
     .tab.active {
       background: var(--panel2);
-
       color: #fff;
-
       box-shadow:
         0 5px 20px rgba(0, 0, 0, 0.16);
     }
-
     .tab:active {
       transform: scale(0.98);
     }
-
     /* =========================
        FORM
     ========================== */
-
     .form {
       display: flex;
-
       flex-direction: column;
-
       gap: 14px;
     }
-
     .field {
       display: flex;
-
       flex-direction: column;
-
       gap: 7px;
     }
-
     .field label {
       font-size: 13px;
-
       color: #cfd5e5;
     }
-
     .field input {
       width: 100%;
-
       height: 52px;
-
       border:
         1px solid var(--border);
-
       border-radius: 14px;
-
       background: #090e1b;
-
       color: #fff;
-
       outline: none;
-
       padding:
         0 14px;
-
       font-size: 15px;
-
       direction: ltr;
-
       text-align: left;
-
       transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
     }
-
     .field input::placeholder {
       color: #586177;
     }
-
     .field input:focus {
       border-color:
         rgba(139, 92, 246, 0.7);
-
       box-shadow:
         0 0 0 3px
         rgba(139, 92, 246, 0.10);
     }
-
     /* =========================
        SUBMIT
     ========================== */
-
     .submit {
       width: 100%;
-
       height: 53px;
-
       border: 0;
-
       border-radius: 15px;
-
       background: var(--gradient);
-
       color: #fff;
-
       font-size: 16px;
-
       font-weight: 700;
-
       cursor: pointer;
-
       margin-top: 5px;
-
       transition:
         transform 0.15s ease,
         opacity 0.2s ease;
     }
-
     .submit:hover {
       transform: translateY(-1px);
     }
-
     .submit:active {
       transform: scale(0.985);
     }
-
     .submit:disabled {
       opacity: 0.55;
-
       cursor: not-allowed;
-
       transform: none;
     }
-
     /* =========================
        VERIFY
     ========================== */
-
     .verify {
       display: none;
-
       text-align: center;
-
       padding: 12px 0 4px;
     }
-
     .verify.show {
       display: block;
     }
-
     .verify-icon {
       font-size: 42px;
-
       margin-bottom: 12px;
     }
-
     .verify h2 {
       font-size: 21px;
-
       margin-bottom: 9px;
     }
-
     .verify p {
       color: var(--muted);
-
       font-size: 13px;
-
       line-height: 1.9;
     }
-
     /* =========================
        FOOTER
     ========================== */
-
     .terms {
       text-align: center;
-
       color: #68738b;
-
       font-size: 11px;
-
       line-height: 1.8;
-
       margin-top: 18px;
     }
-
     .back {
       display: block;
-
       text-align: center;
-
       color: #9ea8bb;
-
       text-decoration: none;
-
       font-size: 13px;
-
       margin-top: 18px;
-
       transition: 0.2s;
     }
-
     .back:hover {
       color: #fff;
     }
-
     /* =========================
        MOBILE
     ========================== */
-
     @media (max-width: 480px) {
-
       body {
         padding: 13px;
       }
-
       .card {
         padding: 23px 18px;
-
         border-radius: 23px;
       }
-
       .logo {
         width: 69px;
         height: 69px;
-
         border-radius: 21px;
-
         font-size: 35px;
       }
-
       .brand {
         margin-bottom: 19px;
       }
-
       h1 {
         font-size: 25px;
       }
-
       .subtitle {
         font-size: 13px;
       }
     }
   </style>
 </head>
-
 <body>
-
   <main class="card">
-
     <!-- =========================
          BRAND
     ========================== -->
-
     <div class="brand">
-
       <div class="logo">
         ت
       </div>
-
       <h1>
         التطور چات
       </h1>
-
       <p class="subtitle">
         سجّل دخولك حتى تبدأ محادثاتك مع المساعد الذكي.
       </p>
-
     </div>
-
-
     <!-- =========================
          MESSAGE
     ========================== -->
-
     <div
       id="message"
       class="message"
       role="alert"
     ></div>
-
-
     <!-- =========================
          AUTH SECTION
     ========================== -->
-
     <section id="authSection">
-
       <div class="tabs">
-
         <button
           class="tab active"
           id="loginTab"
@@ -561,7 +378,6 @@
         >
           تسجيل الدخول
         </button>
-
         <button
           class="tab"
           id="signupTab"
@@ -569,25 +385,23 @@
         >
           إنشاء حساب
         </button>
-
       </div>
-
-
+      <!--
+        مهم:
+        onsubmit يمنع المتصفح من إعادة تحميل الصفحة
+        ويشغل handleAuthSubmit مباشرة.
+      -->
       <form
-  class="form"
-  id="authForm"
-  novalidate
-  onsubmit="handleAuthSubmit(event)"
->
-
+        class="form"
+        id="authForm"
+        novalidate
+        onsubmit="handleAuthSubmit(event)"
+      >
         <!-- EMAIL -->
-
         <div class="field">
-
           <label for="email">
             البريد الإلكتروني
           </label>
-
           <input
             id="email"
             type="email"
@@ -596,18 +410,12 @@
             required
             placeholder="example@email.com"
           >
-
         </div>
-
-
         <!-- PASSWORD -->
-
         <div class="field">
-
           <label for="password">
             كلمة المرور
           </label>
-
           <input
             id="password"
             type="password"
@@ -616,12 +424,8 @@
             required
             placeholder="••••••••"
           >
-
         </div>
-
-
         <!-- SUBMIT -->
-
         <button
           class="submit"
           id="submitButton"
@@ -629,35 +433,26 @@
         >
           تسجيل الدخول
         </button>
-
       </form>
-
     </section>
-
-
     <!-- =========================
          VERIFY SECTION
     ========================== -->
-
     <section
       class="verify"
       id="verifySection"
     >
-
       <div class="verify-icon">
         📩
       </div>
-
       <h2>
         تحقق من بريدك الإلكتروني
       </h2>
-
       <p>
         أرسلنا لك رسالة تأكيد.
         افتح بريدك واضغط رابط التأكيد،
         وبعدها ارجع للموقع وسجّل دخولك.
       </p>
-
       <button
         class="submit"
         id="backToLogin"
@@ -666,577 +461,412 @@
       >
         العودة لتسجيل الدخول
       </button>
-
     </section>
-
-
     <!-- =========================
          FOOTER
     ========================== -->
-
     <p class="terms">
       باستخدامك التطور چات،
       أنت توافق على استخدام الخدمة وفق إعدادات المنصة.
     </p>
-
     <a
       class="back"
       href="/"
     >
       العودة إلى التطور چات
     </a>
-
   </main>
-
-
   <script>
-
     /* =========================================
        SUPABASE CONFIG
     ========================================== */
-
     const SUPABASE_URL =
       "https://wxsricscchalzvazdbzd.supabase.co";
-
     const SUPABASE_PUBLISHABLE_KEY =
       "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
-
-
     /* =========================================
        CREATE SUPABASE CLIENT
     ========================================== */
-
-    const supabase =
+    const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_PUBLISHABLE_KEY
       );
-
-
     /* =========================================
        ELEMENTS
     ========================================== */
-
     const loginTab =
       document.getElementById("loginTab");
-
     const signupTab =
       document.getElementById("signupTab");
-
-    const authForm =
-      document.getElementById("authForm");
-
     const emailInput =
       document.getElementById("email");
-
     const passwordInput =
       document.getElementById("password");
-
     const submitButton =
       document.getElementById("submitButton");
-
     const message =
       document.getElementById("message");
-
     const authSection =
       document.getElementById("authSection");
-
     const verifySection =
       document.getElementById("verifySection");
-
     const backToLogin =
       document.getElementById("backToLogin");
-
-
     /* =========================================
        STATE
     ========================================== */
-
     let mode = "login";
-
-
     /* =========================================
        MESSAGE
     ========================================== */
-
     function showMessage(
       text,
       type = "error"
     ) {
-
       message.textContent = text;
-
       message.className =
-        `message show ${type}`;
+        "message show " + type;
     }
-
-
     function clearMessage() {
-
       message.textContent = "";
-
       message.className =
         "message";
     }
-
-
     /* =========================================
        CHANGE LOGIN / SIGNUP MODE
     ========================================== */
-
     function setMode(nextMode) {
-
       mode = nextMode;
-
       clearMessage();
-
       loginTab.classList.toggle(
         "active",
         mode === "login"
       );
-
       signupTab.classList.toggle(
         "active",
         mode === "signup"
       );
-
       submitButton.textContent =
         mode === "login"
           ? "تسجيل الدخول"
           : "إنشاء الحساب";
-
       passwordInput.autocomplete =
         mode === "login"
           ? "current-password"
           : "new-password";
     }
-
-
-    loginTab.addEventListener(
-      "click",
-      () => {
-        setMode("login");
-      }
-    );
-
-
-    signupTab.addEventListener(
-      "click",
-      () => {
-        setMode("signup");
-      }
-    );
-
-
+    /* =========================================
+       LOGIN TAB
+    ========================================== */
+    loginTab.onclick = function () {
+      setMode("login");
+    };
+    /* =========================================
+       SIGNUP TAB
+    ========================================== */
+    signupTab.onclick = function () {
+      setMode("signup");
+    };
     /* =========================================
        BACK TO LOGIN
     ========================================== */
-
-    backToLogin.addEventListener(
-      "click",
-      () => {
-
-        verifySection.classList.remove(
-          "show"
-        );
-
-        authSection.style.display =
-          "block";
-
-        setMode("login");
-
-        emailInput.focus();
-      }
-    );
-
-
+    backToLogin.onclick = function () {
+      verifySection.classList.remove(
+        "show"
+      );
+      authSection.style.display =
+        "block";
+      setMode("login");
+      emailInput.focus();
+    };
     /* =========================================
-       VALIDATION
+       AUTH SUBMIT
     ========================================== */
-
-    function validateForm() {
-
+    async function handleAuthSubmit(event) {
+      /*
+        هذا يمنع المتصفح من إعادة تحميل الصفحة
+        عند الضغط على تسجيل الدخول.
+      */
+      event.preventDefault();
+      event.stopPropagation();
+      clearMessage();
+      /* =====================================
+         GET VALUES
+      ===================================== */
       const email =
         emailInput.value.trim();
-
       const password =
         passwordInput.value;
-
-
+      /* =====================================
+         VALIDATION
+      ===================================== */
       if (!email) {
-
         showMessage(
           "اكتب البريد الإلكتروني."
         );
-
         emailInput.focus();
-
         return false;
       }
-
-
       if (!emailInput.checkValidity()) {
-
         showMessage(
           "اكتب بريد إلكتروني صحيح."
         );
-
         emailInput.focus();
-
         return false;
       }
-
-
       if (!password) {
-
         showMessage(
           "اكتب كلمة المرور."
         );
-
         passwordInput.focus();
-
         return false;
       }
-
-
       if (password.length < 6) {
-
         showMessage(
           "كلمة المرور يجب أن تكون 6 أحرف على الأقل."
         );
-
         passwordInput.focus();
-
         return false;
       }
-
-
-      return true;
-    }
-
-
-    /* =========================================
-       AUTH FORM
-    ========================================== */
-
-    authForm.addEventListener(
-      "submit",
-      async function(event) {
-
-        event.preventDefault();
-
-        clearMessage();
-
-
-        if (!validateForm()) {
-          return;
-        }
-
-
-        const email =
-          emailInput.value.trim();
-
-        const password =
-          passwordInput.value;
-
-
-        submitButton.disabled =
-          true;
-
-
-        submitButton.textContent =
-          mode === "login"
-            ? "جاري تسجيل الدخول..."
-            : "جاري إنشاء الحساب...";
-
-
-        try {
-
-          /* =========================
-             SIGN UP
-          ========================== */
-
-          if (mode === "signup") {
-
-            const {
-              data,
-              error
-            } =
-              await supabase.auth.signUp({
-                email: email,
-                password: password,
-
-                options: {
-                  emailRedirectTo:
-                    `${window.location.origin}/login.html`
-                }
-              });
-
-
-            if (error) {
-              throw error;
-            }
-
-
-            /*
-             إذا Supabase أنشأ جلسة مباشرة
-             ندخل للموقع.
-            */
-
-            if (data && data.session) {
-
-              window.location.replace("/");
-
-              return;
-            }
-
-
-            /*
-             إذا يحتاج تأكيد البريد
-            */
-
-            authSection.style.display =
-              "none";
-
-            verifySection.classList.add(
-              "show"
-            );
-
-            showMessage(
-              "تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط التأكيد.",
-              "success"
-            );
-
-            return;
-          }
-
-
-          /* =========================
-             LOGIN
-          ========================== */
-
+      /* =====================================
+         LOADING
+      ===================================== */
+      submitButton.disabled =
+        true;
+      submitButton.textContent =
+        mode === "login"
+          ? "جاري تسجيل الدخول..."
+          : "جاري إنشاء الحساب...";
+      try {
+        /* =====================================
+           SIGN UP
+        ===================================== */
+        if (mode === "signup") {
           const {
             data,
             error
           } =
-            await supabase.auth.signInWithPassword({
+            await supabaseClient.auth.signUp({
               email: email,
-              password: password
+              password: password,
+              options: {
+                emailRedirectTo:
+                  window.location.origin +
+                  "/login.html"
+              }
             });
-
-
+          console.log(
+            "SUPABASE SIGNUP RESULT:",
+            data,
+            error
+          );
           if (error) {
             throw error;
           }
-
-
           /*
-             التأكد من وجود Session
+            إذا Supabase أنشأ Session مباشرة
           */
-
           if (
-            !data ||
-            !data.session
+            data &&
+            data.session
           ) {
-
-            throw new Error(
-              "لم يتم إنشاء جلسة تسجيل دخول."
-            );
+            window.location.href =
+              "/";
+            return false;
           }
-
-
           /*
-             تسجيل الدخول نجح
-             العودة للصفحة الرئيسية
+            يحتاج تأكيد البريد
           */
-
-          window.location.replace("/");
-
-        }
-
-
-        /* =========================
-           ERROR
-        ========================== */
-
-        catch (error) {
-
-          console.error(
-            "Authentication Error:",
-            error
+          authSection.style.display =
+            "none";
+          verifySection.classList.add(
+            "show"
           );
-
-
-          const raw =
-            error &&
-            error.message
-              ? error.message
-              : "حدث خطأ، حاول مرة ثانية.";
-
-
-          let text =
-            raw;
-
-
-          if (
-            /invalid login credentials/i
-              .test(raw)
-          ) {
-
-            text =
-              "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
-          }
-
-          else if (
-            /email not confirmed/i
-              .test(raw)
-          ) {
-
-            text =
-              "لازم تأكد بريدك الإلكتروني أولاً.";
-
-          }
-
-          else if (
-            /user already registered/i
-              .test(raw)
-          ) {
-
-            text =
-              "هذا البريد مسجل مسبقاً. جرّب تسجيل الدخول.";
-
-          }
-
-          else if (
-            /password/i.test(raw) &&
-            /6/i.test(raw)
-          ) {
-
-            text =
-              "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
-
-          }
-
-          else if (
-            /invalid email/i.test(raw)
-          ) {
-
-            text =
-              "البريد الإلكتروني غير صحيح.";
-
-          }
-
-
           showMessage(
-            text,
-            "error"
+            "تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط التأكيد.",
+            "success"
           );
-
+          return false;
         }
-
-
-        /* =========================
-           RESET BUTTON
-        ========================== */
-
-        finally {
-
-          submitButton.disabled =
-            false;
-
-          submitButton.textContent =
-            mode === "login"
-              ? "تسجيل الدخول"
-              : "إنشاء الحساب";
-        }
-
-      }
-    );
-
-
-    /* =========================================
-       CHECK EXISTING SESSION
-    ========================================== */
-
-    async function start() {
-
-      try {
-
+        /* =====================================
+           LOGIN
+        ===================================== */
         const {
           data,
           error
         } =
-          await supabase.auth.getSession();
-
-
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+        console.log(
+          "SUPABASE LOGIN RESULT:",
+          data,
+          error
+        );
         if (error) {
-
+          throw error;
+        }
+        /*
+          تأكد من وجود Session
+        */
+        if (
+          !data ||
+          !data.session
+        ) {
+          throw new Error(
+            "لم يتم إنشاء جلسة تسجيل الدخول."
+          );
+        }
+        /* =====================================
+           LOGIN SUCCESS
+        ===================================== */
+        showMessage(
+          "تم تسجيل الدخول بنجاح...",
+          "success"
+        );
+        /*
+          الانتقال للصفحة الرئيسية
+        */
+        setTimeout(
+          function () {
+            window.location.href =
+              "/";
+          },
+          300
+        );
+      }
+      /* =====================================
+         ERROR
+      ===================================== */
+      catch (error) {
+        console.error(
+          "SUPABASE AUTH ERROR:",
+          error
+        );
+        const raw =
+          error &&
+          error.message
+            ? error.message
+            : "";
+        let text =
+          "حدث خطأ أثناء تسجيل الدخول. حاول مرة ثانية.";
+        if (
+          /invalid login credentials/i
+            .test(raw)
+        ) {
+          text =
+            "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+        }
+        else if (
+          /email not confirmed/i
+            .test(raw)
+        ) {
+          text =
+            "لازم تأكد بريدك الإلكتروني أولاً.";
+        }
+        else if (
+          /user already registered/i
+            .test(raw)
+        ) {
+          text =
+            "هذا البريد مسجل مسبقاً. جرّب تسجيل الدخول.";
+        }
+        else if (
+          /invalid email/i
+            .test(raw)
+        ) {
+          text =
+            "البريد الإلكتروني غير صحيح.";
+        }
+        else if (
+          /failed to fetch/i
+            .test(raw)
+        ) {
+          text =
+            "تعذر الاتصال بخادم تسجيل الدخول. تأكد من اتصال الإنترنت.";
+        }
+        else if (
+          /password/i.test(raw) &&
+          /6/i.test(raw)
+        ) {
+          text =
+            "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
+        }
+        showMessage(
+          text,
+          "error"
+        );
+      }
+      /* =====================================
+         RESET BUTTON
+      ===================================== */
+      finally {
+        submitButton.disabled =
+          false;
+        submitButton.textContent =
+          mode === "login"
+            ? "تسجيل الدخول"
+            : "إنشاء الحساب";
+      }
+      return false;
+    }
+    /* =========================================
+       CHECK EXISTING SESSION
+    ========================================== */
+    async function start() {
+      try {
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.getSession();
+        if (error) {
           console.error(
-            "Session Error:",
+            "SESSION ERROR:",
             error
           );
-
           return;
         }
-
-
         /*
           إذا المستخدم مسجل دخول بالفعل
-          لا نخليه يبقى بصفحة تسجيل الدخول.
         */
-
         if (
           data &&
           data.session
         ) {
-
-          window.location.replace("/");
-
+          window.location.href =
+            "/";
           return;
         }
-
-
         /*
-          إذا جاي من الصفحة الرئيسية
-          بسبب عدم تأكيد البريد.
+          تحقق من verify=1
         */
-
         const params =
           new URLSearchParams(
             window.location.search
           );
-
-
         if (
           params.get("verify") === "1"
         ) {
-
           showMessage(
             "تأكد من بريدك الإلكتروني حتى تقدر تدخل للموقع.",
             "success"
           );
         }
-
       }
-
       catch (error) {
-
         console.error(
-          "Startup Error:",
+          "START ERROR:",
           error
         );
       }
     }
-
-
     /* =========================================
        START
     ========================================== */
-
     start();
-
   </script>
-
 </body>
 </html>
