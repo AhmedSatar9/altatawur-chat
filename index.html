@@ -7,6 +7,34 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
   <title>التطور چات</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://wxsricscchalzvazdbzd.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_5oPDD77Veu5OczxaZje7vg_orfNjB5t";
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    let currentSession = null;
+    let currentUser = null;
+
+    async function requireAuth() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        window.location.replace("/login.html");
+        return false;
+      }
+      currentSession = data.session;
+      currentUser = data.session.user;
+      if (!currentUser.email_confirmed_at && currentUser.confirmed_at == null) {
+        await supabase.auth.signOut();
+        window.location.replace("/login.html?verify=1");
+        return false;
+      }
+      return true;
+    }
+  </script>
   <style>
     :root {
       --bg: #070912;
@@ -572,6 +600,59 @@
       color: #ff6b81;
       background: rgba(255,107,129,.08);
     }
+    .account-box {
+      margin: 14px 16px 8px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: rgba(255,255,255,.03);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      direction: rtl;
+    }
+    .account-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .account-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .account-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+    .account-email {
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      direction: ltr;
+      text-align: right;
+    }
+    .logout-button {
+      margin: 0 16px 14px;
+      padding: 12px;
+      border: 1px solid rgba(255,107,129,.22);
+      border-radius: 14px;
+      background: rgba(255,107,129,.06);
+      color: #ff9aaa;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .logout-button:hover {
+      background: rgba(255,107,129,.10);
+    }
+
     /* =========================
        MOBILE
     ========================== */
@@ -877,12 +958,26 @@
       ×
     </button>
   </div>
+  <div class="account-box">
+    <div class="account-avatar">أ</div>
+    <div class="account-info">
+      <div class="account-label">الحساب</div>
+      <div class="account-email" id="accountEmail">جاري التحميل...</div>
+    </div>
+  </div>
   <button
     type="button"
     class="side-new"
     id="sideNewChat"
   >
     ＋ محادثة جديدة
+  </button>
+  <button
+    type="button"
+    class="logout-button"
+    id="logoutButton"
+  >
+    ↪ تسجيل الخروج
   </button>
   <div
     class="conversation-list"
@@ -937,37 +1032,37 @@
     document.getElementById(
       "menuButton"
     );
+  const accountEmail =
+    document.getElementById("accountEmail");
+  const logoutButton =
+    document.getElementById("logoutButton");
   /* =========================
      STORAGE
   ========================== */
-  const STORAGE_KEY =
-    "altatawur_conversations";
-  const ACTIVE_KEY =
-    "altatawur_active_conversation";
+  let STORAGE_KEY = "";
+  let ACTIVE_KEY = "";
   let conversations = [];
-  try {
-    conversations =
-      JSON.parse(
-        localStorage.getItem(
-          STORAGE_KEY
-        ) || "[]"
+  let activeConversationId = null;
+
+  function loadUserStorage() {
+    const userKey = currentUser?.id || "guest";
+    STORAGE_KEY = `altatawur_conversations_${userKey}`;
+    ACTIVE_KEY = `altatawur_active_conversation_${userKey}`;
+    try {
+      conversations = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
       );
-    if (
-      !Array.isArray(conversations)
-    ) {
+      if (!Array.isArray(conversations)) {
+        conversations = [];
+      }
+    } catch (error) {
+      console.error("Storage read error:", error);
       conversations = [];
     }
-  } catch (error) {
-    console.error(
-      "Storage read error:",
-      error
-    );
-    conversations = [];
+    activeConversationId =
+      localStorage.getItem(ACTIVE_KEY) || null;
   }
-  let activeConversationId =
-    localStorage.getItem(
-      ACTIVE_KEY
-    ) || null;
+
   /* =========================
      STATE
   ========================== */
@@ -1840,7 +1935,9 @@
               "POST",
             headers: {
               "Content-Type":
-                "application/json"
+                "application/json",
+              "Authorization":
+                `Bearer ${currentSession.access_token}`
             },
             body:
               JSON.stringify({
@@ -1860,6 +1957,11 @@
         );
       }
       removeTyping();
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        window.location.replace("/login.html");
+        return;
+      }
       if (!response.ok) {
         throw new Error(
           data.error ||
@@ -2015,9 +2117,39 @@
     );
   }
   /* =========================
+     AUTH
+  ========================== */
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.replace("/login.html");
+  }
+
+  logoutButton.addEventListener("click", logout);
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT") {
+      window.location.replace("/login.html");
+    }
+    if (session) {
+      currentSession = session;
+      currentUser = session.user;
+      if (accountEmail) {
+        accountEmail.textContent = currentUser.email || "مستخدم";
+      }
+    }
+  });
+
+  /* =========================
      START
   ========================== */
-  function startApp() {
+  async function startApp() {
+    const authenticated = await requireAuth();
+    if (!authenticated) return;
+
+    loadUserStorage();
+    if (accountEmail) {
+      accountEmail.textContent = currentUser.email || "مستخدم";
+    }
     if (
       !conversations.length
     ) {
