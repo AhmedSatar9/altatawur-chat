@@ -72,9 +72,11 @@ export default async function handler(req, res) {
     // ==================================================
 
     if (req.method !== "POST") {
+
         return res.status(405).json({
             error: "Method Not Allowed"
         });
+
     }
 
 
@@ -85,27 +87,39 @@ export default async function handler(req, res) {
         // ==================================================
 
         if (!SUPABASE_URL) {
+
             return res.status(500).json({
-                error: "SUPABASE_URL غير موجود في Vercel."
+                error:
+                    "إعدادات Supabase غير مكتملة."
             });
+
         }
 
         if (!SUPABASE_PUBLISHABLE_KEY) {
+
             return res.status(500).json({
-                error: "SUPABASE_PUBLISHABLE_KEY غير موجود في Vercel."
+                error:
+                    "إعدادات Supabase غير مكتملة."
             });
+
         }
 
         if (!SUPABASE_SECRET_KEY) {
+
             return res.status(500).json({
-                error: "SUPABASE_SECRET_KEY غير موجود في Vercel."
+                error:
+                    "إعدادات Supabase غير مكتملة."
             });
+
         }
 
         if (!OPENAI_API_KEY) {
+
             return res.status(500).json({
-                error: "OPENAI_API_KEY غير موجود في Vercel."
+                error:
+                    "إعدادات OpenAI غير مكتملة."
             });
+
         }
 
 
@@ -166,9 +180,7 @@ export default async function handler(req, res) {
 
             return res.status(401).json({
                 error:
-                    "جلسة تسجيل الدخول غير صالحة.",
-                details:
-                    userError.message
+                    "جلسة تسجيل الدخول غير صالحة."
             });
 
         }
@@ -197,63 +209,22 @@ export default async function handler(req, res) {
 
 
         const requestedConversationId =
-            body.conversation_id || null;
+            typeof body.conversation_id === "string"
+                ? body.conversation_id.trim()
+                : null;
 
 
-        const incomingMessages =
-            Array.isArray(body.messages)
-                ? body.messages
-                : [];
-
-
-        // ==================================================
-        // CLEAN MESSAGES
-        // ==================================================
-
-        const cleanedIncomingMessages =
-            incomingMessages
-                .map((message) => {
-
-                    const role =
-                        message?.role === "assistant"
-                            ? "assistant"
-                            : "user";
-
-
-                    const content =
-                        String(
-                            message?.content || ""
-                        )
-                            .trim()
-                            .slice(0, 12000);
-
-
-                    return {
-                        role,
-                        content
-                    };
-
-                })
-                .filter(
-                    message =>
-                        message.content.length > 0
-                );
+        const incomingMessage =
+            typeof body.message === "string"
+                ? body.message.trim()
+                : "";
 
 
         // ==================================================
-        // FIND LAST USER MESSAGE
+        // VALIDATE MESSAGE
         // ==================================================
 
-        const lastUserMessage =
-            [...cleanedIncomingMessages]
-                .reverse()
-                .find(
-                    message =>
-                        message.role === "user"
-                );
-
-
-        if (!lastUserMessage) {
+        if (!incomingMessage) {
 
             return res.status(400).json({
                 error:
@@ -261,6 +232,14 @@ export default async function handler(req, res) {
             });
 
         }
+
+
+        // ==================================================
+        // MESSAGE LENGTH LIMIT
+        // ==================================================
+
+        const userMessage =
+            incomingMessage.slice(0, 12000);
 
 
         // ==================================================
@@ -306,9 +285,7 @@ export default async function handler(req, res) {
 
                 return res.status(500).json({
                     error:
-                        "تعذر التحقق من المحادثة.",
-                    details:
-                        conversationError.message
+                        "تعذر التحقق من المحادثة."
                 });
 
             }
@@ -332,21 +309,10 @@ export default async function handler(req, res) {
 
         if (!conversationId) {
 
-            let title =
-                lastUserMessage.content
-                    .trim()
-                    .slice(0, 80);
-
-
-            if (!title) {
-                title = "محادثة جديدة";
-            }
-
-
-            console.log(
-                "CREATING CONVERSATION FOR USER:",
-                user.id
-            );
+            const title =
+                userMessage
+                    .slice(0, 80) ||
+                "محادثة جديدة";
 
 
             const {
@@ -368,10 +334,6 @@ export default async function handler(req, res) {
                     .single();
 
 
-            // ==================================================
-            // IMPORTANT DEBUG
-            // ==================================================
-
             if (createConversationError) {
 
                 console.error(
@@ -380,19 +342,22 @@ export default async function handler(req, res) {
                 );
 
                 return res.status(500).json({
-    error: "تعذر إنشاء المحادثة."
-});
+                    error:
+                        "تعذر إنشاء المحادثة."
+                });
 
             }
 
 
             if (!newConversation?.id) {
 
+                console.error(
+                    "CREATE CONVERSATION ERROR: No ID returned"
+                );
+
                 return res.status(500).json({
-
                     error:
-                        "تم إنشاء المحادثة لكن لم يتم استلام رقمها."
-
+                        "تعذر إنشاء المحادثة."
                 });
 
             }
@@ -409,7 +374,6 @@ export default async function handler(req, res) {
         // ==================================================
 
         const {
-            data: savedUserMessage,
             error: saveUserMessageError
         } =
             await supabaseAdmin
@@ -423,13 +387,9 @@ export default async function handler(req, res) {
                         "user",
 
                     content:
-                        lastUserMessage.content
+                        userMessage
 
-                })
-                .select(
-                    "id,conversation_id,role,content,created_at"
-                )
-                .single();
+                });
 
 
         if (saveUserMessageError) {
@@ -440,26 +400,15 @@ export default async function handler(req, res) {
             );
 
             return res.status(500).json({
-
                 error:
-                    "تعذر حفظ رسالة المستخدم.",
-
-                details:
-                    saveUserMessageError.message,
-
-                code:
-                    saveUserMessageError.code || null,
-
-                hint:
-                    saveUserMessageError.hint || null
-
+                    "تعذر حفظ رسالة المستخدم."
             });
 
         }
 
 
         // ==================================================
-        // LOAD CONVERSATION HISTORY
+        // LOAD REAL CONVERSATION HISTORY
         // ==================================================
 
         const {
@@ -492,19 +441,8 @@ export default async function handler(req, res) {
             );
 
             return res.status(500).json({
-
                 error:
-                    "تعذر تحميل سياق المحادثة.",
-
-                details:
-                    loadMessagesError.message,
-
-                code:
-                    loadMessagesError.code || null,
-
-                hint:
-                    loadMessagesError.hint || null
-
+                    "تعذر تحميل سياق المحادثة."
             });
 
         }
@@ -533,8 +471,11 @@ export default async function handler(req, res) {
 
 
                     return {
-                        role,
-                        content
+                        role:
+                            role,
+
+                        content:
+                            content
                     };
 
                 })
@@ -548,10 +489,8 @@ export default async function handler(req, res) {
         if (safeMessages.length === 0) {
 
             return res.status(400).json({
-
                 error:
                     "لا توجد رسائل صالحة في المحادثة."
-
             });
 
         }
@@ -626,26 +565,16 @@ export default async function handler(req, res) {
             ) {
 
                 return res.status(500).json({
-
                     error:
-                        "مفتاح OpenAI غير صالح.",
-
-                    details:
-                        "تحقق من OPENAI_API_KEY في Vercel."
-
+                        "مفتاح OpenAI غير صالح."
                 });
 
             }
 
 
             return res.status(500).json({
-
                 error:
-                    "حدث خطأ أثناء الاتصال بـ OpenAI.",
-
-                details:
-                    openaiMessage
-
+                    "حدث خطأ أثناء الاتصال بالمساعد."
             });
 
         }
@@ -691,25 +620,8 @@ export default async function handler(req, res) {
             );
 
             return res.status(500).json({
-
                 error:
-                    "تم إنشاء الرد، لكن تعذر حفظه.",
-
-                details:
-                    saveAssistantError.message,
-
-                code:
-                    saveAssistantError.code || null,
-
-                hint:
-                    saveAssistantError.hint || null,
-
-                message:
-                    answer,
-
-                conversation_id:
-                    conversationId
-
+                    "تم إنشاء الرد، لكن تعذر حفظه."
             });
 
         }
@@ -747,9 +659,6 @@ export default async function handler(req, res) {
                 updateConversationError
             );
 
-            // لا نفشل المحادثة بسبب updated_at
-            // لأن الرسائل والرد تم حفظها بالفعل.
-
         }
 
 
@@ -766,17 +675,7 @@ export default async function handler(req, res) {
                 answer,
 
             conversation_id:
-                conversationId,
-
-            user: {
-
-                id:
-                    user.id,
-
-                email:
-                    user.email
-
-            }
+                conversationId
 
         });
 
@@ -793,20 +692,9 @@ export default async function handler(req, res) {
         );
 
 
-        const errorMessage =
-            String(
-                error?.message || ""
-            );
-
-
         return res.status(500).json({
-
             error:
-                "حدث خطأ أثناء تشغيل المحادثة.",
-
-            details:
-                errorMessage
-
+                "حدث خطأ أثناء تشغيل المحادثة."
         });
 
     }
