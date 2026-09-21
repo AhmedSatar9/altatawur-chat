@@ -1,354 +1,241 @@
 import OpenAI from "openai";
+import { createClient } from "@supabase/supabase-js";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
 });
 
-export default async function handler(req, res) {
-  /*
-    =========================
-    CORS
-    =========================
-  */
 
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "*"
-  );
+const supabaseAdmin =
+    createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SECRET_KEY,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        }
+    );
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "POST, OPTIONS"
-  );
 
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type"
-  );
+export default async function handler(
+    req,
+    res
+) {
 
-  /*
-    OPTIONS
-  */
+    // ======================================
+    // METHOD
+    // ======================================
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+    if (req.method !== "POST") {
 
-  /*
-    فقط POST
-  */
+        return res.status(405).json({
+            error: "Method Not Allowed"
+        });
 
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Method Not Allowed"
-    });
-  }
-
-  try {
-    /*
-      =========================
-      MESSAGES
-      =========================
-    */
-
-    const messages =
-      Array.isArray(req.body?.messages)
-        ? req.body.messages
-        : [];
-
-    if (!messages.length) {
-      return res.status(400).json({
-        error: "لا توجد رسالة."
-      });
     }
 
-    /*
-      نأخذ آخر 30 رسالة فقط
-    */
 
-    const recentMessages =
-      messages.slice(-30);
+    try {
 
-    /*
-      =========================
-      تحويل الرسائل
-      =========================
-    */
+        // ==================================
+        // AUTH HEADER
+        // ==================================
 
-    const input = [];
+        const authorization =
+            req.headers.authorization;
 
-    for (const message of recentMessages) {
-
-      if (!message) {
-        continue;
-      }
-
-      /*
-        USER
-      */
-
-      if (message.role === "user") {
-
-        const content = [];
-
-        /*
-          content array
-        */
-
-        if (Array.isArray(message.content)) {
-
-          for (const item of message.content) {
-
-            if (!item) {
-              continue;
-            }
-
-            /*
-              TEXT
-            */
-
-            if (
-              item.type === "input_text" ||
-              item.type === "text"
-            ) {
-
-              if (item.text) {
-
-                content.push({
-                  type: "input_text",
-                  text: String(item.text)
-                });
-
-              }
-
-            }
-
-            /*
-              IMAGE
-            */
-
-            else if (
-              item.type === "input_image"
-            ) {
-
-              let imageUrl =
-                item.image_url;
-
-              /*
-                string
-              */
-
-              if (
-                typeof imageUrl === "string" &&
-                imageUrl.length > 0
-              ) {
-
-                content.push({
-                  type: "input_image",
-                  image_url: imageUrl
-                });
-
-              }
-
-              /*
-                object
-              */
-
-              else if (
-                imageUrl &&
-                typeof imageUrl === "object" &&
-                imageUrl.url
-              ) {
-
-                content.push({
-                  type: "input_image",
-                  image_url:
-                    String(imageUrl.url)
-                });
-
-              }
-
-            }
-
-          }
-
-        }
-
-        /*
-          attachment احتياطياً
-        */
-
-        else if (
-          message.attachment &&
-          message.attachment.type === "image" &&
-          message.attachment.data
-        ) {
-
-          if (message.content) {
-
-            content.push({
-              type: "input_text",
-              text:
-                String(message.content)
-            });
-
-          }
-
-          content.push({
-            type: "input_image",
-            image_url:
-              String(
-                message.attachment.data
-              )
-          });
-
-        }
-
-        /*
-          نص عادي
-        */
-
-        else if (message.content) {
-
-          content.push({
-            type: "input_text",
-            text:
-              String(message.content)
-          });
-
-        }
-
-        /*
-          إضافة رسالة المستخدم
-        */
-
-        if (content.length > 0) {
-
-          input.push({
-            role: "user",
-            content
-          });
-
-        }
-
-      }
-
-      /*
-        ASSISTANT
-      */
-
-      else if (
-        message.role === "assistant"
-      ) {
 
         if (
-          typeof message.content === "string" &&
-          message.content.trim()
+            !authorization ||
+            !authorization.startsWith(
+                "Bearer "
+            )
         ) {
 
-          input.push({
-            role: "assistant",
-            content: [
-              {
-                type: "output_text",
-                text: message.content
-              }
-            ]
-          });
+            return res.status(401).json({
+                error:
+                    "يجب تسجيل الدخول أولاً."
+            });
 
         }
 
-      }
 
-    }
+        const token =
+            authorization.replace(
+                "Bearer ",
+                ""
+            );
 
-    /*
-      =========================
-      التحقق
-      =========================
-    */
 
-    if (!input.length) {
+        // ==================================
+        // VERIFY USER
+        // ==================================
 
-      return res.status(400).json({
-        error:
-          "لم يتم العثور على محتوى صالح."
-      });
+        const {
+            data: userData,
+            error: userError
+        } =
+            await supabaseAdmin.auth.getUser(
+                token
+            );
 
-    }
 
-    /*
-      =========================
-      OPENAI
-      =========================
-    */
+        if (
+            userError ||
+            !userData?.user
+        ) {
 
-    const response =
-      await client.responses.create({
+            return res.status(401).json({
+                error:
+                    "جلسة تسجيل الدخول غير صالحة."
+            });
 
-        model:
-          "gpt-5.6-luna",
+        }
 
-        instructions: `
-أنت المساعد الرسمي لمنصة التطور چات.
 
-أجب بالعربية بشكل واضح ومفيد.
+        const user =
+            userData.user;
 
-استخدم اللهجة العراقية عندما يطلب المستخدم ذلك
-أو عندما تكون مناسبة للسياق.
 
-إذا أرسل المستخدم صورة:
-- حلل الصورة بدقة.
-- صف محتواها عند الطلب.
-- اقرأ النص الموجود فيها إن أمكن.
-- أجب عن الأسئلة المتعلقة بالصورة.
-- لا تدّعي رؤية شيء غير واضح.
-- إذا كانت الصورة غير واضحة، أخبر المستخدم بذلك.
+        // ==================================
+        // REQUEST BODY
+        // ==================================
 
-لا تدّعي تنفيذ أي فعل لم تنفذه فعلياً.
+        const {
+            messages
+        } = req.body || {};
 
-كن مفيداً ومباشراً.
+
+        if (
+            !Array.isArray(messages) ||
+            messages.length === 0
+        ) {
+
+            return res.status(400).json({
+                error:
+                    "لم يتم إرسال أي رسالة."
+            });
+
+        }
+
+
+        // ==================================
+        // LIMIT MESSAGE SIZE
+        // ==================================
+
+        const safeMessages =
+            messages
+                .slice(-30)
+                .map((message) => ({
+
+                    role:
+                        message.role ===
+                        "assistant"
+                            ? "assistant"
+                            : "user",
+
+                    content:
+                        String(
+                            message.content || ""
+                        ).slice(
+                            0,
+                            12000
+                        )
+
+                }))
+                .filter(
+                    message =>
+                        message.content.trim()
+                );
+
+
+        if (
+            safeMessages.length === 0
+        ) {
+
+            return res.status(400).json({
+                error:
+                    "الرسالة فارغة."
+            });
+
+        }
+
+
+        // ==================================
+        // OPENAI
+        // ==================================
+
+        const response =
+            await openai.responses.create({
+
+                model:
+                    process.env.OPENAI_MODEL ||
+                    "gpt-5.6-luna",
+
+                instructions:
+                    `
+أنت المساعد الذكي الرسمي لمنصة "التطور چات".
+
+أجب باللغة العربية عندما يكتب المستخدم بالعربية.
+يمكنك استخدام اللهجة العراقية بشكل طبيعي عندما يناسب سياق المستخدم.
+
+كن واضحاً ومفيداً ومباشراً.
+لا تدّعي تنفيذ أشياء لم تنفذها.
 `,
 
-        input
+                input:
+                    safeMessages.map(
+                        message => ({
+                            role:
+                                message.role,
+                            content:
+                                message.content
+                        })
+                    )
 
-      });
+            });
 
-    /*
-      =========================
-      RESPONSE
-      =========================
-    */
 
-    const reply =
-      response?.output_text ||
-      "ما حصلت جواب نصي من النموذج.";
+        const answer =
+            response.output_text ||
+            "عذراً، لم أتمكن من إنشاء رد.";
 
-    console.log(
-      "✅ OpenAI Response received"
-    );
 
-    return res.status(200).json({
-      reply
-    });
+        // ==================================
+        // RESPONSE
+        // ==================================
 
-  }
+        return res.status(200).json({
 
-  catch (error) {
+            success: true,
 
-    console.error(
-      "❌ OPENAI ERROR:"
-    );
+            message: answer,
 
-    console.error(error);
+            user: {
+                id: user.id,
+                email: user.email
+            }
 
-    const errorMessage =
-      error?.message ||
-      "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.";
+        });
 
-    return res.status(500).json({
-      error: errorMessage
-    });
 
-  }
+    } catch (error) {
+
+        console.error(
+            "CHAT API ERROR:",
+            error
+        );
+
+
+        return res.status(500).json({
+
+            error:
+                "حدث خطأ داخلي في الخادم. حاول مرة أخرى."
+
+        });
+
+    }
+
 }
