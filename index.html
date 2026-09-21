@@ -104,7 +104,7 @@
         .topbar {
             flex: 0 0 auto;
 
-            height: 82px;
+            min-height: 82px;
 
             padding:
                 12px
@@ -118,7 +118,8 @@
                 rgba(8, 13, 29, 0.92);
 
             border-bottom:
-                1px solid rgba(140, 155, 200, 0.12);
+                1px solid
+                rgba(140, 155, 200, 0.12);
 
             backdrop-filter: blur(22px);
             -webkit-backdrop-filter: blur(22px);
@@ -208,6 +209,30 @@
                 rgba(101, 223, 189, 0.55);
         }
 
+        /* CURRENT CHAT */
+
+        .current-chat {
+            display: none;
+
+            margin-top: 3px;
+
+            max-width: 340px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            color: #858da8;
+
+            font-size: 11px;
+        }
+
+        .current-chat.visible {
+            display: block;
+        }
+
 
         /* HEADER BUTTONS */
 
@@ -282,7 +307,9 @@
         }
 
 
-        /* MESSAGES */
+        /* =====================================================
+           MESSAGES
+        ===================================================== */
 
         .messages {
             flex: 1;
@@ -305,6 +332,7 @@
             scroll-behavior: smooth;
 
             scrollbar-width: thin;
+
             scrollbar-color:
                 rgba(120, 130, 170, 0.30)
                 transparent;
@@ -326,7 +354,9 @@
         }
 
 
-        /* EMPTY STATE */
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
 
         .welcome {
             min-height: 100%;
@@ -869,6 +899,150 @@
 
 
         /* =====================================================
+           CONVERSATIONS LIST
+        ===================================================== */
+
+        .conversation-section {
+            margin-top: 28px;
+        }
+
+        .conversation-section-title {
+            margin-bottom: 10px;
+
+            color: #737d98;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .conversation-list {
+            display: flex;
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        .conversation-item {
+            width: 100%;
+
+            min-height: 54px;
+
+            padding:
+                10px
+                13px;
+
+            display: flex;
+            align-items: center;
+
+            text-align: right;
+
+            border:
+                1px solid
+                transparent;
+
+            border-radius: 15px;
+
+            color: #d8dced;
+
+            background:
+                rgba(16, 23, 46, 0.62);
+
+            cursor: pointer;
+
+            transition:
+                background 0.15s ease,
+                border-color 0.15s ease;
+        }
+
+        .conversation-item:hover {
+            background:
+                rgba(25, 34, 63, 0.90);
+        }
+
+        .conversation-item.active {
+            background:
+                rgba(128, 85, 246, 0.13);
+
+            border-color:
+                rgba(128, 85, 246, 0.35);
+        }
+
+        .conversation-item-icon {
+            width: 34px;
+            height: 34px;
+
+            flex: 0 0 34px;
+
+            margin-left: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background:
+                rgba(128, 85, 246, 0.14);
+
+            font-size: 15px;
+        }
+
+        .conversation-item-content {
+            min-width: 0;
+        }
+
+        .conversation-item-title {
+            display: block;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            color: #ffffff;
+
+            font-size: 13px;
+        }
+
+        .conversation-item-date {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #6f7892;
+
+            font-size: 10px;
+        }
+
+        .conversation-empty {
+            padding:
+                20px
+                8px;
+
+            text-align: center;
+
+            color: #68728d;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+        }
+
+        .conversation-loading {
+            padding:
+                20px
+                8px;
+
+            text-align: center;
+
+            color: #7c86a0;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
            TOAST
         ===================================================== */
 
@@ -935,7 +1109,7 @@
         @media (max-width: 700px) {
 
             .topbar {
-                height: 70px;
+                min-height: 70px;
 
                 padding:
                     10px
@@ -963,6 +1137,12 @@
 
             .online-status {
                 font-size: 11px;
+            }
+
+            .current-chat {
+                max-width: 200px;
+
+                font-size: 10px;
             }
 
             .header-actions {
@@ -1083,6 +1263,10 @@
             .message-bubble {
                 max-width: 92%;
             }
+
+            .current-chat {
+                max-width: 155px;
+            }
         }
 
     </style>
@@ -1118,6 +1302,13 @@
 
                     متصل الآن
 
+                </div>
+
+                <div
+                    id="currentChatTitle"
+                    class="current-chat"
+                >
+                    محادثة جديدة
                 </div>
 
             </div>
@@ -1302,6 +1493,8 @@
     </div>
 
 
+    <!-- ACCOUNT -->
+
     <div class="account-card">
 
         <div class="account-avatar">
@@ -1323,6 +1516,8 @@
     </div>
 
 
+    <!-- NEW CHAT -->
+
     <button
         id="newChatSide"
         class="side-action new-side-chat"
@@ -1331,6 +1526,30 @@
         + محادثة جديدة
     </button>
 
+
+    <!-- CONVERSATIONS -->
+
+    <div class="conversation-section">
+
+        <div class="conversation-section-title">
+            المحادثات السابقة
+        </div>
+
+        <div
+            id="conversationList"
+            class="conversation-list"
+        >
+
+            <div class="conversation-loading">
+                جاري تحميل المحادثات...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOGOUT -->
 
     <button
         id="logoutButton"
@@ -1416,6 +1635,12 @@
     const toast =
         document.getElementById("toast");
 
+    const conversationList =
+        document.getElementById("conversationList");
+
+    const currentChatTitle =
+        document.getElementById("currentChatTitle");
+
 
     /* =========================================================
        STATE
@@ -1423,7 +1648,20 @@
 
     let currentUser = null;
 
+    /*
+        جميع رسائل المحادثة المفتوحة حالياً
+    */
     let conversation = [];
+
+    /*
+        ID المحادثة المفتوحة حالياً
+    */
+    let currentConversationId = null;
+
+    /*
+        عنوان المحادثة المفتوحة حالياً
+    */
+    let currentConversationTitle = "";
 
     let isSending = false;
 
@@ -1471,6 +1709,11 @@
             "false"
         );
 
+        /*
+            تحديث قائمة المحادثات كل مرة نفتح القائمة
+        */
+        loadConversations();
+
     }
 
 
@@ -1507,12 +1750,41 @@
 
 
     /* =========================================================
-       NEW CHAT
+       CURRENT CHAT UI
     ========================================================= */
 
-    function startNewChat() {
+    function updateCurrentChatUI(title) {
 
-        conversation = [];
+        currentConversationTitle =
+            title || "";
+
+        if (!title) {
+
+            currentChatTitle.classList.remove(
+                "visible"
+            );
+
+            currentChatTitle.textContent =
+                "";
+
+            return;
+        }
+
+        currentChatTitle.textContent =
+            title;
+
+        currentChatTitle.classList.add(
+            "visible"
+        );
+
+    }
+
+
+    /* =========================================================
+       RESET CHAT SCREEN
+    ========================================================= */
+
+    function clearChatScreen() {
 
         messages.innerHTML = "";
 
@@ -1524,6 +1796,31 @@
             "hidden"
         );
 
+    }
+
+
+    /* =========================================================
+       NEW CHAT
+    ========================================================= */
+
+    function startNewChat() {
+
+        /*
+            مهم جداً:
+            تصفير ID حتى الرسالة القادمة
+            تنشئ محادثة جديدة في Supabase
+        */
+
+        currentConversationId = null;
+
+        currentConversationTitle = "";
+
+        conversation = [];
+
+        clearChatScreen();
+
+        updateCurrentChatUI("");
+
         messageInput.value = "";
 
         messageInput.style.height =
@@ -1532,6 +1829,11 @@
         closeMenuPanel();
 
         messageInput.focus();
+
+        /*
+            تحديث الحالة البصرية للقائمة
+        */
+        updateConversationActiveState();
 
     }
 
@@ -1549,7 +1851,7 @@
 
 
     /* =========================================================
-       ADD MESSAGE
+       ADD MESSAGE TO SCREEN
     ========================================================= */
 
     function addMessage(
@@ -1558,9 +1860,11 @@
     ) {
 
         if (welcome) {
+
             welcome.classList.add(
                 "hidden"
             );
+
         }
 
 
@@ -1609,9 +1913,11 @@
     function showLoading() {
 
         if (welcome) {
+
             welcome.classList.add(
                 "hidden"
             );
+
         }
 
 
@@ -1695,6 +2001,584 @@
 
 
     /* =========================================================
+       CREATE CONVERSATION
+    ========================================================= */
+
+    async function createConversation(
+        firstMessage
+    ) {
+
+        if (!currentUser) {
+
+            throw new Error(
+                "المستخدم غير مسجل الدخول."
+            );
+
+        }
+
+
+        const cleanTitle =
+            firstMessage
+                .replace(/\s+/g, " ")
+                .trim();
+
+
+        const title =
+            cleanTitle.length > 60
+                ? cleanTitle.substring(0, 60) + "..."
+                : cleanTitle;
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("conversations")
+                .insert({
+
+                    user_id:
+                        currentUser.id,
+
+                    title:
+                        title
+
+                })
+                .select()
+                .single();
+
+
+        if (error) {
+
+            console.error(
+                "CREATE CONVERSATION ERROR:",
+                error
+            );
+
+            throw new Error(
+                "تعذر إنشاء المحادثة."
+            );
+
+        }
+
+
+        currentConversationId =
+            data.id;
+
+
+        updateCurrentChatUI(
+            data.title
+        );
+
+
+        return data;
+
+    }
+
+
+    /* =========================================================
+       SAVE MESSAGE
+    ========================================================= */
+
+    async function saveMessage(
+        role,
+        content
+    ) {
+
+        if (!currentConversationId) {
+
+            throw new Error(
+                "لا توجد محادثة مفتوحة."
+            );
+
+        }
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("messages")
+                .insert({
+
+                    conversation_id:
+                        currentConversationId,
+
+                    role:
+                        role,
+
+                    content:
+                        content
+
+                });
+
+
+        if (error) {
+
+            console.error(
+                "SAVE MESSAGE ERROR:",
+                error
+            );
+
+            throw new Error(
+                "تعذر حفظ الرسالة."
+            );
+
+        }
+
+
+        /*
+            تحديث وقت آخر تعديل للمحادثة
+        */
+
+        const {
+            error: updateError
+        } =
+            await supabaseClient
+                .from("conversations")
+                .update({
+
+                    updated_at:
+                        new Date().toISOString()
+
+                })
+                .eq(
+                    "id",
+                    currentConversationId
+                );
+
+
+        if (updateError) {
+
+            console.error(
+                "UPDATE CONVERSATION ERROR:",
+                updateError
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       LOAD CONVERSATIONS LIST
+    ========================================================= */
+
+    async function loadConversations() {
+
+        if (!currentUser) {
+            return;
+        }
+
+
+        conversationList.innerHTML = `
+            <div class="conversation-loading">
+                جاري تحميل المحادثات...
+            </div>
+        `;
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("conversations")
+                    .select(
+                        "id,title,created_at,updated_at"
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    )
+                    .order(
+                        "updated_at",
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            conversationList.innerHTML =
+                "";
+
+
+            if (!data || data.length === 0) {
+
+                conversationList.innerHTML = `
+                    <div class="conversation-empty">
+                        ما عندك محادثات سابقة حالياً.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            data.forEach(
+                (item) => {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.type =
+                        "button";
+
+
+                    button.className =
+                        "conversation-item";
+
+
+                    button.dataset.id =
+                        item.id;
+
+
+                    button.innerHTML = `
+                        <span class="conversation-item-icon">
+                            💬
+                        </span>
+
+                        <span class="conversation-item-content">
+
+                            <span class="conversation-item-title"></span>
+
+                            <span class="conversation-item-date">
+                                ${formatConversationDate(item.updated_at)}
+                            </span>
+
+                        </span>
+                    `;
+
+
+                    const titleElement =
+                        button.querySelector(
+                            ".conversation-item-title"
+                        );
+
+
+                    titleElement.textContent =
+                        item.title ||
+                        "محادثة جديدة";
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openConversation(
+                                item.id
+                            );
+
+                        }
+                    );
+
+
+                    conversationList.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+
+            updateConversationActiveState();
+
+
+        } catch (error) {
+
+            console.error(
+                "LOAD CONVERSATIONS ERROR:",
+                error
+            );
+
+
+            conversationList.innerHTML = `
+                <div class="conversation-empty">
+                    تعذر تحميل المحادثات.
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       FORMAT DATE
+    ========================================================= */
+
+    function formatConversationDate(
+        date
+    ) {
+
+        if (!date) {
+            return "";
+        }
+
+
+        try {
+
+            const value =
+                new Date(date);
+
+
+            return value.toLocaleDateString(
+                "ar-IQ",
+                {
+                    day: "numeric",
+                    month: "short"
+                }
+            );
+
+
+        } catch {
+
+            return "";
+
+        }
+
+    }
+
+
+    /* =========================================================
+       UPDATE ACTIVE CONVERSATION
+    ========================================================= */
+
+    function updateConversationActiveState() {
+
+        document
+            .querySelectorAll(
+                ".conversation-item"
+            )
+            .forEach(
+                (item) => {
+
+                    item.classList.toggle(
+                        "active",
+                        item.dataset.id ===
+                        currentConversationId
+                    );
+
+                }
+            );
+
+    }
+
+
+    /* =========================================================
+       LOAD SINGLE CONVERSATION
+    ========================================================= */
+
+    async function openConversation(
+        conversationId
+    ) {
+
+        if (!currentUser) {
+            return;
+        }
+
+
+        if (!conversationId) {
+            return;
+        }
+
+
+        if (isSending) {
+
+            showToast(
+                "انتظر حتى يكتمل الرد الحالي."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            /*
+                أولاً نجلب بيانات المحادثة
+            */
+
+            const {
+                data: conversationData,
+                error: conversationError
+            } =
+                await supabaseClient
+                    .from("conversations")
+                    .select(
+                        "id,title,user_id"
+                    )
+                    .eq(
+                        "id",
+                        conversationId
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    )
+                    .single();
+
+
+            if (conversationError) {
+
+                throw conversationError;
+
+            }
+
+
+            /*
+                بعدها نجلب الرسائل
+            */
+
+            const {
+                data: messageData,
+                error: messageError
+            } =
+                await supabaseClient
+                    .from("messages")
+                    .select(
+                        "id,conversation_id,role,content,created_at"
+                    )
+                    .eq(
+                        "conversation_id",
+                        conversationId
+                    )
+                    .order(
+                        "created_at",
+                        {
+                            ascending: true
+                        }
+                    );
+
+
+            if (messageError) {
+
+                throw messageError;
+
+            }
+
+
+            /*
+                تحديد المحادثة الحالية
+            */
+
+            currentConversationId =
+                conversationData.id;
+
+
+            currentConversationTitle =
+                conversationData.title ||
+                "محادثة جديدة";
+
+
+            updateCurrentChatUI(
+                currentConversationTitle
+            );
+
+
+            /*
+                تجهيز conversation
+                لإرسال السياق الكامل إلى API
+            */
+
+            conversation =
+                (messageData || []).map(
+                    (message) => ({
+
+                        role:
+                            message.role,
+
+                        content:
+                            message.content
+
+                    })
+                );
+
+
+            /*
+                تنظيف الشاشة
+            */
+
+            messages.innerHTML = "";
+
+
+            /*
+                عرض الرسائل
+            */
+
+            if (
+                !messageData ||
+                messageData.length === 0
+            ) {
+
+                messages.appendChild(
+                    welcome
+                );
+
+                welcome.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                welcome.classList.add(
+                    "hidden"
+                );
+
+
+                messageData.forEach(
+                    (message) => {
+
+                        addMessage(
+                            message.content,
+                            message.role
+                        );
+
+                    }
+                );
+
+            }
+
+
+            updateConversationActiveState();
+
+            closeMenuPanel();
+
+            scrollToBottom();
+
+
+        } catch (error) {
+
+            console.error(
+                "OPEN CONVERSATION ERROR:",
+                error
+            );
+
+
+            showToast(
+                "تعذر فتح المحادثة."
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
        SEND MESSAGE
     ========================================================= */
 
@@ -1732,30 +2616,29 @@
         }
 
 
+        isSending = true;
+
+        sendButton.disabled = true;
+
+
+        /*
+            عرض رسالة المستخدم فوراً
+        */
+
         addMessage(
             text,
             "user"
         );
 
 
-        conversation.push({
-
-            role: "user",
-
-            content: text
-
-        });
-
+        /*
+            تنظيف الإدخال
+        */
 
         messageInput.value = "";
 
         messageInput.style.height =
             "auto";
-
-
-        isSending = true;
-
-        sendButton.disabled = true;
 
 
         const loading =
@@ -1795,6 +2678,44 @@
                 );
 
             }
+
+
+            /* -----------------------------------------
+               CREATE CONVERSATION IF NEEDED
+            ----------------------------------------- */
+
+            if (!currentConversationId) {
+
+                await createConversation(
+                    text
+                );
+
+            }
+
+
+            /* -----------------------------------------
+               ADD USER MESSAGE TO MEMORY
+            ----------------------------------------- */
+
+            conversation.push({
+
+                role:
+                    "user",
+
+                content:
+                    text
+
+            });
+
+
+            /* -----------------------------------------
+               SAVE USER MESSAGE
+            ----------------------------------------- */
+
+            await saveMessage(
+                "user",
+                text
+            );
 
 
             /* -----------------------------------------
@@ -1879,19 +2800,46 @@
                 "لم يصل رد من المساعد.";
 
 
+            /*
+                عرض الرد
+            */
+
             addMessage(
                 answer,
                 "assistant"
             );
 
 
+            /*
+                إضافة الرد إلى سياق المحادثة
+            */
+
             conversation.push({
 
-                role: "assistant",
+                role:
+                    "assistant",
 
-                content: answer
+                content:
+                    answer
 
             });
+
+
+            /*
+                حفظ رد المساعد
+            */
+
+            await saveMessage(
+                "assistant",
+                answer
+            );
+
+
+            /*
+                تحديث قائمة المحادثات
+            */
+
+            await loadConversations();
 
 
         } catch (error) {
@@ -1908,6 +2856,12 @@
 
             }
 
+
+            /*
+                مهم:
+                لا نضيف رسالة الخطأ إلى conversation
+                ولا نحفظها كرسالة للمساعد.
+            */
 
             const row =
                 addMessage(
@@ -1930,7 +2884,6 @@
                 );
 
             }
-
 
         } finally {
 
@@ -1987,7 +2940,8 @@
                 () => {
 
                     const prompt =
-                        button.dataset.prompt || "";
+                        button.dataset.prompt ||
+                        "";
 
                     messageInput.value =
                         prompt;
@@ -2021,7 +2975,9 @@
             } =
                 await supabaseClient
                     .from("profiles")
-                    .select("username,email")
+                    .select(
+                        "username,email"
+                    )
                     .eq(
                         "id",
                         currentUser.id
@@ -2069,7 +3025,8 @@
 
     async function logout() {
 
-        logoutButton.disabled = true;
+        logoutButton.disabled =
+            true;
 
         logoutButton.textContent =
             "جاري تسجيل الخروج...";
@@ -2191,7 +3148,68 @@
                 data.session.user;
 
 
+            /*
+                تحميل الحساب
+            */
+
             await loadUserProfile();
+
+
+            /*
+                تحميل المحادثات السابقة
+            */
+
+            await loadConversations();
+
+
+            /*
+                هنا نحاول استرجاع آخر محادثة
+                مفتوحة لهذا المستخدم.
+
+                نجيب آخر محادثة معدلة.
+            */
+
+            const {
+                data: latestConversation,
+                error: latestError
+            } =
+                await supabaseClient
+                    .from("conversations")
+                    .select(
+                        "id,title"
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    )
+                    .order(
+                        "updated_at",
+                        {
+                            ascending: false
+                        }
+                    )
+                    .limit(1)
+                    .maybeSingle();
+
+
+            if (
+                !latestError &&
+                latestConversation
+            ) {
+
+                await openConversation(
+                    latestConversation.id
+                );
+
+            } else {
+
+                /*
+                    إذا ماكو محادثات
+                */
+
+                startNewChat();
+
+            }
 
 
             messageInput.focus();
