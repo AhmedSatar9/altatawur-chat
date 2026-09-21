@@ -27,6 +27,9 @@ const supabaseClient =
 const messages =
     document.getElementById("messages");
 
+const welcomeMessage =
+    document.getElementById("welcomeMessage");
+
 const messageInput =
     document.getElementById("messageInput");
 
@@ -48,6 +51,9 @@ const closeMenu =
 const sideMenu =
     document.getElementById("sideMenu");
 
+const menuOverlay =
+    document.getElementById("menuOverlay");
+
 const logoutButton =
     document.getElementById("logoutButton");
 
@@ -67,6 +73,19 @@ let isSending = false;
 
 
 // ==========================================
+// REDIRECT
+// ==========================================
+
+function redirectToLogin() {
+
+    window.location.replace(
+        "/login.html"
+    );
+
+}
+
+
+// ==========================================
 // INITIALIZE
 // ==========================================
 
@@ -77,7 +96,8 @@ async function initialize() {
         const {
             data,
             error
-        } = await supabaseClient.auth.getSession();
+        } =
+            await supabaseClient.auth.getSession();
 
 
         if (error) {
@@ -90,14 +110,16 @@ async function initialize() {
             redirectToLogin();
 
             return;
+
         }
 
 
-        if (!data || !data.session) {
+        if (!data?.session) {
 
             redirectToLogin();
 
             return;
+
         }
 
 
@@ -107,8 +129,6 @@ async function initialize() {
 
         await loadUserProfile();
 
-
-        // مراقبة حالة تسجيل الدخول
 
         supabaseClient.auth.onAuthStateChange(
             (event, session) => {
@@ -125,6 +145,7 @@ async function initialize() {
             }
         );
 
+
     } catch (error) {
 
         console.error(
@@ -135,19 +156,6 @@ async function initialize() {
         redirectToLogin();
 
     }
-
-}
-
-
-// ==========================================
-// REDIRECT TO LOGIN
-// ==========================================
-
-function redirectToLogin() {
-
-    window.location.replace(
-        "/login.html"
-    );
 
 }
 
@@ -168,11 +176,12 @@ async function loadUserProfile() {
         const {
             data,
             error
-        } = await supabaseClient
-            .from("profiles")
-            .select("username,email")
-            .eq("id", currentUser.id)
-            .single();
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select("username,email")
+                .eq("id", currentUser.id)
+                .single();
 
 
         if (error) {
@@ -182,29 +191,22 @@ async function loadUserProfile() {
                 error
             );
 
-
-            if (usernameDisplay) {
-
-                usernameDisplay.textContent =
-                    currentUser.user_metadata?.username ||
-                    currentUser.email ||
-                    "مستخدم";
-
-            }
-
-            return;
-        }
-
-
-        if (usernameDisplay) {
-
             usernameDisplay.textContent =
-                data?.username ||
                 currentUser.user_metadata?.username ||
                 currentUser.email ||
                 "مستخدم";
 
+            return;
+
         }
+
+
+        usernameDisplay.textContent =
+            data?.username ||
+            currentUser.user_metadata?.username ||
+            currentUser.email ||
+            "مستخدم";
+
 
     } catch (error) {
 
@@ -222,10 +224,20 @@ async function loadUserProfile() {
 // ADD MESSAGE
 // ==========================================
 
-function addMessage(text, role) {
+function addMessage(
+    text,
+    role
+) {
 
     if (!messages) {
         return;
+    }
+
+
+    if (welcomeMessage) {
+
+        welcomeMessage.remove();
+
     }
 
 
@@ -261,7 +273,7 @@ function addMessage(text, role) {
 
 
 // ==========================================
-// SCROLL TO BOTTOM
+// SCROLL
 // ==========================================
 
 function scrollMessagesToBottom() {
@@ -278,15 +290,10 @@ function scrollMessagesToBottom() {
 
 
 // ==========================================
-// SHOW LOADING
+// LOADING
 // ==========================================
 
 function showLoading() {
-
-    if (!messages) {
-        return null;
-    }
-
 
     const loading =
         document.createElement("div");
@@ -343,10 +350,9 @@ async function sendMessage() {
         redirectToLogin();
 
         return;
+
     }
 
-
-    // إضافة رسالة المستخدم
 
     addMessage(
         text,
@@ -355,14 +361,16 @@ async function sendMessage() {
 
 
     conversation.push({
+
         role: "user",
+
         content: text
+
     });
 
 
-    // تنظيف حقل الكتابة
-
-    messageInput.value = "";
+    messageInput.value =
+        "";
 
     messageInput.style.height =
         "auto";
@@ -371,12 +379,8 @@ async function sendMessage() {
     isSending = true;
 
 
-    if (sendButton) {
-
-        sendButton.disabled =
-            true;
-
-    }
+    sendButton.disabled =
+        true;
 
 
     const loading =
@@ -385,12 +389,11 @@ async function sendMessage() {
 
     try {
 
-        // الحصول على جلسة المستخدم
-
         const {
             data: sessionData,
             error: sessionError
-        } = await supabaseClient.auth.getSession();
+        } =
+            await supabaseClient.auth.getSession();
 
 
         if (sessionError) {
@@ -415,44 +418,47 @@ async function sendMessage() {
         }
 
 
-        // إرسال المحادثة إلى API
-
         const response =
             await fetch(
                 "/api/chat",
                 {
+
                     method: "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json",
 
                         "Authorization":
                             `Bearer ${session.access_token}`
+
                     },
 
                     body: JSON.stringify({
+
                         messages:
                             conversation
+
                     })
+
                 }
             );
 
 
-        // محاولة قراءة الرد
-
         let result = {};
+
 
         try {
 
             result =
                 await response.json();
 
-        } catch (jsonError) {
+        } catch (error) {
 
             console.error(
                 "JSON ERROR:",
-                jsonError
+                error
             );
 
         }
@@ -468,16 +474,8 @@ async function sendMessage() {
         }
 
 
-        // إزالة جاري التفكير
+        loading.remove();
 
-        if (loading) {
-
-            loading.remove();
-
-        }
-
-
-        // استخراج الرد
 
         const answer =
             result?.message ||
@@ -486,19 +484,18 @@ async function sendMessage() {
             "لم يصل رد من المساعد.";
 
 
-        // عرض الرد
-
         addMessage(
             answer,
             "assistant"
         );
 
 
-        // حفظ الرد بالمحادثة
-
         conversation.push({
+
             role: "assistant",
+
             content: answer
+
         });
 
 
@@ -518,29 +515,26 @@ async function sendMessage() {
 
 
         addMessage(
+
             error?.message ||
             "حدث خطأ. حاول مرة أخرى.",
+
             "assistant error-message"
+
         );
+
 
     } finally {
 
-        isSending = false;
+        isSending =
+            false;
 
 
-        if (sendButton) {
-
-            sendButton.disabled =
-                false;
-
-        }
+        sendButton.disabled =
+            false;
 
 
-        if (messageInput) {
-
-            messageInput.focus();
-
-        }
+        messageInput.focus();
 
     }
 
@@ -548,7 +542,7 @@ async function sendMessage() {
 
 
 // ==========================================
-// AUTO RESIZE TEXTAREA
+// TEXTAREA RESIZE
 // ==========================================
 
 function resizeMessageInput() {
@@ -565,7 +559,7 @@ function resizeMessageInput() {
     messageInput.style.height =
         Math.min(
             messageInput.scrollHeight,
-            160
+            150
         ) + "px";
 
 }
@@ -577,13 +571,26 @@ function resizeMessageInput() {
 
 function startNewChat() {
 
+    if (isSending) {
+        return;
+    }
+
+
     conversation = [];
 
 
     if (messages) {
 
-        messages.innerHTML =
-            "";
+        messages.innerHTML = "";
+
+    }
+
+
+    if (welcomeMessage) {
+
+        messages.appendChild(
+            welcomeMessage
+        );
 
     }
 
@@ -612,12 +619,11 @@ function startNewChat() {
 
 function openSideMenu() {
 
-    if (!sideMenu) {
-        return;
-    }
-
-
     sideMenu.classList.remove(
+        "hidden"
+    );
+
+    menuOverlay.classList.remove(
         "hidden"
     );
 
@@ -630,12 +636,11 @@ function openSideMenu() {
 
 function closeSideMenu() {
 
-    if (!sideMenu) {
-        return;
-    }
-
-
     sideMenu.classList.add(
+        "hidden"
+    );
+
+    menuOverlay.classList.add(
         "hidden"
     );
 
@@ -665,7 +670,8 @@ async function logout() {
 
         const {
             error
-        } = await supabaseClient.auth.signOut();
+        } =
+            await supabaseClient.auth.signOut();
 
 
         if (error) {
@@ -678,6 +684,7 @@ async function logout() {
         window.location.replace(
             "/login.html"
         );
+
 
     } catch (error) {
 
@@ -703,114 +710,93 @@ async function logout() {
 // EVENTS
 // ==========================================
 
-
-// إرسال الرسالة
-
-if (sendButton) {
-
-    sendButton.addEventListener(
-        "click",
-        sendMessage
-    );
-
-}
+sendButton.addEventListener(
+    "click",
+    sendMessage
+);
 
 
-// زر Enter
+messageInput.addEventListener(
+    "keydown",
+    (event) => {
 
-if (messageInput) {
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
 
-    messageInput.addEventListener(
-        "keydown",
-        (event) => {
+            event.preventDefault();
 
-            if (
-                event.key === "Enter" &&
-                !event.shiftKey
-            ) {
-
-                event.preventDefault();
-
-                sendMessage();
-
-            }
+            sendMessage();
 
         }
-    );
+
+    }
+);
 
 
-    // تكبير مربع الكتابة
-
-    messageInput.addEventListener(
-        "input",
-        resizeMessageInput
-    );
-
-}
+messageInput.addEventListener(
+    "input",
+    resizeMessageInput
+);
 
 
-// محادثة جديدة - الهيدر
-
-if (newChatButton) {
-
-    newChatButton.addEventListener(
-        "click",
-        startNewChat
-    );
-
-}
+newChatButton.addEventListener(
+    "click",
+    startNewChat
+);
 
 
-// محادثة جديدة - القائمة
-
-if (newChatSide) {
-
-    newChatSide.addEventListener(
-        "click",
-        startNewChat
-    );
-
-}
+newChatSide.addEventListener(
+    "click",
+    startNewChat
+);
 
 
-// فتح القائمة
-
-if (menuButton) {
-
-    menuButton.addEventListener(
-        "click",
-        openSideMenu
-    );
-
-}
+menuButton.addEventListener(
+    "click",
+    openSideMenu
+);
 
 
-// إغلاق القائمة
-
-if (closeMenu) {
-
-    closeMenu.addEventListener(
-        "click",
-        closeSideMenu
-    );
-
-}
+closeMenu.addEventListener(
+    "click",
+    closeSideMenu
+);
 
 
-// تسجيل الخروج
+menuOverlay.addEventListener(
+    "click",
+    closeSideMenu
+);
 
-if (logoutButton) {
 
-    logoutButton.addEventListener(
-        "click",
-        logout
-    );
-
-}
+logoutButton.addEventListener(
+    "click",
+    logout
+);
 
 
 // ==========================================
-// START APP
+// ESCAPE KEY
+// ==========================================
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (event.key === "Escape") {
+
+            closeSideMenu();
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// START
 // ==========================================
 
 initialize();
