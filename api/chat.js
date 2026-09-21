@@ -668,28 +668,33 @@ export default async function handler(
                     .single();
 
 
-            if (
-                createConversationError
-            ) {
+            if (createConversationError) {
 
-                console.error(
-                    "CREATE CONVERSATION ERROR:",
-                    createConversationError
-                );
+    console.error(
+        "CREATE CONVERSATION ERROR:",
+        createConversationError
+    );
 
-                return res.status(500).json({
+    return res.status(500).json({
 
-                    error:
-                        "تعذر إنشاء المحادثة.",
+        error:
+            "تعذر إنشاء المحادثة.",
 
-                    details:
-                        process.env.NODE_ENV === "development"
-                            ? createConversationError.message
-                            : undefined
+        details:
+            createConversationError.message,
 
-                });
+        code:
+            createConversationError.code,
 
-            }
+        hint:
+            createConversationError.hint,
+
+        details_supabase:
+            createConversationError.details
+
+    });
+
+}
 
 
             if (
