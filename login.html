@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta
+        name="theme-color"
+        content="#070b18"
+    >
+
+    <title>تسجيل الدخول - التطور چات</title>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            min-height: 100%;
+            background: #070b18;
+        }
+
+        body {
+            margin: 0;
+            width: 100%;
+            min-height: 100dvh;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "SF Pro Display",
+                "Segoe UI",
+                Tahoma,
+                Arial,
+                sans-serif;
+
+            color: #ffffff;
+
+            background:
+                radial-gradient(
+                    circle at 85% 5%,
+                    rgba(128, 85, 246, 0.20),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 10% 90%,
+                    rgba(34, 200, 233, 0.14),
+                    transparent 32%
+                ),
+                #070b18;
+
+            overflow-x: hidden;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .page {
+            width: 100%;
+            min-height: 100dvh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding:
+                25px
+                18px
+                calc(25px + env(safe-area-inset-bottom));
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+
+            padding: 32px 25px 26px;
+
+            background:
+                rgba(13, 20, 40, 0.92);
+
+            border:
+                1px solid
+                rgba(135, 150, 195, 0.17);
+
+            border-radius: 28px;
+
+            box-shadow:
+                0 25px 80px
+                rgba(0, 0, 0, 0.38);
+
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+
+        /* ==============================
+           LOGO
+        ============================== */
+
+        .logo {
+            width: 76px;
+            height: 76px;
+
+            margin:
+                0 auto 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 24px;
+
+            font-size: 40px;
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8055f6,
+                    #22c8e9
+                );
+
+            box-shadow:
+                0 18px 50px
+                rgba(65, 155, 235, 0.22);
+        }
+
+        .title {
+            margin: 0;
+
+            text-align: center;
+
+            font-size: 29px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            margin:
+                9px
+                0
+                28px;
+
+            text-align: center;
+
+            color: #858da8;
+
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* ==============================
+           FORM
+        ============================== */
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #cdd2e2;
+
+            font-size: 13px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input {
+            width: 100%;
+            height: 55px;
+
+            padding:
+                0
+                16px;
+
+            outline: none;
+
+            border:
+                1px solid
+                rgba(135, 150, 195, 0.17);
+
+            border-radius: 16px;
+
+            color: #ffffff;
+
+            background:
+                rgba(8, 14, 31, 0.85);
+
+            font-size: 15px;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .input:focus {
+            border-color:
+                rgba(128, 85, 246, 0.75);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(128, 85, 246, 0.10);
+        }
+
+        .input::placeholder {
+            color: #69738f;
+        }
+
+        /* ==============================
+           PASSWORD
+        ============================== */
+
+        .password-toggle {
+            position: absolute;
+
+            left: 12px;
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            width: 38px;
+            height: 38px;
+
+            border: 0;
+
+            border-radius: 11px;
+
+            color: #8d96af;
+
+            background:
+                rgba(255, 255, 255, 0.04);
+
+            cursor: pointer;
+
+            font-size: 17px;
+        }
+
+        /* ==============================
+           LOGIN BUTTON
+        ============================== */
+
+        .login-button {
+            width: 100%;
+            height: 56px;
+
+            margin-top: 7px;
+
+            border: 0;
+
+            border-radius: 17px;
+
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    100deg,
+                    #8055f6,
+                    #22c8e9
+                );
+
+            font-size: 16px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 12px 30px
+                rgba(69, 137, 231, 0.18);
+
+            transition:
+                transform 0.15s ease,
+                opacity 0.15s ease;
+        }
+
+        .login-button:active {
+            transform: scale(0.98);
+        }
+
+        .login-button:disabled {
+            opacity: 0.55;
+            cursor: wait;
+        }
+
+        /* ==============================
+           REGISTER
+        ============================== */
+
+        .register {
+            margin-top: 23px;
+
+            text-align: center;
+
+            color: #7f89a3;
+
+            font-size: 14px;
+        }
+
+        .register a {
+            color: #55cfe8;
+
+            text-decoration: none;
+
+            font-weight: 700;
+        }
+
+        /* ==============================
+           MESSAGE
+        ============================== */
+
+        .message {
+            display: none;
+
+            margin-bottom: 16px;
+
+            padding:
+                12px
+                14px;
+
+            border-radius: 14px;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            text-align: center;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            color: #ffadb7;
+
+            background:
+                rgba(255, 70, 95, 0.08);
+
+            border:
+                1px solid
+                rgba(255, 70, 95, 0.20);
+        }
+
+        .message.success {
+            color: #72e1c2;
+
+            background:
+                rgba(70, 210, 170, 0.08);
+
+            border:
+                1px solid
+                rgba(70, 210, 170, 0.20);
+        }
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 500px) {
+
+            .page {
+                padding:
+                    18px
+                    12px
+                    calc(18px + env(safe-area-inset-bottom));
+            }
+
+            .login-card {
+                padding:
+                    28px
+                    20px
+                    23px;
+
+                border-radius: 25px;
+            }
+
+            .logo {
+                width: 68px;
+                height: 68px;
+
+                border-radius: 21px;
+
+                font-size: 35px;
+            }
+
+            .title {
+                font-size: 26px;
+            }
+
+            .subtitle {
+                margin-bottom: 24px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <main class="login-card">
+
+        <!-- LOGO -->
+
+        <div class="logo">
+            ت
+        </div>
+
+        <h1 class="title">
+            التطور چات
+        </h1>
+
+        <p class="subtitle">
+            سجل دخولك حتى تكمل محادثاتك مع الذكاء الاصطناعي.
+        </p>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <!-- EMAIL -->
+
+        <div class="field">
+
+            <label for="email">
+                البريد الإلكتروني
+            </label>
+
+            <div class="input-wrap">
+
+                <input
+                    id="email"
+                    class="input"
+                    type="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    placeholder="example@email.com"
+                    dir="ltr"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="field">
+
+            <label for="password">
+                كلمة المرور
+            </label>
+
+            <div class="input-wrap">
+
+                <input
+                    id="password"
+                    class="input"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="أدخل كلمة المرور"
+                    dir="ltr"
+                >
+
+                <button
+                    id="togglePassword"
+                    class="password-toggle"
+                    type="button"
+                    aria-label="إظهار كلمة المرور"
+                >
+                    👁
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <button
+            id="loginButton"
+            class="login-button"
+            type="button"
+        >
+            تسجيل الدخول
+        </button>
+
+
+        <!-- REGISTER -->
+
+        <div class="register">
+
+            ما عندك حساب؟
+
+            <a href="/register.html">
+                إنشاء حساب جديد
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       SUPABASE
+    ===================================================== */
+
+    const SUPABASE_URL =
+        "https://wxsricscchalzvazdbzd.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const emailInput =
+        document.getElementById("email");
+
+    const passwordInput =
+        document.getElementById("password");
+
+    const loginButton =
+        document.getElementById("loginButton");
+
+    const togglePassword =
+        document.getElementById("togglePassword");
+
+    const message =
+        document.getElementById("message");
+
+
+    /* =====================================================
+       MESSAGE
+    ===================================================== */
+
+    function showMessage(
+        text,
+        type = "error"
+    ) {
+
+        message.textContent =
+            text;
+
+        message.className =
+            `message show ${type}`;
+
+    }
+
+
+    function hideMessage() {
+
+        message.textContent =
+            "";
+
+        message.className =
+            "message";
+
+    }
+
+
+    /* =====================================================
+       PASSWORD TOGGLE
+    ===================================================== */
+
+    togglePassword.addEventListener(
+        "click",
+        () => {
+
+            const isPassword =
+                passwordInput.type === "password";
+
+            passwordInput.type =
+                isPassword
+                    ? "text"
+                    : "password";
+
+            togglePassword.textContent =
+                isPassword
+                    ? "🙈"
+                    : "👁";
+
+        }
+    );
+
+
+    /* =====================================================
+       LOGIN
+    ===================================================== */
+
+    async function login() {
+
+        if (loginButton.disabled) {
+            return;
+        }
+
+        hideMessage();
+
+        const email =
+            emailInput.value
+                .trim();
+
+        const password =
+            passwordInput.value;
+
+
+        /* -----------------------------------------------
+           VALIDATION
+        ----------------------------------------------- */
+
+        if (!email) {
+
+            showMessage(
+                "اكتب البريد الإلكتروني."
+            );
+
+            emailInput.focus();
+
+            return;
+        }
+
+
+        if (!password) {
+
+            showMessage(
+                "اكتب كلمة المرور."
+            );
+
+            passwordInput.focus();
+
+            return;
+        }
+
+
+        /* -----------------------------------------------
+           LOADING
+        ----------------------------------------------- */
+
+        loginButton.disabled =
+            true;
+
+        loginButton.textContent =
+            "جاري تسجيل الدخول...";
+
+
+        try {
+
+            /* -------------------------------------------
+               SUPABASE LOGIN
+            ------------------------------------------- */
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.signInWithPassword({
+
+                    email:
+                        email,
+
+                    password:
+                        password
+
+                });
+
+
+            if (error) {
+
+                console.error(
+                    "LOGIN ERROR:",
+                    error
+                );
+
+                let errorMessage =
+                    "تعذر تسجيل الدخول.";
+
+                if (
+                    error.message
+                        .toLowerCase()
+                        .includes(
+                            "invalid login credentials"
+                        )
+                ) {
+
+                    errorMessage =
+                        "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+                } else if (
+                    error.message
+                        .toLowerCase()
+                        .includes(
+                            "email not confirmed"
+                        )
+                ) {
+
+                    errorMessage =
+                        "يجب تأكيد البريد الإلكتروني أولاً.";
+
+                }
+
+                throw new Error(
+                    errorMessage
+                );
+
+            }
+
+
+            if (!data?.session) {
+
+                throw new Error(
+                    "تم تسجيل الدخول لكن لم يتم إنشاء جلسة."
+                );
+
+            }
+
+
+            /* -------------------------------------------
+               نجاح
+            ------------------------------------------- */
+
+            showMessage(
+                "تم تسجيل الدخول بنجاح.",
+                "success"
+            );
+
+
+            /*
+             * نعطي Supabase لحظة حتى
+             * تثبت الجلسة في المتصفح.
+             */
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        300
+                    )
+            );
+
+
+            /*
+             * نذهب إلى الصفحة الرئيسية.
+             *
+             * index.html عندك هو صفحة المحادثة.
+             */
+
+            window.location.replace(
+                "/index.html"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "LOGIN ERROR:",
+                error
+            );
+
+            showMessage(
+                error?.message ||
+                "حدث خطأ أثناء تسجيل الدخول."
+            );
+
+        } finally {
+
+            loginButton.disabled =
+                false;
+
+            loginButton.textContent =
+                "تسجيل الدخول";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       BUTTON
+    ===================================================== */
+
+    loginButton.addEventListener(
+        "click",
+        login
+    );
+
+
+    /* =====================================================
+       ENTER
+    ===================================================== */
+
+    emailInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                passwordInput.focus();
+
+            }
+
+        }
+    );
+
+
+    passwordInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                login();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       CHECK EXISTING SESSION
+    ===================================================== */
+
+    async function checkExistingSession() {
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.getSession();
+
+
+            if (error) {
+
+                console.error(
+                    "SESSION CHECK ERROR:",
+                    error
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * إذا المستخدم مسجل دخول مسبقاً،
+             * ما يحتاج يشوف صفحة Login.
+             */
+
+            if (data?.session) {
+
+                window.location.replace(
+                    "/index.html"
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "SESSION CHECK ERROR:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       START
+    ===================================================== */
+
+    checkExistingSession();
+
+</script>
+
+</body>
+</html>
