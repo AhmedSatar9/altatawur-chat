@@ -479,6 +479,18 @@ async function sendMessage() {
 
         }
 
+        if (result?.conversation_id) {
+
+    currentConversationId =
+        result.conversation_id;
+
+    localStorage.setItem(
+        "altatawur_current_conversation_id",
+        currentConversationId
+    );
+
+}
+
 
         loading.remove();
 
