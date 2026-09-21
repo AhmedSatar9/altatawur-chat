@@ -314,7 +314,8 @@
             justify-content: flex-end;
         }
         .message-bubble {
-            max-width: min(78%, 720px);
+            max-width:
+                min(78%, 720px);
             padding:
                 14px
                 17px;
@@ -360,7 +361,10 @@
             padding:
                 15px
                 20px
-                calc(15px + env(safe-area-inset-bottom));
+                calc(
+                    15px +
+                    env(safe-area-inset-bottom)
+                );
             pointer-events: none;
             background:
                 linear-gradient(
@@ -464,10 +468,11 @@
             top: 0;
             right: 0;
             z-index: 100;
-            width: min(
-                390px,
-                88vw
-            );
+            width:
+                min(
+                    390px,
+                    88vw
+                );
             height: 100dvh;
             padding: 22px;
             background:
@@ -703,7 +708,10 @@
                 padding:
                     9px
                     10px
-                    calc(9px + env(safe-area-inset-bottom));
+                    calc(
+                        9px +
+                        env(safe-area-inset-bottom)
+                    );
             }
             .composer {
                 border-radius: 20px;
@@ -1032,9 +1040,6 @@
     }
     /* =========================================================
        NEW CHAT
-       مهم:
-       لا ننشئ سجل في Supabase هنا.
-       الـ API ينشئ المحادثة عند أول رسالة.
     ========================================================= */
     function startNewChat() {
         currentConversationId = null;
@@ -1168,6 +1173,7 @@
     }
     /* =========================================================
        LOAD LAST CONVERSATION
+       FIXED
     ========================================================= */
     async function loadLastConversation() {
         if (!currentUser) {
@@ -1178,6 +1184,14 @@
                 localStorage.getItem(
                     "altatawur_current_conversation"
                 );
+            console.log(
+                "SAVED CONVERSATION ID:",
+                savedId
+            );
+            /* ================================================
+               FIRST:
+               TRY SAVED CONVERSATION
+            ================================================= */
             if (savedId) {
                 const {
                     data: savedConversation,
@@ -1197,6 +1211,10 @@
                             currentUser.id
                         )
                         .maybeSingle();
+                console.log(
+                    "SAVED CONVERSATION:",
+                    savedConversation
+                );
                 if (
                     !savedConversationError &&
                     savedConversation
@@ -1206,10 +1224,20 @@
                     );
                     return;
                 }
+                /*
+                 * إذا الـ ID قديم أو غير صالح
+                 */
+                localStorage.removeItem(
+                    "altatawur_current_conversation"
+                );
             }
+            /* ================================================
+               SECOND:
+               LOAD LAST CONVERSATION
+            ================================================= */
             const {
-                data,
-                error
+                data: conversations,
+                error: conversationsError
             } =
                 await supabaseClient
                     .from("conversations")
@@ -1226,117 +1254,194 @@
                             ascending: false
                         }
                     )
+                    .order(
+                        "created_at",
+                        {
+                            ascending: false
+                        }
+                    )
                     .limit(1);
-            if (error) {
+            if (conversationsError) {
                 console.error(
-                    "LOAD CONVERSATIONS ERROR:",
-                    error
+                    "LOAD LAST CONVERSATION ERROR:",
+                    conversationsError
                 );
                 return;
             }
+            /* ================================================
+               FOUND LAST CONVERSATION
+            ================================================= */
             if (
-                data &&
-                data.length > 0
+                conversations &&
+                conversations.length > 0
             ) {
-                await openConversation(
-                    data[0].id
+                const latestConversation =
+                    conversations[0];
+                console.log(
+                    "LATEST CONVERSATION:",
+                    latestConversation
                 );
+                currentConversationId =
+                    latestConversation.id;
+                localStorage.setItem(
+                    "altatawur_current_conversation",
+                    String(
+                        latestConversation.id
+                    )
+                );
+                await openConversation(
+                    latestConversation.id
+                );
+                return;
             }
+            /* ================================================
+               NO CONVERSATION
+            ================================================= */
+            currentConversationId = null;
+            conversation = [];
+            resetChatUI();
         } catch (error) {
             console.error(
-                "LOAD LAST CONVERSATION ERROR:",
+                "LOAD LAST CONVERSATION FATAL ERROR:",
                 error
             );
         }
     }
     /* =========================================================
        OPEN CONVERSATION
+       FIXED
     ========================================================= */
     async function openConversation(
         conversationId
     ) {
-        currentConversationId =
-            conversationId;
-        localStorage.setItem(
-            "altatawur_current_conversation",
-            conversationId
-        );
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("messages")
-                .select(
-                    "id,conversation_id,role,content,created_at"
-                )
-                .eq(
-                    "conversation_id",
-                    conversationId
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: true
-                    }
+        if (
+            !conversationId ||
+            !currentUser
+        ) {
+            return;
+        }
+        try {
+            /* ================================================
+               VERIFY CONVERSATION OWNER
+            ================================================= */
+            const {
+                data: conversationData,
+                error: conversationError
+            } =
+                await supabaseClient
+                    .from("conversations")
+                    .select(
+                        "id,user_id,title,created_at,updated_at"
+                    )
+                    .eq(
+                        "id",
+                        conversationId
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    )
+                    .maybeSingle();
+            if (
+                conversationError ||
+                !conversationData
+            ) {
+                console.error(
+                    "OPEN CONVERSATION CHECK ERROR:",
+                    conversationError
                 );
-        if (error) {
+                localStorage.removeItem(
+                    "altatawur_current_conversation"
+                );
+                currentConversationId =
+                    null;
+                return;
+            }
+            /* ================================================
+               SAVE CURRENT CONVERSATION
+            ================================================= */
+            currentConversationId =
+                conversationData.id;
+            localStorage.setItem(
+                "altatawur_current_conversation",
+                String(
+                    conversationData.id
+                )
+            );
+            /* ================================================
+               LOAD MESSAGES
+            ================================================= */
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("messages")
+                    .select(
+                        "id,conversation_id,role,content,created_at"
+                    )
+                    .eq(
+                        "conversation_id",
+                        conversationData.id
+                    )
+                    .order(
+                        "created_at",
+                        {
+                            ascending: true
+                        }
+                    );
+            if (error) {
+                console.error(
+                    "LOAD MESSAGES ERROR:",
+                    error
+                );
+                showToast(
+                    "تعذر تحميل رسائل المحادثة."
+                );
+                return;
+            }
+            /* ================================================
+               REBUILD LOCAL CONVERSATION
+            ================================================= */
+            conversation = [];
+            resetChatUI();
+            if (
+                !data ||
+                data.length === 0
+            ) {
+                return;
+            }
+            for (
+                const message
+                of data
+            ) {
+                if (
+                    message.role !== "user" &&
+                    message.role !== "assistant"
+                ) {
+                    continue;
+                }
+                conversation.push({
+                    role:
+                        message.role,
+                    content:
+                        message.content
+                });
+                addMessage(
+                    message.content,
+                    message.role
+                );
+            }
+            scrollToBottom();
+        } catch (error) {
             console.error(
-                "LOAD MESSAGES ERROR:",
+                "OPEN CONVERSATION ERROR:",
                 error
             );
-            showToast(
-                "تعذر تحميل رسائل المحادثة."
-            );
-            return;
         }
-        conversation = [];
-        resetChatUI();
-        if (
-            !data ||
-            data.length === 0
-        ) {
-            return;
-        }
-        for (
-            const message
-            of data
-        ) {
-            if (
-                message.role !== "user" &&
-                message.role !== "assistant"
-            ) {
-                continue;
-            }
-            conversation.push({
-                role:
-                    message.role,
-                content:
-                    message.content
-            });
-            addMessage(
-                message.content,
-                message.role
-            );
-        }
-        scrollToBottom();
     }
     /* =========================================================
        SEND MESSAGE
-       =========================================================
-       
-       مهم جداً:
-       هنا لم نعد ننشئ conversation من المتصفح.
-       
-       الـ API:
-       1. يتحقق من المستخدم
-       2. ينشئ conversation إذا ماكو ID
-       3. يحفظ رسالة المستخدم
-       4. يجيب تاريخ المحادثة
-       5. يرسلها إلى OpenAI
-       6. يحفظ جواب المساعد
-       7. يرجع conversation_id
-       
     ========================================================= */
     async function sendMessage() {
         if (isSending) {
@@ -1357,41 +1462,41 @@
         sendButton.disabled = true;
         let loading = null;
         try {
-            /* ---------------------------------------------
-               عرض رسالة المستخدم مباشرة
-            --------------------------------------------- */
+            /* ================================================
+               SHOW USER MESSAGE
+            ================================================= */
             addMessage(
                 text,
                 "user"
             );
-            /* ---------------------------------------------
-               تحديث الـ conversation المحلي
-            --------------------------------------------- */
+            /* ================================================
+               UPDATE LOCAL CONTEXT
+            ================================================= */
             conversation.push({
                 role:
                     "user",
                 content:
                     text
             });
-            /* ---------------------------------------------
-               تنظيف الحقل
-            --------------------------------------------- */
+            /* ================================================
+               CLEAR INPUT
+            ================================================= */
             messageInput.value = "";
             messageInput.style.height =
                 "auto";
-            /* ---------------------------------------------
-               Loading
-            --------------------------------------------- */
+            /* ================================================
+               LOADING
+            ================================================= */
             loading =
                 showLoading();
-            /* ---------------------------------------------
-               Session
-            --------------------------------------------- */
+            /* ================================================
+               SESSION
+            ================================================= */
             const session =
                 await getValidSession();
-            /* ---------------------------------------------
+            /* ================================================
                API
-            --------------------------------------------- */
+            ================================================= */
             const response =
                 await fetch(
                     "/api/chat",
@@ -1405,12 +1510,12 @@
                                 `Bearer ${session.access_token}`
                         },
                         body:
-    JSON.stringify({
-        conversation_id:
-            currentConversationId,
-        message:
-            text
-    })
+                            JSON.stringify({
+                                conversation_id:
+                                    currentConversationId,
+                                messages:
+                                    conversation
+                            })
                     }
                 );
             let result = {};
@@ -1420,9 +1525,9 @@
             } catch {
                 result = {};
             }
-            /* ---------------------------------------------
+            /* ================================================
                API ERROR
-            --------------------------------------------- */
+            ================================================= */
             if (!response.ok) {
                 const apiError =
                     result?.error ||
@@ -1432,16 +1537,16 @@
                     apiError
                 );
             }
-            /* ---------------------------------------------
-               إزالة Loading
-            --------------------------------------------- */
+            /* ================================================
+               REMOVE LOADING
+            ================================================= */
             if (loading) {
                 loading.remove();
                 loading = null;
             }
-            /* ---------------------------------------------
-               الحصول على conversation_id
-            --------------------------------------------- */
+            /* ================================================
+               SAVE CONVERSATION ID
+            ================================================= */
             if (
                 result?.conversation_id
             ) {
@@ -1449,27 +1554,33 @@
                     result.conversation_id;
                 localStorage.setItem(
                     "altatawur_current_conversation",
+                    String(
+                        currentConversationId
+                    )
+                );
+                console.log(
+                    "CONVERSATION SAVED:",
                     currentConversationId
                 );
             }
-            /* ---------------------------------------------
-               استخراج الرد
-            --------------------------------------------- */
+            /* ================================================
+               GET ANSWER
+            ================================================= */
             const answer =
                 result?.message ||
                 result?.answer ||
                 result?.content ||
                 "لم يصل رد من المساعد.";
-            /* ---------------------------------------------
-               عرض الرد
-            --------------------------------------------- */
+            /* ================================================
+               SHOW ANSWER
+            ================================================= */
             addMessage(
                 answer,
                 "assistant"
             );
-            /* ---------------------------------------------
-               إضافة الرد للسياق المحلي
-            --------------------------------------------- */
+            /* ================================================
+               ADD ANSWER TO LOCAL CONTEXT
+            ================================================= */
             conversation.push({
                 role:
                     "assistant",
@@ -1502,9 +1613,9 @@
                 );
             }
             /*
-             * إذا فشلت العملية قبل إنشاء المحادثة،
-             * نزيل الرسالة المحلية من السياق حتى
-             * لا تتكرر عند المحاولة القادمة.
+             * إذا فشلت العملية قبل إنشاء
+             * المحادثة، نحذف رسالة المستخدم
+             * من السياق المحلي.
              */
             if (
                 !currentConversationId &&
@@ -1672,10 +1783,17 @@
     ========================================================= */
     async function initialize() {
         try {
+            console.log(
+                "INITIALIZING CHAT..."
+            );
             const session =
                 await getValidSession();
             currentUser =
                 session.user;
+            console.log(
+                "CURRENT USER:",
+                currentUser.id
+            );
             await loadUserProfile();
             await loadLastConversation();
             messageInput.focus();
