@@ -66,8 +66,7 @@ app.get(
 // MAIN APP
 // ==========================================
 
-app.get(
-    "*",
+app.use(
     (req, res) => {
 
         res.sendFile(
