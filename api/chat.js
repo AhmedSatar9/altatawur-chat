@@ -77,27 +77,42 @@ export default async function handler(req, res) {
         // ==================================
 
         const {
-            data: userData,
-            error: userError
-        } =
-            await supabaseAdmin.auth.getUser(token);
+    data: userData,
+    error: userError
+} =
+    await supabaseAdmin.auth.getUser(token);
 
 
-        if (
-            userError ||
-            !userData?.user
-        ) {
+if (userError) {
 
-            console.error(
-                "SUPABASE AUTH ERROR:",
-                userError
-            );
+    console.error(
+        "SUPABASE GET USER ERROR:",
+        userError
+    );
 
-            return res.status(401).json({
-                error: "جلسة تسجيل الدخول غير صالحة."
-            });
+    return res.status(401).json({
 
-        }
+        error:
+            "Supabase رفض جلسة الدخول.",
+
+        details:
+            userError.message || "Unknown Supabase error."
+
+    });
+
+}
+
+
+if (!userData?.user) {
+
+    return res.status(401).json({
+
+        error:
+            "لم يتم العثور على المستخدم."
+
+    });
+
+}
 
 
         const user =
