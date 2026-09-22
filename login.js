@@ -1,14 +1,29 @@
+// ==========================================
+// SUPABASE CONFIG
+// ==========================================
+
 const SUPABASE_URL =
-    "https://YOUR_PROJECT.supabase.co";
+    "https://wxsricscchalzvazdbzd.supabase.co";
+
 
 const SUPABASE_PUBLISHABLE_KEY =
-    "YOUR_SUPABASE_PUBLISHABLE_KEY";
+    "sb_publishable_5oPDD77Veu5OczxaZje7vg_orfNjB5t";
+
+
+// ==========================================
+// SUPABASE CLIENT
+// ==========================================
 
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_PUBLISHABLE_KEY
     );
+
+
+// ==========================================
+// ELEMENTS
+// ==========================================
 
 const loginTab =
     document.getElementById("loginTab");
@@ -36,338 +51,507 @@ const registerButton =
 // MESSAGE
 // ==========================================
 
-function showMessage(text, type = "error") {
+function showMessage(
+    text,
+    type = "error"
+) {
 
-    message.textContent = text;
+    if (!message) {
+        return;
+    }
+
+
+    message.textContent =
+        text;
+
 
     message.className =
         `message ${type}`;
 
-    message.classList.remove("hidden");
+
+    message.classList.remove(
+        "hidden"
+    );
+
 }
 
 
 function hideMessage() {
 
-    message.classList.add("hidden");
+    if (!message) {
+        return;
+    }
+
+
+    message.classList.add(
+        "hidden"
+    );
 
 }
 
 
 // ==========================================
-// TABS
+// LOGIN TAB
 // ==========================================
 
-loginTab.addEventListener("click", () => {
+loginTab.addEventListener(
+    "click",
+    () => {
 
-    loginTab.classList.add("active");
-    registerTab.classList.remove("active");
+        loginTab.classList.add(
+            "active"
+        );
 
-    loginForm.classList.remove("hidden");
-    registerForm.classList.add("hidden");
-
-    hideMessage();
-
-});
+        registerTab.classList.remove(
+            "active"
+        );
 
 
-registerTab.addEventListener("click", () => {
+        loginForm.classList.remove(
+            "hidden"
+        );
 
-    registerTab.classList.add("active");
-    loginTab.classList.remove("active");
+        registerForm.classList.add(
+            "hidden"
+        );
 
-    registerForm.classList.remove("hidden");
-    loginForm.classList.add("hidden");
 
-    hideMessage();
+        hideMessage();
 
-});
+    }
+);
+
+
+// ==========================================
+// REGISTER TAB
+// ==========================================
+
+registerTab.addEventListener(
+    "click",
+    () => {
+
+        registerTab.classList.add(
+            "active"
+        );
+
+        loginTab.classList.remove(
+            "active"
+        );
+
+
+        registerForm.classList.remove(
+            "hidden"
+        );
+
+        loginForm.classList.add(
+            "hidden"
+        );
+
+
+        hideMessage();
+
+    }
+);
 
 
 // ==========================================
 // LOGIN
 // ==========================================
 
-loginForm.addEventListener("submit", async (event) => {
+loginForm.addEventListener(
+    "submit",
+    async (event) => {
 
-    event.preventDefault();
+        event.preventDefault();
 
-    hideMessage();
 
-    const email =
-        document
-            .getElementById("loginEmail")
-            .value
-            .trim()
-            .toLowerCase();
+        hideMessage();
 
-    const password =
-        document
-            .getElementById("loginPassword")
-            .value;
 
-    loginButton.disabled = true;
-    loginButton.textContent = "جاري تسجيل الدخول...";
+        const email =
+            document
+                .getElementById("loginEmail")
+                .value
+                .trim()
+                .toLowerCase();
 
-    try {
 
-        const {
-            data,
-            error
-        } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-        });
+        const password =
+            document
+                .getElementById("loginPassword")
+                .value;
 
-        if (error) {
-            throw error;
-        }
 
-        if (!data.session) {
+        if (!email || !password) {
 
-            throw new Error(
-                "لم يتم إنشاء جلسة تسجيل الدخول."
+            showMessage(
+                "اكتب البريد الإلكتروني وكلمة المرور.",
+                "error"
             );
 
-        }
-
-        // نجاح حقيقي
-        window.location.replace("/");
-
-    } catch (error) {
-
-        console.error("LOGIN ERROR:", error);
-
-        let text =
-            "حدث خطأ أثناء تسجيل الدخول.";
-
-        if (
-            error.message?.toLowerCase().includes(
-                "invalid login credentials"
-            )
-        ) {
-
-            text =
-                "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
-        } else if (
-            error.message?.toLowerCase().includes(
-                "email not confirmed"
-            )
-        ) {
-
-            text =
-                "يجب تأكيد البريد الإلكتروني أولاً. تحقق من بريدك.";
-
-        } else if (error.message) {
-
-            text = error.message;
+            return;
 
         }
 
-        showMessage(text, "error");
 
-    } finally {
+        loginButton.disabled =
+            true;
 
-        loginButton.disabled = false;
-        loginButton.textContent = "تسجيل الدخول";
+
+        loginButton.textContent =
+            "جاري تسجيل الدخول...";
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .signInWithPassword({
+
+                        email,
+
+                        password
+
+                    });
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            if (!data?.session) {
+
+                throw new Error(
+                    "لم يتم إنشاء جلسة تسجيل الدخول."
+                );
+
+            }
+
+
+            window.location.replace(
+                "/"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "LOGIN ERROR:",
+                error
+            );
+
+
+            let text =
+                "حدث خطأ أثناء تسجيل الدخول.";
+
+
+            const errorMessage =
+                error?.message
+                    ?.toLowerCase() || "";
+
+
+            if (
+                errorMessage.includes(
+                    "invalid login credentials"
+                )
+            ) {
+
+                text =
+                    "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+            }
+
+
+            else if (
+                errorMessage.includes(
+                    "email not confirmed"
+                )
+            ) {
+
+                text =
+                    "يجب تأكيد البريد الإلكتروني أولاً. تحقق من بريدك.";
+
+            }
+
+
+            else if (
+                error?.message
+            ) {
+
+                text =
+                    error.message;
+
+            }
+
+
+            showMessage(
+                text,
+                "error"
+            );
+
+
+        } finally {
+
+            loginButton.disabled =
+                false;
+
+
+            loginButton.textContent =
+                "تسجيل الدخول";
+
+        }
 
     }
-
-});
+);
 
 
 // ==========================================
 // REGISTER
 // ==========================================
 
-registerForm.addEventListener("submit", async (event) => {
+registerForm.addEventListener(
+    "submit",
+    async (event) => {
 
-    event.preventDefault();
-
-    hideMessage();
-
-    const username =
-        document
-            .getElementById("registerUsername")
-            .value
-            .trim();
-
-    const email =
-        document
-            .getElementById("registerEmail")
-            .value
-            .trim()
-            .toLowerCase();
-
-    const password =
-        document
-            .getElementById("registerPassword")
-            .value;
-
-    const confirmPassword =
-        document
-            .getElementById("registerConfirmPassword")
-            .value;
+        event.preventDefault();
 
 
-    // --------------------------------------
-    // VALIDATION
-    // --------------------------------------
-
-    if (username.length < 2) {
-
-        showMessage(
-            "اسم المستخدم يجب أن يحتوي على حرفين على الأقل.",
-            "error"
-        );
-
-        return;
-    }
+        hideMessage();
 
 
-    if (password.length < 8) {
-
-        showMessage(
-            "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل.",
-            "error"
-        );
-
-        return;
-    }
+        const username =
+            document
+                .getElementById(
+                    "registerUsername"
+                )
+                .value
+                .trim();
 
 
-    if (password !== confirmPassword) {
-
-        showMessage(
-            "كلمتا المرور غير متطابقتين.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    registerButton.disabled = true;
-
-    registerButton.textContent =
-        "جاري إنشاء الحساب...";
+        const email =
+            document
+                .getElementById(
+                    "registerEmail"
+                )
+                .value
+                .trim()
+                .toLowerCase();
 
 
-    try {
+        const password =
+            document
+                .getElementById(
+                    "registerPassword"
+                )
+                .value;
 
-        const {
-            data,
-            error
-        } = await supabaseClient.auth.signUp({
 
-            email,
+        const confirmPassword =
+            document
+                .getElementById(
+                    "registerConfirmPassword"
+                )
+                .value;
 
-            password,
 
-            options: {
+        // ==================================
+        // VALIDATION
+        // ==================================
 
-                data: {
-                    username
-                },
+        if (username.length < 2) {
 
-                emailRedirectTo:
-                    window.location.origin + "/login.html"
+            showMessage(
+                "اسم المستخدم يجب أن يحتوي على حرفين على الأقل.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (password.length < 8) {
+
+            showMessage(
+                "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            password !==
+            confirmPassword
+        ) {
+
+            showMessage(
+                "كلمتا المرور غير متطابقتين.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        registerButton.disabled =
+            true;
+
+
+        registerButton.textContent =
+            "جاري إنشاء الحساب...";
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .signUp({
+
+                        email,
+
+                        password,
+
+                        options: {
+
+                            data: {
+
+                                username
+
+                            },
+
+                            emailRedirectTo:
+                                window.location.origin +
+                                "/login.html"
+
+                        }
+
+                    });
+
+
+            if (error) {
+
+                throw error;
 
             }
 
-        });
+
+            // ==================================
+            // EXISTING USER
+            // ==================================
+
+            if (
+                data?.user &&
+                Array.isArray(
+                    data.user.identities
+                ) &&
+                data.user.identities.length === 0
+            ) {
+
+                throw new Error(
+                    "هذا البريد الإلكتروني مستخدم مسبقاً."
+                );
+
+            }
 
 
-        if (error) {
-            throw error;
-        }
+            // ==================================
+            // SUCCESS
+            // ==================================
 
-
-        // --------------------------------------
-        // الحساب موجود مسبقاً
-        // --------------------------------------
-
-        if (
-            data.user &&
-            data.user.identities &&
-            data.user.identities.length === 0
-        ) {
-
-            throw new Error(
-                "هذا البريد الإلكتروني مستخدم مسبقاً."
+            showMessage(
+                "تم إنشاء حسابك بنجاح. تحقق من بريدك الإلكتروني ثم سجّل الدخول.",
+                "success"
             );
 
+
+            registerForm.reset();
+
+
+            setTimeout(
+                () => {
+
+                    loginTab.click();
+
+                },
+                2500
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "REGISTER ERROR:",
+                error
+            );
+
+
+            let text =
+                "تعذر إنشاء الحساب.";
+
+
+            const errorMessage =
+                error?.message
+                    ?.toLowerCase() || "";
+
+
+            if (
+                errorMessage.includes(
+                    "user already registered"
+                )
+            ) {
+
+                text =
+                    "هذا البريد الإلكتروني مستخدم مسبقاً.";
+
+            }
+
+
+            else if (
+                error?.message
+            ) {
+
+                text =
+                    error.message;
+
+            }
+
+
+            showMessage(
+                text,
+                "error"
+            );
+
+
+        } finally {
+
+            registerButton.disabled =
+                false;
+
+
+            registerButton.textContent =
+                "إنشاء الحساب";
+
         }
-
-
-        // --------------------------------------
-        // EMAIL CONFIRMATION
-        // --------------------------------------
-
-        showMessage(
-            "تم إنشاء حسابك بنجاح. تحقق من بريدك الإلكتروني واضغط رابط التأكيد، وبعدها سجّل الدخول.",
-            "success"
-        );
-
-
-        registerForm.reset();
-
-
-        setTimeout(() => {
-
-            loginTab.click();
-
-        }, 2500);
-
-
-    } catch (error) {
-
-        console.error(
-            "REGISTER ERROR:",
-            error
-        );
-
-        let text =
-            "تعذر إنشاء الحساب.";
-
-        if (
-            error.message?.toLowerCase().includes(
-                "user already registered"
-            )
-        ) {
-
-            text =
-                "هذا البريد الإلكتروني مستخدم مسبقاً.";
-
-        } else if (
-            error.message
-        ) {
-
-            text =
-                error.message;
-
-        }
-
-        showMessage(
-            text,
-            "error"
-        );
-
-    } finally {
-
-        registerButton.disabled = false;
-
-        registerButton.textContent =
-            "إنشاء الحساب";
 
     }
-
-});
+);
 
 
 // ==========================================
-// CHECK EXISTING SESSION
+// CHECK SESSION
 // ==========================================
 
 async function checkSession() {
@@ -375,19 +559,38 @@ async function checkSession() {
     try {
 
         const {
-            data
-        } = await supabaseClient.auth.getSession();
+            data,
+            error
+        } =
+            await supabaseClient.auth
+                .getSession();
 
-        if (data.session) {
 
-            window.location.replace("/");
+        if (error) {
+
+            console.error(
+                "SESSION ERROR:",
+                error
+            );
+
+            return;
 
         }
+
+
+        if (data?.session) {
+
+            window.location.replace(
+                "/"
+            );
+
+        }
+
 
     } catch (error) {
 
         console.error(
-            "SESSION ERROR:",
+            "CHECK SESSION ERROR:",
             error
         );
 
