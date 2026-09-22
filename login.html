@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,37 +10,50 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>التطور چات</title>
+    <title>التطور چات - تسجيل الدخول</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
+
 
 <body class="auth-page">
 
+
 <div class="auth-wrapper">
 
+
     <div class="auth-card">
+
 
         <div class="logo-box">
             ت
         </div>
 
-        <h1>التطور چات</h1>
+
+        <h1>
+            التطور چات
+        </h1>
+
 
         <p class="auth-subtitle">
             سجّل دخولك حتى تبدأ محادثاتك مع المساعد الذكي.
         </p>
 
-        <!-- رسالة النظام -->
+
         <div
             id="message"
             class="message hidden"
         ></div>
 
-        <!-- التبديل -->
+
         <div class="auth-tabs">
+
 
             <button
                 id="loginTab"
@@ -48,6 +63,7 @@
                 تسجيل الدخول
             </button>
 
+
             <button
                 id="registerTab"
                 class="auth-tab"
@@ -56,7 +72,9 @@
                 إنشاء حساب
             </button>
 
+
         </div>
+
 
         <!-- LOGIN -->
 
@@ -65,9 +83,11 @@
             class="auth-form"
         >
 
+
             <label for="loginEmail">
                 البريد الإلكتروني
             </label>
+
 
             <input
                 id="loginEmail"
@@ -77,9 +97,11 @@
                 required
             >
 
+
             <label for="loginPassword">
                 كلمة المرور
             </label>
+
 
             <input
                 id="loginPassword"
@@ -89,6 +111,7 @@
                 required
             >
 
+
             <button
                 id="loginButton"
                 class="primary-button"
@@ -97,7 +120,9 @@
                 تسجيل الدخول
             </button>
 
+
         </form>
+
 
         <!-- REGISTER -->
 
@@ -106,9 +131,11 @@
             class="auth-form hidden"
         >
 
+
             <label for="registerUsername">
                 اسم المستخدم
             </label>
+
 
             <input
                 id="registerUsername"
@@ -120,9 +147,11 @@
                 required
             >
 
+
             <label for="registerEmail">
                 البريد الإلكتروني
             </label>
+
 
             <input
                 id="registerEmail"
@@ -132,9 +161,11 @@
                 required
             >
 
+
             <label for="registerPassword">
                 كلمة المرور
             </label>
+
 
             <input
                 id="registerPassword"
@@ -145,9 +176,11 @@
                 required
             >
 
+
             <label for="registerConfirmPassword">
                 تأكيد كلمة المرور
             </label>
+
 
             <input
                 id="registerConfirmPassword"
@@ -158,6 +191,7 @@
                 required
             >
 
+
             <button
                 id="registerButton"
                 class="primary-button"
@@ -166,11 +200,14 @@
                 إنشاء الحساب
             </button>
 
+
         </form>
+
 
         <p class="terms">
             باستخدامك التطور چات، أنت توافق على استخدام الخدمة وفق إعدادات المنصة.
         </p>
+
 
         <a
             href="/"
@@ -179,11 +216,15 @@
             العودة إلى التطور چات
         </a>
 
+
     </div>
 
+
 </div>
+
 
 <script src="login.js"></script>
 
 </body>
+
 </html>
