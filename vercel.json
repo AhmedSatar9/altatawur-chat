@@ -5,5 +5,16 @@
       "source": "/api/chat",
       "destination": "/api/chat.js"
     }
+  ],
+  "headers": [
+    {
+      "source": "/login.js",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    }
   ]
 }
