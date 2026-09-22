@@ -1,952 +1,676 @@
-// ======================================================
-// التطور چات - LOGIN / REGISTER v3
-// ======================================================
-
 "use strict";
 
 console.log("====================================");
-console.log("التطور چات LOGIN.JS LOADED");
+console.log("التطور چات - LOGIN.JS");
 console.log("====================================");
 
 
-// ======================================================
-// SUPABASE CONFIG
-// ======================================================
+/* ======================================================
+   WAIT FOR HTML
+====================================================== */
 
-const SUPABASE_URL =
-    "https://wxsricscchalzvazdbzd.supabase.co";
+document.addEventListener("DOMContentLoaded", () => {
 
-const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
+    console.log("DOM READY");
 
 
-// ======================================================
-// CHECK SUPABASE
-// ======================================================
+    /* ======================================================
+       SUPABASE
+    ====================================================== */
 
-if (!window.supabase) {
+    const SUPABASE_URL =
+        "https://wxsricscchalzvazdbzd.supabase.co";
 
-    console.error(
-        "SUPABASE LIBRARY NOT LOADED"
-    );
-
-    alert(
-        "تعذر تحميل نظام تسجيل الدخول."
-    );
-
-    throw new Error(
-        "Supabase library not loaded"
-    );
-}
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
 
 
-// ======================================================
-// CREATE CLIENT
-// ======================================================
+    if (!window.supabase) {
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
+        console.error(
+            "Supabase library not loaded"
+        );
 
-console.log(
-    "SUPABASE CLIENT READY"
-);
+        alert(
+            "تعذر تحميل نظام تسجيل الدخول."
+        );
 
-
-// ======================================================
-// ELEMENTS
-// ======================================================
-
-const loginTab =
-    document.getElementById(
-        "loginTab"
-    );
-
-const registerTab =
-    document.getElementById(
-        "registerTab"
-    );
-
-const loginForm =
-    document.getElementById(
-        "loginForm"
-    );
-
-const registerForm =
-    document.getElementById(
-        "registerForm"
-    );
-
-const messageBox =
-    document.getElementById(
-        "message"
-    );
-
-const loginButton =
-    document.getElementById(
-        "loginButton"
-    );
-
-const registerButton =
-    document.getElementById(
-        "registerButton"
-    );
-
-
-// ======================================================
-// VERIFY HTML
-// ======================================================
-
-console.log(
-    "AUTH ELEMENTS:",
-    {
-        loginTab,
-        registerTab,
-        loginForm,
-        registerForm,
-        messageBox,
-        loginButton,
-        registerButton
+        return;
     }
-);
 
 
-if (
-    !loginTab ||
-    !registerTab ||
-    !loginForm ||
-    !registerForm ||
-    !messageBox ||
-    !loginButton ||
-    !registerButton
-) {
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
 
-    console.error(
-        "AUTH HTML ELEMENTS MISSING"
-    );
-
-    throw new Error(
-        "Required authentication elements are missing"
-    );
-}
-
-
-// ======================================================
-// MESSAGE
-// ======================================================
-
-function showMessage(
-    text,
-    type = "error"
-) {
-
-    messageBox.textContent =
-        text;
-
-    messageBox.className =
-        "message show " + type;
-}
-
-
-function hideMessage() {
-
-    messageBox.textContent =
-        "";
-
-    messageBox.className =
-        "message";
-}
-
-
-// ======================================================
-// SHOW LOGIN
-// ======================================================
-
-function showLoginForm() {
-
-    loginTab.classList.add(
-        "active"
-    );
-
-    registerTab.classList.remove(
-        "active"
-    );
-
-    loginForm.classList.add(
-        "active"
-    );
-
-    registerForm.classList.remove(
-        "active"
-    );
-
-    hideMessage();
 
     console.log(
-        "LOGIN FORM SHOWN"
-    );
-}
-
-
-// ======================================================
-// SHOW REGISTER
-// ======================================================
-
-function showRegisterForm() {
-
-    registerTab.classList.add(
-        "active"
+        "SUPABASE CLIENT READY"
     );
 
-    loginTab.classList.remove(
-        "active"
-    );
 
-    registerForm.classList.add(
-        "active"
-    );
+    /* ======================================================
+       ELEMENTS
+    ====================================================== */
 
-    loginForm.classList.remove(
-        "active"
-    );
+    const loginTab =
+        document.getElementById("loginTab");
 
-    hideMessage();
+    const registerTab =
+        document.getElementById("registerTab");
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const registerForm =
+        document.getElementById("registerForm");
+
+    const messageBox =
+        document.getElementById("message");
+
+    const loginButton =
+        document.getElementById("loginButton");
+
+    const registerButton =
+        document.getElementById("registerButton");
+
 
     console.log(
-        "REGISTER FORM SHOWN"
+        "LOGIN ELEMENTS:",
+        {
+            loginTab,
+            registerTab,
+            loginForm,
+            registerForm,
+            messageBox,
+            loginButton,
+            registerButton
+        }
     );
-}
 
 
-// ======================================================
-// TAB EVENTS
-// ======================================================
+    /* ======================================================
+       VERIFY
+    ====================================================== */
 
-loginTab.addEventListener(
-    "click",
-    function () {
+    if (!loginForm) {
 
-        console.log(
-            "LOGIN TAB CLICKED"
+        console.error(
+            "loginForm NOT FOUND"
         );
 
-        showLoginForm();
+        return;
     }
-);
 
+    if (!loginButton) {
 
-registerTab.addEventListener(
-    "click",
-    function () {
-
-        console.log(
-            "REGISTER TAB CLICKED"
+        console.error(
+            "loginButton NOT FOUND"
         );
 
-        showRegisterForm();
+        return;
     }
-);
 
 
-// ======================================================
-// LOGIN
-// ======================================================
+    /* ======================================================
+       MESSAGE
+    ====================================================== */
 
-loginForm.addEventListener(
-    "submit",
-    async function (event) {
+    function showMessage(
+        text,
+        type = "error"
+    ) {
 
-        event.preventDefault();
+        if (!messageBox) {
+            return;
+        }
 
-        console.log(
-            "LOGIN FORM SUBMITTED"
-        );
+        messageBox.textContent =
+            text;
+
+        messageBox.className =
+            "message show " + type;
+    }
+
+
+    function hideMessage() {
+
+        if (!messageBox) {
+            return;
+        }
+
+        messageBox.textContent =
+            "";
+
+        messageBox.className =
+            "message";
+    }
+
+
+    /* ======================================================
+       LOGIN / REGISTER TABS
+    ====================================================== */
+
+    function showLoginForm() {
+
+        if (loginTab) {
+            loginTab.classList.add("active");
+        }
+
+        if (registerTab) {
+            registerTab.classList.remove("active");
+        }
+
+        if (loginForm) {
+            loginForm.classList.add("active");
+        }
+
+        if (registerForm) {
+            registerForm.classList.remove("active");
+        }
 
         hideMessage();
-
-        const emailInput =
-            document.getElementById(
-                "loginEmail"
-            );
-
-        const passwordInput =
-            document.getElementById(
-                "loginPassword"
-            );
-
-        const email =
-            emailInput.value
-                .trim()
-                .toLowerCase();
-
-        const password =
-            passwordInput.value;
-
-
-        // VALIDATION
-
-        if (!email) {
-
-            showMessage(
-                "أدخل البريد الإلكتروني."
-            );
-
-            emailInput.focus();
-
-            return;
-        }
-
-
-        if (!password) {
-
-            showMessage(
-                "أدخل كلمة المرور."
-            );
-
-            passwordInput.focus();
-
-            return;
-        }
-
-
-        loginButton.disabled =
-            true;
-
-        loginButton.textContent =
-            "جاري تسجيل الدخول...";
-
-
-        try {
-
-            console.log(
-                "STARTING LOGIN..."
-            );
-
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient.auth
-                    .signInWithPassword({
-
-                        email,
-
-                        password
-                    });
-
-
-            console.log(
-                "LOGIN RESPONSE:",
-                data,
-                error
-            );
-
-
-            if (error) {
-
-                throw error;
-            }
-
-
-            if (!data?.session) {
-
-                throw new Error(
-                    "لم يتم إنشاء جلسة تسجيل الدخول."
-                );
-            }
-
-
-            showMessage(
-                "تم تسجيل الدخول بنجاح.",
-                "success"
-            );
-
-
-            setTimeout(
-                function () {
-
-                    window.location.replace(
-                        "/"
-                    );
-
-                },
-                700
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "LOGIN ERROR:",
-                error
-            );
-
-            showMessage(
-                getAuthErrorMessage(
-                    error
-                )
-            );
-
-        } finally {
-
-            loginButton.disabled =
-                false;
-
-            loginButton.textContent =
-                "تسجيل الدخول";
-        }
-
     }
-);
 
 
-// ======================================================
-// REGISTER
-// ======================================================
+    function showRegisterForm() {
 
-registerForm.addEventListener(
-    "submit",
-    async function (event) {
+        if (registerTab) {
+            registerTab.classList.add("active");
+        }
 
-        event.preventDefault();
+        if (loginTab) {
+            loginTab.classList.remove("active");
+        }
 
-        console.log(
-            "===================================="
-        );
+        if (registerForm) {
+            registerForm.classList.add("active");
+        }
 
-        console.log(
-            "REGISTER FORM SUBMITTED"
-        );
-
-        console.log(
-            "===================================="
-        );
-
+        if (loginForm) {
+            loginForm.classList.remove("active");
+        }
 
         hideMessage();
+    }
 
 
-        const usernameInput =
-            document.getElementById(
-                "registerUsername"
-            );
+    if (loginTab) {
 
-        const emailInput =
-            document.getElementById(
-                "registerEmail"
-            );
-
-        const passwordInput =
-            document.getElementById(
-                "registerPassword"
-            );
-
-        const confirmPasswordInput =
-            document.getElementById(
-                "registerConfirmPassword"
-            );
-
-
-        const username =
-            usernameInput.value.trim();
-
-        const email =
-            emailInput.value
-                .trim()
-                .toLowerCase();
-
-        const password =
-            passwordInput.value;
-
-        const confirmPassword =
-            confirmPasswordInput.value;
-
-
-        console.log(
-            "REGISTER DATA:",
-            {
-                username,
-                email,
-                passwordLength:
-                    password.length
-            }
+        loginTab.addEventListener(
+            "click",
+            showLoginForm
         );
+    }
 
 
-        // ==================================================
-        // VALIDATION
-        // ==================================================
+    if (registerTab) {
 
-        if (
-            username.length < 2
-        ) {
-
-            showMessage(
-                "اسم المستخدم يجب أن يحتوي على حرفين على الأقل."
-            );
-
-            usernameInput.focus();
-
-            return;
-        }
+        registerTab.addEventListener(
+            "click",
+            showRegisterForm
+        );
+    }
 
 
-        if (
-            username.length > 30
-        ) {
+    /* ======================================================
+       LOGIN
+    ====================================================== */
 
-            showMessage(
-                "اسم المستخدم يجب ألا يتجاوز 30 حرفاً."
-            );
+    loginForm.addEventListener(
+        "submit",
+        async (event) => {
 
-            usernameInput.focus();
-
-            return;
-        }
-
-
-        if (!email) {
-
-            showMessage(
-                "أدخل البريد الإلكتروني."
-            );
-
-            emailInput.focus();
-
-            return;
-        }
-
-
-        if (
-            !isValidEmail(email)
-        ) {
-
-            showMessage(
-                "البريد الإلكتروني غير صحيح."
-            );
-
-            emailInput.focus();
-
-            return;
-        }
-
-
-        if (
-            password.length < 8
-        ) {
-
-            showMessage(
-                "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل."
-            );
-
-            passwordInput.focus();
-
-            return;
-        }
-
-
-        if (
-            password !==
-            confirmPassword
-        ) {
-
-            showMessage(
-                "كلمتا المرور غير متطابقتين."
-            );
-
-            confirmPasswordInput.focus();
-
-            return;
-        }
-
-
-        // ==================================================
-        // BUTTON
-        // ==================================================
-
-        registerButton.disabled =
-            true;
-
-        registerButton.textContent =
-            "جاري إنشاء الحساب...";
-
-
-        try {
-
-            console.log(
-                "STARTING SUPABASE SIGNUP..."
-            );
-
-
-            // ==================================================
-            // SUPABASE SIGN UP
-            // ==================================================
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient.auth
-                    .signUp({
-
-                        email,
-
-                        password,
-
-                        options: {
-
-                            data: {
-                                username
-                            },
-
-                            emailRedirectTo:
-                                window.location.origin +
-                                "/login.html"
-                        }
-                    });
+            event.preventDefault();
+            event.stopPropagation();
 
 
             console.log(
-                "SUPABASE SIGNUP DATA:",
-                data
+                "===================================="
             );
 
             console.log(
-                "SUPABASE SIGNUP ERROR:",
-                error
+                "LOGIN SUBMIT FIRED"
+            );
+
+            console.log(
+                "===================================="
             );
 
 
-            // ==================================================
-            // ERROR
-            // ==================================================
-
-            if (error) {
-
-                throw error;
-            }
+            hideMessage();
 
 
-            // ==================================================
-            // USER CHECK
-            // ==================================================
-
-            if (!data?.user) {
-
-                throw new Error(
-                    "لم يتم إنشاء المستخدم."
+            const emailInput =
+                document.getElementById(
+                    "loginEmail"
                 );
-            }
+
+            const passwordInput =
+                document.getElementById(
+                    "loginPassword"
+                );
 
 
-            // ==================================================
-            // EMAIL CONFIRMATION
-            // ==================================================
+            if (!emailInput) {
 
-            if (!data.session) {
+                console.error(
+                    "loginEmail NOT FOUND"
+                );
 
                 showMessage(
-                    "تم إنشاء الحساب بنجاح. تحقق من بريدك الإلكتروني لتأكيد الحساب.",
-                    "success"
-                );
-
-                registerForm.reset();
-
-                setTimeout(
-                    function () {
-
-                        showLoginForm();
-
-                    },
-                    3000
+                    "حقل البريد الإلكتروني غير موجود."
                 );
 
                 return;
             }
 
 
-            // ==================================================
-            // ACCOUNT CREATED
-            // ==================================================
+            if (!passwordInput) {
 
-            showMessage(
-                "تم إنشاء الحساب بنجاح. جاري تحويلك...",
-                "success"
+                console.error(
+                    "loginPassword NOT FOUND"
+                );
+
+                showMessage(
+                    "حقل كلمة المرور غير موجود."
+                );
+
+                return;
+            }
+
+
+            const email =
+                emailInput.value
+                    .trim()
+                    .toLowerCase();
+
+            const password =
+                passwordInput.value;
+
+
+            console.log(
+                "LOGIN EMAIL:",
+                email
+            );
+
+            console.log(
+                "PASSWORD LENGTH:",
+                password.length
             );
 
 
-            registerForm.reset();
+            /* ==================================================
+               VALIDATION
+            ================================================== */
+
+            if (!email) {
+
+                showMessage(
+                    "أدخل البريد الإلكتروني."
+                );
+
+                emailInput.focus();
+
+                return;
+            }
 
 
-            setTimeout(
-                function () {
+            if (!password) {
 
-                    window.location.replace(
-                        "/"
+                showMessage(
+                    "أدخل كلمة المرور."
+                );
+
+                passwordInput.focus();
+
+                return;
+            }
+
+
+            /* ==================================================
+               BUTTON
+            ================================================== */
+
+            loginButton.disabled =
+                true;
+
+            loginButton.textContent =
+                "جاري تسجيل الدخول...";
+
+
+            try {
+
+                console.log(
+                    "CALLING SUPABASE SIGN IN..."
+                );
+
+
+                /* ==================================================
+                   SIGN IN
+                ================================================== */
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient.auth
+                        .signInWithPassword({
+
+                            email:
+                                email,
+
+                            password:
+                                password
+
+                        });
+
+
+                console.log(
+                    "SUPABASE LOGIN RESULT:",
+                    {
+                        data,
+                        error
+                    }
+                );
+
+
+                /* ==================================================
+                   ERROR
+                ================================================== */
+
+                if (error) {
+
+                    console.error(
+                        "SUPABASE LOGIN ERROR:",
+                        error
                     );
 
-                },
-                700
+                    throw error;
+                }
+
+
+                /* ==================================================
+                   SESSION CHECK
+                ================================================== */
+
+                if (!data?.session) {
+
+                    console.error(
+                        "NO SESSION CREATED"
+                    );
+
+                    throw new Error(
+                        "تم التحقق من الحساب لكن لم يتم إنشاء جلسة تسجيل الدخول."
+                    );
+                }
+
+
+                console.log(
+                    "LOGIN SUCCESS"
+                );
+
+                console.log(
+                    "USER:",
+                    data.user
+                );
+
+                console.log(
+                    "SESSION:",
+                    data.session
+                );
+
+
+                /* ==================================================
+                   SUCCESS
+                ================================================== */
+
+                showMessage(
+                    "تم تسجيل الدخول بنجاح.",
+                    "success"
+                );
+
+
+                /*
+                 * نعطي Supabase لحظة لحفظ الجلسة
+                 */
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            500
+                        )
+                );
+
+
+                console.log(
+                    "REDIRECTING TO CHAT..."
+                );
+
+
+                window.location.replace(
+                    "/"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "===================================="
+                );
+
+                console.error(
+                    "LOGIN FAILED"
+                );
+
+                console.error(
+                    error
+                );
+
+                console.error(
+                    "MESSAGE:",
+                    error?.message
+                );
+
+                console.error(
+                    "===================================="
+                );
+
+
+                showMessage(
+                    getAuthErrorMessage(
+                        error
+                    )
+                );
+
+            } finally {
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "تسجيل الدخول";
+            }
+
+        }
+    );
+
+
+    /* ======================================================
+       REGISTER
+       نخلي كود التسجيل الموجود عندك يشتغل
+       بدون تغيير إذا كان مربوط بملف آخر.
+    ====================================================== */
+
+
+    /* ======================================================
+       AUTH ERROR
+    ====================================================== */
+
+    function getAuthErrorMessage(
+        error
+    ) {
+
+        const message =
+            String(
+                error?.message || ""
             );
 
+
+        const lower =
+            message.toLowerCase();
+
+
+        if (
+            lower.includes(
+                "invalid login credentials"
+            )
+        ) {
+
+            return (
+                "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+            );
+        }
+
+
+        if (
+            lower.includes(
+                "email not confirmed"
+            )
+        ) {
+
+            return (
+                "يجب تأكيد البريد الإلكتروني أولاً. تحقق من بريدك."
+            );
+        }
+
+
+        if (
+            lower.includes(
+                "user not found"
+            )
+        ) {
+
+            return (
+                "لا يوجد حساب بهذا البريد الإلكتروني."
+            );
+        }
+
+
+        if (
+            lower.includes(
+                "too many requests"
+            ) ||
+            lower.includes(
+                "rate limit"
+            )
+        ) {
+
+            return (
+                "تم إجراء محاولات كثيرة. حاول مرة أخرى بعد قليل."
+            );
+        }
+
+
+        if (
+            lower.includes(
+                "failed to fetch"
+            )
+        ) {
+
+            return (
+                "تعذر الاتصال بخادم تسجيل الدخول. تحقق من الإنترنت."
+            );
+        }
+
+
+        if (message) {
+
+            return message;
+        }
+
+
+        return (
+            "حدث خطأ أثناء تسجيل الدخول."
+        );
+    }
+
+
+    /* ======================================================
+       AUTH STATE
+    ====================================================== */
+
+    supabaseClient.auth.onAuthStateChange(
+        (
+            event,
+            session
+        ) => {
+
+            console.log(
+                "AUTH EVENT:",
+                event,
+                session
+            );
+
+        }
+    );
+
+
+    /* ======================================================
+       CHECK EXISTING SESSION
+    ====================================================== */
+
+    async function checkSession() {
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .getSession();
+
+
+            if (error) {
+
+                console.error(
+                    "SESSION CHECK ERROR:",
+                    error
+                );
+
+                return;
+            }
+
+
+            if (data?.session) {
+
+                console.log(
+                    "EXISTING SESSION FOUND"
+                );
+
+                window.location.replace(
+                    "/"
+                );
+            }
 
         } catch (error) {
 
             console.error(
-                "===================================="
-            );
-
-            console.error(
-                "REGISTER ERROR:",
+                "SESSION CHECK FAILED:",
                 error
             );
-
-            console.error(
-                "REGISTER ERROR MESSAGE:",
-                error?.message
-            );
-
-            console.error(
-                "===================================="
-            );
-
-
-            showMessage(
-                getAuthErrorMessage(
-                    error
-                )
-            );
-
-        } finally {
-
-            registerButton.disabled =
-                false;
-
-            registerButton.textContent =
-                "إنشاء الحساب";
         }
-
-    }
-);
-
-
-// ======================================================
-// EMAIL VALIDATION
-// ======================================================
-
-function isValidEmail(
-    email
-) {
-
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(email);
-}
-
-
-// ======================================================
-// ERROR TRANSLATION
-// ======================================================
-
-function getAuthErrorMessage(
-    error
-) {
-
-    const message =
-        String(
-            error?.message || ""
-        );
-
-
-    const lower =
-        message.toLowerCase();
-
-
-    if (
-        lower.includes(
-            "invalid login credentials"
-        )
-    ) {
-
-        return (
-            "البريد الإلكتروني أو كلمة المرور غير صحيحة."
-        );
     }
 
 
-    if (
-        lower.includes(
-            "email not confirmed"
-        )
-    ) {
-
-        return (
-            "يجب تأكيد البريد الإلكتروني أولاً. تحقق من بريدك."
-        );
-    }
+    checkSession();
 
 
-    if (
-        lower.includes(
-            "user already registered"
-        ) ||
-        lower.includes(
-            "already registered"
-        )
-    ) {
-
-        return (
-            "هذا البريد الإلكتروني مستخدم مسبقاً."
-        );
-    }
-
-
-    if (
-        lower.includes(
-            "password"
-        ) &&
-        (
-            lower.includes(
-                "weak"
-            ) ||
-            lower.includes(
-                "should be at least"
-            )
-        )
-    ) {
-
-        return (
-            "كلمة المرور ضعيفة. استخدم 8 أحرف أو أكثر."
-        );
-    }
-
-
-    if (
-        lower.includes(
-            "invalid email"
-        )
-    ) {
-
-        return (
-            "البريد الإلكتروني غير صحيح."
-        );
-    }
-
-
-    if (
-        lower.includes(
-            "rate limit"
-        ) ||
-        lower.includes(
-            "too many requests"
-        )
-    ) {
-
-        return (
-            "تم إجراء محاولات كثيرة. حاول مرة أخرى بعد قليل."
-        );
-    }
-
-
-    if (
-        lower.includes(
-            "failed to fetch"
-        )
-    ) {
-
-        return (
-            "تعذر الاتصال بخادم تسجيل الدخول. تحقق من الإنترنت."
-        );
-    }
-
-
-    if (message) {
-
-        return message;
-    }
-
-
-    return (
-        "حدث خطأ غير متوقع أثناء العملية."
+    console.log(
+        "LOGIN.JS READY"
     );
-}
 
-
-// ======================================================
-// CHECK SESSION
-// ======================================================
-
-async function checkSession() {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth
-                .getSession();
-
-
-        if (error) {
-
-            console.error(
-                "SESSION ERROR:",
-                error
-            );
-
-            return;
-        }
-
-
-        if (data?.session) {
-
-            console.log(
-                "EXISTING SESSION FOUND"
-            );
-
-            window.location.replace(
-                "/"
-            );
-        }
-
-    } catch (error) {
-
-        console.error(
-            "SESSION CHECK ERROR:",
-            error
-        );
-    }
-}
-
-
-// ======================================================
-// AUTH STATE
-// ======================================================
-
-supabaseClient.auth.onAuthStateChange(
-    function (
-        event,
-        session
-    ) {
-
-        console.log(
-            "AUTH EVENT:",
-            event
-        );
-
-    }
-);
-
-
-// ======================================================
-// START
-// ======================================================
-
-checkSession();
-
-console.log(
-    "LOGIN.JS INITIALIZATION COMPLETE"
-);
+});
