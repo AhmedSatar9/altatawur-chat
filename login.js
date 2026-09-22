@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "https://wxsricscchalzvazdbzd.supabase.co";
 
     const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
+        "sb_publishable_5oPDD77Veu5OczxaZje7vg_orfNjB5t";
 
     if (!window.supabase) {
 
