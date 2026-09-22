@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 
+
 // ======================================================
 // ENVIRONMENT
 // ======================================================
@@ -30,7 +31,7 @@ const openai =
 
 
 // ======================================================
-// SUPABASE AUTH
+// SUPABASE AUTH CLIENT
 // ======================================================
 
 const supabaseAuth =
@@ -48,7 +49,7 @@ const supabaseAuth =
 
 
 // ======================================================
-// SUPABASE ADMIN
+// SUPABASE ADMIN CLIENT
 // ======================================================
 
 const supabaseAdmin =
@@ -66,16 +67,42 @@ const supabaseAdmin =
 
 
 // ======================================================
+// HELPERS
+// ======================================================
+
+function cleanText(
+    value,
+    maxLength = 12000
+) {
+
+    return String(
+        value || ""
+    )
+        .trim()
+        .slice(
+            0,
+            maxLength
+        );
+
+}
+
+
+// ======================================================
 // HANDLER
 // ======================================================
 
-export default async function handler(req, res) {
+export default async function handler(
+    req,
+    res
+) {
 
     // ==================================================
     // METHOD
     // ==================================================
 
-    if (req.method !== "POST") {
+    if (
+        req.method !== "POST"
+    ) {
 
         return res.status(405).json({
             error:
@@ -84,10 +111,11 @@ export default async function handler(req, res) {
 
     }
 
+
     try {
 
         // ==================================================
-        // ENVIRONMENT
+        // ENVIRONMENT CHECK
         // ==================================================
 
         if (
@@ -96,6 +124,10 @@ export default async function handler(req, res) {
             !SUPABASE_SECRET_KEY
         ) {
 
+            console.error(
+                "SUPABASE ENVIRONMENT VARIABLES ARE MISSING"
+            );
+
             return res.status(500).json({
                 error:
                     "إعدادات Supabase غير مكتملة."
@@ -103,7 +135,12 @@ export default async function handler(req, res) {
 
         }
 
+
         if (!OPENAI_API_KEY) {
+
+            console.error(
+                "OPENAI_API_KEY IS MISSING"
+            );
 
             return res.status(500).json({
                 error:
@@ -134,10 +171,12 @@ export default async function handler(req, res) {
 
         }
 
+
         const token =
             authorization
-                .substring(7)
+                .slice(7)
                 .trim();
+
 
         if (!token) {
 
@@ -160,7 +199,11 @@ export default async function handler(req, res) {
             await supabaseAuth.auth
                 .getUser(token);
 
-        if (userError) {
+
+        if (
+            userError ||
+            !userData?.user
+        ) {
 
             console.error(
                 "SUPABASE AUTH ERROR:",
@@ -174,14 +217,6 @@ export default async function handler(req, res) {
 
         }
 
-        if (!userData?.user) {
-
-            return res.status(401).json({
-                error:
-                    "لم يتم العثور على المستخدم."
-            });
-
-        }
 
         const user =
             userData.user;
@@ -194,10 +229,12 @@ export default async function handler(req, res) {
         const body =
             req.body || {};
 
+
         const requestedConversationId =
             typeof body.conversation_id === "string"
                 ? body.conversation_id.trim()
                 : null;
+
 
         const incomingMessage =
             typeof body.message === "string"
@@ -206,7 +243,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // VALIDATE
+        // VALIDATE MESSAGE
         // ==================================================
 
         if (!incomingMessage) {
@@ -218,15 +255,16 @@ export default async function handler(req, res) {
 
         }
 
+
         const userMessage =
-            incomingMessage.slice(
-                0,
+            cleanText(
+                incomingMessage,
                 12000
             );
 
 
         // ==================================================
-        // CONVERSATION
+        // CONVERSATION ID
         // ==================================================
 
         let conversationId =
@@ -234,7 +272,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // EXISTING
+        // VERIFY EXISTING CONVERSATION
         // ==================================================
 
         if (conversationId) {
@@ -277,6 +315,7 @@ export default async function handler(req, res) {
 
             }
 
+
             if (!existingConversation) {
 
                 return res.status(403).json({
@@ -290,15 +329,18 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // CREATE NEW
+        // CREATE NEW CONVERSATION
         // ==================================================
 
         if (!conversationId) {
 
             const title =
-                userMessage
-                    .slice(0, 80) ||
+                userMessage.slice(
+                    0,
+                    80
+                ) ||
                 "محادثة جديدة";
+
 
             const {
                 data:
@@ -320,12 +362,15 @@ export default async function handler(req, res) {
 
                     })
                     .select(
-                        "id,user_id,title"
+                        "id,user_id,title,created_at,updated_at"
                     )
                     .single();
 
 
-            if (createConversationError) {
+            if (
+                createConversationError ||
+                !newConversation
+            ) {
 
                 console.error(
                     "CREATE CONVERSATION ERROR:",
@@ -338,6 +383,7 @@ export default async function handler(req, res) {
                 });
 
             }
+
 
             conversationId =
                 newConversation.id;
@@ -385,7 +431,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // LOAD HISTORY
+        // LOAD CONVERSATION HISTORY
         // ==================================================
 
         const {
@@ -430,7 +476,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // OPENAI MESSAGES
+        // PREPARE OPENAI MESSAGES
         // ==================================================
 
         const safeMessages =
@@ -444,16 +490,13 @@ export default async function handler(req, res) {
                                 ? "assistant"
                                 : "user";
 
+
                         const content =
-                            String(
-                                message?.content ||
-                                ""
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    12000
-                                );
+                            cleanText(
+                                message?.content,
+                                12000
+                            );
+
 
                         return {
                             role,
@@ -487,6 +530,7 @@ export default async function handler(req, res) {
 
         let response;
 
+
         try {
 
             response =
@@ -495,6 +539,7 @@ export default async function handler(req, res) {
                     model:
                         process.env.OPENAI_MODEL ||
                         "gpt-5.6-luna",
+
 
                     instructions: `
 أنت المساعد الذكي الرسمي لمنصة "التطور چات".
@@ -519,15 +564,18 @@ export default async function handler(req, res) {
                     input:
                         safeMessages.map(
                             (message) => ({
+
                                 role:
                                     message.role,
 
                                 content:
                                     message.content
+
                             })
                         )
 
                 });
+
 
         } catch (openaiError) {
 
@@ -536,14 +584,16 @@ export default async function handler(req, res) {
                 openaiError
             );
 
-            const openaiMessage =
+
+            const message =
                 String(
                     openaiError?.message ||
                     ""
                 );
 
+
             if (
-                openaiMessage
+                message
                     .toLowerCase()
                     .includes(
                         "invalid api key"
@@ -556,6 +606,7 @@ export default async function handler(req, res) {
                 });
 
             }
+
 
             return res.status(500).json({
                 error:
@@ -575,7 +626,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // SAVE ASSISTANT
+        // SAVE ASSISTANT MESSAGE
         // ==================================================
 
         const {
@@ -668,12 +719,14 @@ export default async function handler(req, res) {
 
         });
 
+
     } catch (error) {
 
         console.error(
             "CHAT API ERROR:",
             error
         );
+
 
         return res.status(500).json({
             error:
