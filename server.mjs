@@ -33,7 +33,7 @@ app.use(
 
 
 // ======================================================
-// STATIC FILES
+// STATIC
 // ======================================================
 
 app.use(
@@ -55,10 +55,16 @@ app.get(
     (req, res) => {
 
         res.status(200).json({
-            success: true,
-            status: "ok",
-            app: "altatawur-chat",
-            time: new Date().toISOString()
+
+            status:
+                "ok",
+
+            app:
+                "altatawur-chat",
+
+            time:
+                new Date().toISOString()
+
         });
 
     }
@@ -119,10 +125,6 @@ app.get(
 );
 
 
-// ======================================================
-// LOGIN JS
-// ======================================================
-
 app.get(
     "/login.js",
     (req, res) => {
@@ -139,7 +141,7 @@ app.get(
 
 
 // ======================================================
-// MAIN APP
+// HOME
 // ======================================================
 
 app.get(
@@ -164,20 +166,25 @@ app.get(
 app.use(
     (req, res) => {
 
-        res.status(404).json({
-            error: "Page not found"
-        });
+        res.status(404).send(
+            "Page not found"
+        );
 
     }
 );
 
 
 // ======================================================
-// ERROR HANDLER
+// ERROR
 // ======================================================
 
 app.use(
-    (error, req, res, next) => {
+    (
+        error,
+        req,
+        res,
+        next
+    ) => {
 
         console.error(
             "EXPRESS ERROR:",
@@ -189,7 +196,8 @@ app.use(
         }
 
         res.status(500).json({
-            error: "حدث خطأ غير متوقع في الخادم."
+            error:
+                "حدث خطأ داخلي في الخادم."
         });
 
     }
@@ -202,6 +210,7 @@ app.use(
 
 const PORT =
     process.env.PORT || 3000;
+
 
 app.listen(
     PORT,
