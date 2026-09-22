@@ -10,9 +10,6 @@
 
     <title>التطور چات - تسجيل الدخول</title>
 
-    <!-- =========================
-         SUPABASE
-    ========================== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -64,10 +61,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* =========================
-           PAGE
-        ========================== */
-
         .auth-page {
             min-height: 100vh;
             display: flex;
@@ -80,10 +73,6 @@
             width: 100%;
             max-width: 520px;
         }
-
-        /* =========================
-           CARD
-        ========================== */
 
         .auth-card {
             width: 100%;
@@ -104,10 +93,6 @@
 
             text-align: center;
         }
-
-        /* =========================
-           LOGO
-        ========================== */
 
         .logo-box {
             width: 76px;
@@ -139,10 +124,6 @@
                 rgba(45, 180, 235, 0.22);
         }
 
-        /* =========================
-           TITLE
-        ========================== */
-
         .auth-card h1 {
             margin: 0;
             font-size: 34px;
@@ -157,10 +138,6 @@
             font-size: 16px;
             line-height: 1.7;
         }
-
-        /* =========================
-           MESSAGE
-        ========================== */
 
         .message {
             display: none;
@@ -204,10 +181,6 @@
                 rgba(57, 220, 163, 0.30);
         }
 
-        /* =========================
-           TABS
-        ========================== */
-
         .auth-tabs {
             display: flex;
             gap: 5px;
@@ -248,10 +221,6 @@
                 0 5px 20px
                 rgba(0, 0, 0, 0.15);
         }
-
-        /* =========================
-           FORMS
-        ========================== */
 
         .auth-form {
             display: none;
@@ -314,10 +283,6 @@
                 rgba(69, 200, 237, 0.10);
         }
 
-        /* =========================
-           BUTTON
-        ========================== */
-
         .primary-button {
             width: 100%;
             height: 60px;
@@ -359,10 +324,6 @@
             cursor: wait;
         }
 
-        /* =========================
-           TERMS
-        ========================== */
-
         .terms {
             margin:
                 25px 0 0;
@@ -373,10 +334,6 @@
 
             line-height: 1.8;
         }
-
-        /* =========================
-           BACK
-        ========================== */
 
         .back-link {
             display: inline-block;
@@ -393,10 +350,6 @@
         .back-link:hover {
             color: #ffffff;
         }
-
-        /* =========================
-           MOBILE
-        ========================== */
 
         @media (max-width: 600px) {
 
@@ -449,12 +402,10 @@
 
         <div class="auth-card">
 
-            <!-- LOGO -->
             <div class="logo-box">
                 ت
             </div>
 
-            <!-- TITLE -->
             <h1>
                 التطور چات
             </h1>
@@ -464,15 +415,10 @@
                 مع المساعد الذكي.
             </p>
 
-            <!-- MESSAGE -->
             <div
                 id="message"
                 class="message"
             ></div>
-
-            <!-- =====================
-                 TABS
-            ====================== -->
 
             <div class="auth-tabs">
 
@@ -493,10 +439,6 @@
                 </button>
 
             </div>
-
-            <!-- =====================
-                 LOGIN
-            ====================== -->
 
             <form
                 id="loginForm"
@@ -537,10 +479,6 @@
                 </button>
 
             </form>
-
-            <!-- =====================
-                 REGISTER
-            ====================== -->
 
             <form
                 id="registerForm"
@@ -610,13 +548,11 @@
 
             </form>
 
-            <!-- TERMS -->
             <p class="terms">
                 باستخدامك التطور چات، أنت توافق
                 على استخدام الخدمة وفق إعدادات المنصة.
             </p>
 
-            <!-- BACK -->
             <a
                 href="/"
                 class="back-link"
@@ -628,70 +564,7 @@
     </div>
 </div>
 
-<!-- =====================================================
-     EMERGENCY TAB HANDLER
-     هذا يضمن أن تبديل التبويبات يعمل حتى لو تأخر login.js
-====================================================== -->
-
-<script>
-(function () {
-
-    const loginTab =
-        document.getElementById("loginTab");
-
-    const registerTab =
-        document.getElementById("registerTab");
-
-    const loginForm =
-        document.getElementById("loginForm");
-
-    const registerForm =
-        document.getElementById("registerForm");
-
-    if (
-        !loginTab ||
-        !registerTab ||
-        !loginForm ||
-        !registerForm
-    ) {
-        console.error(
-            "AUTH TAB ELEMENTS NOT FOUND"
-        );
-
-        return;
-    }
-
-    function showLogin() {
-
-        loginTab.classList.add("active");
-        registerTab.classList.remove("active");
-
-        loginForm.classList.add("active");
-        registerForm.classList.remove("active");
-    }
-
-    function showRegister() {
-
-        registerTab.classList.add("active");
-        loginTab.classList.remove("active");
-
-        registerForm.classList.add("active");
-        loginForm.classList.remove("active");
-    }
-
-    loginTab.onclick = showLogin;
-
-    registerTab.onclick = showRegister;
-
-})();
-</script>
-
-<!-- =====================================================
-     LOGIN JAVASCRIPT
-     v3 = منع الكاش القديم
-====================================================== -->
-
-<script src="/login.js?v=3"></script>
+<script src="/login.js?v=4"></script>
 
 </body>
 </html>
