@@ -4,6 +4,9 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import chatHandler from "./api/chat.js";
+import registerHandler from "./api/register.js";
+
 const app = express();
 
 
@@ -34,9 +37,12 @@ app.use(
 // ==========================================
 
 app.use(
-    express.static(__dirname, {
-        index: false
-    })
+    express.static(
+        __dirname,
+        {
+            index: false
+        }
+    )
 );
 
 
@@ -49,12 +55,37 @@ app.get(
     (req, res) => {
 
         res.json({
-            status: "ok",
-            app: "altatawur-chat",
-            time: new Date().toISOString()
+            status:
+                "ok",
+
+            app:
+                "altatawur-chat",
+
+            time:
+                new Date().toISOString()
         });
 
     }
+);
+
+
+// ==========================================
+// REGISTER API
+// ==========================================
+
+app.post(
+    "/api/register",
+    registerHandler
+);
+
+
+// ==========================================
+// CHAT API
+// ==========================================
+
+app.post(
+    "/api/chat",
+    chatHandler
 );
 
 
@@ -136,7 +167,6 @@ app.use(
 
 const PORT =
     process.env.PORT || 3000;
-
 
 app.listen(
     PORT,
