@@ -58,10 +58,6 @@ export default async function handler(req, res) {
         // ==================================================
         // CLIENTS
         // ==================================================
-        /*
-         * Client خاص بالمصادقة.
-         * لا نستخدم الـSecret Key هنا.
-         */
         const supabaseAuth =
             createClient(
                 SUPABASE_URL,
@@ -74,12 +70,6 @@ export default async function handler(req, res) {
                     }
                 }
             );
-        /*
-         * Client إداري للسيرفر فقط.
-         *
-         * مهم:
-         * لا ترسل هذا المفتاح إلى المتصفح.
-         */
         const supabaseAdmin =
             createClient(
                 SUPABASE_URL,
@@ -181,20 +171,62 @@ export default async function handler(req, res) {
             console.error(
                 "SUPABASE AUTH ERROR:",
                 {
-                    message: error.message,
-                    code: error.code,
-                    status: error.status,
-                    name: error.name
+                    message:
+                        error.message,
+                    code:
+                        error.code,
+                    status:
+                        error.status,
+                    name:
+                        error.name
                 }
             );
             const message =
                 String(
                     error.message || ""
                 ).toLowerCase();
+            // ==================================================
+            // EMAIL RATE LIMIT
+            // ==================================================
             if (
-                message.includes("already registered") ||
-                message.includes("already exists") ||
-                message.includes("user already registered")
+                error.code ===
+                    "over_email_send_rate_limit" ||
+                message.includes(
+                    "email rate limit exceeded"
+                )
+            ) {
+                return res.status(429).json({
+                    success: false,
+                    error:
+                        "تم تجاوز الحد المسموح لإرسال رسائل التأكيد حالياً. يرجى المحاولة لاحقاً."
+                });
+            }
+            // ==================================================
+            // TOO MANY REQUESTS
+            // ==================================================
+            if (
+                error.status === 429 ||
+                error.code === "too_many_requests"
+            ) {
+                return res.status(429).json({
+                    success: false,
+                    error:
+                        "تم إجراء عدد كبير من المحاولات. يرجى الانتظار قليلاً ثم المحاولة مرة أخرى."
+                });
+            }
+            // ==================================================
+            // EMAIL ALREADY REGISTERED
+            // ==================================================
+            if (
+                message.includes(
+                    "already registered"
+                ) ||
+                message.includes(
+                    "already exists"
+                ) ||
+                message.includes(
+                    "user already registered"
+                )
             ) {
                 return res.status(409).json({
                     success: false,
@@ -202,7 +234,44 @@ export default async function handler(req, res) {
                         "هذا البريد الإلكتروني مسجل مسبقاً."
                 });
             }
-            return res.status(400).json({
+            // ==================================================
+            // INVALID EMAIL
+            // ==================================================
+            if (
+                message.includes(
+                    "invalid email"
+                )
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    error:
+                        "البريد الإلكتروني غير صالح."
+                });
+            }
+            // ==================================================
+            // PASSWORD ERROR
+            // ==================================================
+            if (
+                message.includes(
+                    "password"
+                )
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    error:
+                        error.message ||
+                        "كلمة المرور غير صالحة."
+                });
+            }
+            // ==================================================
+            // GENERAL AUTH ERROR
+            // ==================================================
+            return res.status(
+                error.status >= 400 &&
+                error.status < 500
+                    ? error.status
+                    : 400
+            ).json({
                 success: false,
                 error:
                     error.message ||
@@ -227,17 +296,6 @@ export default async function handler(req, res) {
         // ==================================================
         // PROFILE
         // ==================================================
-        /*
-         * نحفظ فقط الأعمدة الموجودة فعلياً في جدول profiles.
-         *
-         * حسب جدولك:
-         * id
-         * username
-         * email
-         *
-         * لا نرسل full_name أو avatar_url
-         * حتى لا يحدث PGRST204 بسبب عمود غير معروف.
-         */
         const profileData = {
             id:
                 user.id,
@@ -262,11 +320,6 @@ export default async function handler(req, res) {
         // PROFILE ERROR
         // ==================================================
         if (profileError) {
-            /*
-             * هذا السطر مهم جداً.
-             *
-             * راح يظهر لنا الخطأ الكامل في Vercel Logs.
-             */
             console.error(
                 "PROFILE CREATE ERROR:",
                 JSON.stringify(
@@ -286,19 +339,10 @@ export default async function handler(req, res) {
                     2
                 )
             );
-            /*
-             * الحساب في Auth تم إنشاؤه.
-             *
-             * لذلك لا نحاول إنشاءه مرة ثانية.
-             */
             return res.status(500).json({
                 success: false,
                 error:
-                    "تم إنشاء الحساب، لكن تعذر حفظ بيانات الملف الشخصي.",
-                debug:
-                    process.env.NODE_ENV === "development"
-                        ? profileError.message
-                        : undefined
+                    "تم إنشاء الحساب، لكن تعذر حفظ بيانات الملف الشخصي."
             });
         }
         // ==================================================
