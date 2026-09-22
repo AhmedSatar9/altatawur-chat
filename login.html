@@ -7,9 +7,7 @@
         content="width=device-width, initial-scale=1.0"
     >
     <title>التطور چات - تسجيل الدخول</title>
-    <!-- ==========================================
-         SUPABASE
-    =========================================== -->
+    <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
@@ -53,9 +51,6 @@
         button {
             -webkit-tap-highlight-color: transparent;
         }
-        /* ==========================================
-           PAGE
-        =========================================== */
         .auth-page {
             min-height: 100vh;
             display: flex;
@@ -67,9 +62,6 @@
             width: 100%;
             max-width: 520px;
         }
-        /* ==========================================
-           CARD
-        =========================================== */
         .auth-card {
             width: 100%;
             padding: 36px;
@@ -84,9 +76,6 @@
                 rgba(0, 0, 0, 0.40);
             text-align: center;
         }
-        /* ==========================================
-           LOGO
-        =========================================== */
         .logo-box {
             width: 76px;
             height: 76px;
@@ -108,9 +97,6 @@
                 0 15px 35px
                 rgba(45, 180, 235, 0.22);
         }
-        /* ==========================================
-           TITLE
-        =========================================== */
         .auth-card h1 {
             margin: 0;
             font-size: 34px;
@@ -122,9 +108,6 @@
             font-size: 16px;
             line-height: 1.7;
         }
-        /* ==========================================
-           MESSAGE
-        =========================================== */
         .message {
             display: none;
             padding: 14px 16px;
@@ -153,9 +136,6 @@
                 1px solid
                 rgba(57, 220, 163, 0.30);
         }
-        /* ==========================================
-           TABS
-        =========================================== */
         .auth-tabs {
             display: flex;
             gap: 5px;
@@ -182,9 +162,6 @@
                 0 5px 20px
                 rgba(0, 0, 0, 0.15);
         }
-        /* ==========================================
-           FORMS
-        =========================================== */
         .auth-form {
             display: none;
             flex-direction: column;
@@ -223,9 +200,6 @@
                 0 0 0 3px
                 rgba(69, 200, 237, 0.10);
         }
-        /* ==========================================
-           BUTTON
-        =========================================== */
         .primary-button {
             width: 100%;
             height: 60px;
@@ -256,18 +230,12 @@
             opacity: 0.60;
             cursor: wait;
         }
-        /* ==========================================
-           TERMS
-        =========================================== */
         .terms {
             margin: 25px 0 0;
             color: #727c97;
             font-size: 13px;
             line-height: 1.8;
         }
-        /* ==========================================
-           BACK
-        =========================================== */
         .back-link {
             display: inline-block;
             margin-top: 18px;
@@ -278,9 +246,6 @@
         .back-link:hover {
             color: #ffffff;
         }
-        /* ==========================================
-           MOBILE
-        =========================================== */
         @media (max-width: 600px) {
             .auth-page {
                 padding: 14px;
@@ -316,11 +281,9 @@
 <div class="auth-page">
     <div class="auth-wrapper">
         <div class="auth-card">
-            <!-- LOGO -->
             <div class="logo-box">
                 ت
             </div>
-            <!-- TITLE -->
             <h1>
                 التطور چات
             </h1>
@@ -328,12 +291,10 @@
                 سجّل دخولك حتى تبدأ محادثاتك
                 مع المساعد الذكي.
             </p>
-            <!-- MESSAGE -->
             <div
                 id="message"
                 class="message"
             ></div>
-            <!-- TABS -->
             <div class="auth-tabs">
                 <button
                     id="loginTab"
@@ -350,7 +311,7 @@
                     إنشاء حساب
                 </button>
             </div>
-            <!-- LOGIN FORM -->
+            <!-- LOGIN -->
             <form
                 id="loginForm"
                 class="auth-form active"
@@ -384,7 +345,7 @@
                     تسجيل الدخول
                 </button>
             </form>
-            <!-- REGISTER FORM -->
+            <!-- REGISTER -->
             <form
                 id="registerForm"
                 class="auth-form"
@@ -442,12 +403,10 @@
                     إنشاء الحساب
                 </button>
             </form>
-            <!-- TERMS -->
             <p class="terms">
                 باستخدامك التطور چات، أنت توافق
                 على استخدام الخدمة وفق إعدادات المنصة.
             </p>
-            <!-- BACK -->
             <a
                 href="/"
                 class="back-link"
@@ -457,9 +416,8 @@
         </div>
     </div>
 </div>
-<!-- ==========================================
-     LOGIN JAVASCRIPT
-=========================================== -->
+<!-- مهم: Supabase أولاً ثم login.js -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/login.js"></script>
 </body>
 </html>
