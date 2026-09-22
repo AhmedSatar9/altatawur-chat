@@ -187,9 +187,9 @@ export default async function handler(req, res) {
         if (error) {
 
             console.error(
-                "SUPABASE REGISTER ERROR:",
-                error
-            );
+    "PROFILE CREATE ERROR:",
+    JSON.stringify(profileError, null, 2)
+);
 
             const message =
                 String(
