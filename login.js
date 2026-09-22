@@ -4,26 +4,19 @@ console.log("====================================");
 console.log("التطور چات - LOGIN.JS");
 console.log("====================================");
 
-
-/* ======================================================
-   WAIT FOR HTML
-====================================================== */
-
 document.addEventListener("DOMContentLoaded", () => {
 
     console.log("DOM READY");
 
-
-    /* ======================================================
-       SUPABASE
-    ====================================================== */
+    // ======================================================
+    // SUPABASE
+    // ======================================================
 
     const SUPABASE_URL =
         "https://wxsricscchalzvazdbzd.supabase.co";
 
     const SUPABASE_PUBLISHABLE_KEY =
         "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
-
 
     if (!window.supabase) {
 
@@ -38,22 +31,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-
     const supabaseClient =
         window.supabase.createClient(
             SUPABASE_URL,
-            SUPABASE_PUBLISHABLE_KEY
+            SUPABASE_PUBLISHABLE_KEY,
+            {
+                auth: {
+                    persistSession: true,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: true
+                }
+            }
         );
 
-
-    console.log(
-        "SUPABASE CLIENT READY"
-    );
-
-
-    /* ======================================================
-       ELEMENTS
-    ====================================================== */
+    // ======================================================
+    // ELEMENTS
+    // ======================================================
 
     const loginTab =
         document.getElementById("loginTab");
@@ -76,47 +69,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerButton =
         document.getElementById("registerButton");
 
+    const registerUsername =
+        document.getElementById("registerUsername");
 
-    console.log(
-        "LOGIN ELEMENTS:",
-        {
-            loginTab,
-            registerTab,
-            loginForm,
-            registerForm,
-            messageBox,
-            loginButton,
-            registerButton
-        }
-    );
+    const registerEmail =
+        document.getElementById("registerEmail");
 
+    const registerPassword =
+        document.getElementById("registerPassword");
 
-    /* ======================================================
-       VERIFY
-    ====================================================== */
-
-    if (!loginForm) {
-
-        console.error(
-            "loginForm NOT FOUND"
+    const registerConfirmPassword =
+        document.getElementById(
+            "registerConfirmPassword"
         );
 
+    if (!loginForm || !loginButton) {
+        console.error(
+            "LOGIN FORM ELEMENTS NOT FOUND"
+        );
         return;
     }
 
-    if (!loginButton) {
-
-        console.error(
-            "loginButton NOT FOUND"
-        );
-
-        return;
-    }
-
-
-    /* ======================================================
-       MESSAGE
-    ====================================================== */
+    // ======================================================
+    // MESSAGE
+    // ======================================================
 
     function showMessage(
         text,
@@ -134,7 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "message show " + type;
     }
 
-
     function hideMessage() {
 
         if (!messageBox) {
@@ -148,76 +123,319 @@ document.addEventListener("DOMContentLoaded", () => {
             "message";
     }
 
-
-    /* ======================================================
-       LOGIN / REGISTER TABS
-    ====================================================== */
+    // ======================================================
+    // TABS
+    // ======================================================
 
     function showLoginForm() {
 
-        if (loginTab) {
-            loginTab.classList.add("active");
-        }
+        loginTab?.classList.add("active");
+        registerTab?.classList.remove("active");
 
-        if (registerTab) {
-            registerTab.classList.remove("active");
-        }
-
-        if (loginForm) {
-            loginForm.classList.add("active");
-        }
-
-        if (registerForm) {
-            registerForm.classList.remove("active");
-        }
+        loginForm?.classList.add("active");
+        registerForm?.classList.remove("active");
 
         hideMessage();
     }
-
 
     function showRegisterForm() {
 
-        if (registerTab) {
-            registerTab.classList.add("active");
-        }
+        registerTab?.classList.add("active");
+        loginTab?.classList.remove("active");
 
-        if (loginTab) {
-            loginTab.classList.remove("active");
-        }
-
-        if (registerForm) {
-            registerForm.classList.add("active");
-        }
-
-        if (loginForm) {
-            loginForm.classList.remove("active");
-        }
+        registerForm?.classList.add("active");
+        loginForm?.classList.remove("active");
 
         hideMessage();
     }
 
+    loginTab?.addEventListener(
+        "click",
+        showLoginForm
+    );
 
-    if (loginTab) {
+    registerTab?.addEventListener(
+        "click",
+        showRegisterForm
+    );
 
-        loginTab.addEventListener(
-            "click",
-            showLoginForm
-        );
+    // ======================================================
+    // AUTH ERROR
+    // ======================================================
+
+    function getAuthErrorMessage(error) {
+
+        const message =
+            String(
+                error?.message || ""
+            );
+
+        const lower =
+            message.toLowerCase();
+
+        if (
+            lower.includes(
+                "invalid login credentials"
+            )
+        ) {
+            return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+        }
+
+        if (
+            lower.includes(
+                "email not confirmed"
+            )
+        ) {
+            return "يجب تأكيد البريد الإلكتروني أولاً. تحقق من بريدك الإلكتروني ثم حاول تسجيل الدخول.";
+        }
+
+        if (
+            lower.includes(
+                "user already registered"
+            ) ||
+            lower.includes(
+                "already registered"
+            )
+        ) {
+            return "هذا البريد الإلكتروني مسجل مسبقاً.";
+        }
+
+        if (
+            lower.includes(
+                "password should be at least"
+            )
+        ) {
+            return "كلمة المرور يجب أن تكون 8 أحرف على الأقل.";
+        }
+
+        if (
+            lower.includes(
+                "email rate limit"
+            ) ||
+            lower.includes(
+                "rate limit"
+            ) ||
+            lower.includes(
+                "too many requests"
+            )
+        ) {
+            return "تم إجراء محاولات كثيرة. حاول مرة أخرى بعد قليل.";
+        }
+
+        if (
+            lower.includes(
+                "failed to fetch"
+            )
+        ) {
+            return "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.";
+        }
+
+        if (message) {
+            return message;
+        }
+
+        return "حدث خطأ أثناء العملية.";
     }
 
+    // ======================================================
+    // REGISTER
+    // ======================================================
 
-    if (registerTab) {
+    registerForm?.addEventListener(
+        "submit",
+        async (event) => {
 
-        registerTab.addEventListener(
-            "click",
-            showRegisterForm
-        );
-    }
+            event.preventDefault();
+            event.stopPropagation();
 
+            hideMessage();
 
-    /* ======================================================
-       LOGIN
-    ====================================================== */
+            const username =
+                registerUsername?.value
+                    ?.trim() || "";
+
+            const email =
+                registerEmail?.value
+                    ?.trim()
+                    .toLowerCase() || "";
+
+            const password =
+                registerPassword?.value || "";
+
+            const confirmPassword =
+                registerConfirmPassword?.value || "";
+
+            // ==================================================
+            // VALIDATION
+            // ==================================================
+
+            if (!username) {
+
+                showMessage(
+                    "أدخل اسم المستخدم."
+                );
+
+                registerUsername?.focus();
+
+                return;
+            }
+
+            if (username.length < 2) {
+
+                showMessage(
+                    "اسم المستخدم يجب أن يكون حرفين على الأقل."
+                );
+
+                registerUsername?.focus();
+
+                return;
+            }
+
+            if (!email) {
+
+                showMessage(
+                    "أدخل البريد الإلكتروني."
+                );
+
+                registerEmail?.focus();
+
+                return;
+            }
+
+            if (!password) {
+
+                showMessage(
+                    "أدخل كلمة المرور."
+                );
+
+                registerPassword?.focus();
+
+                return;
+            }
+
+            if (password.length < 8) {
+
+                showMessage(
+                    "كلمة المرور يجب أن تكون 8 أحرف على الأقل."
+                );
+
+                registerPassword?.focus();
+
+                return;
+            }
+
+            if (password !== confirmPassword) {
+
+                showMessage(
+                    "كلمتا المرور غير متطابقتين."
+                );
+
+                registerConfirmPassword?.focus();
+
+                return;
+            }
+
+            // ==================================================
+            // BUTTON
+            // ==================================================
+
+            registerButton.disabled = true;
+
+            registerButton.textContent =
+                "جاري إنشاء الحساب...";
+
+            try {
+
+                console.log(
+                    "REGISTER REQUEST"
+                );
+
+                const response =
+                    await fetch(
+                        "/api/register",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    username,
+                                    email,
+                                    password
+                                })
+                        }
+                    );
+
+                let result = {};
+
+                try {
+                    result =
+                        await response.json();
+                } catch {
+                    result = {};
+                }
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result?.error ||
+                        "تعذر إنشاء الحساب."
+                    );
+                }
+
+                console.log(
+                    "REGISTER SUCCESS:",
+                    result
+                );
+
+                // ==================================================
+                // SUCCESS
+                // ==================================================
+
+                showMessage(
+                    "تم إنشاء حسابك بنجاح. أرسلنا رسالة تأكيد إلى بريدك الإلكتروني. افتح الرسالة واضغط رابط التأكيد، وبعدها ارجع وسجّل الدخول.",
+                    "success"
+                );
+
+                registerForm.reset();
+
+                // ننتقل لتبويب تسجيل الدخول بعد مدة بسيطة
+                setTimeout(() => {
+
+                    showLoginForm();
+
+                }, 3500);
+
+            } catch (error) {
+
+                console.error(
+                    "REGISTER ERROR:",
+                    error
+                );
+
+                showMessage(
+                    getAuthErrorMessage(error)
+                );
+
+            } finally {
+
+                registerButton.disabled =
+                    false;
+
+                registerButton.textContent =
+                    "إنشاء الحساب";
+            }
+
+        }
+    );
+
+    // ======================================================
+    // LOGIN
+    // ======================================================
 
     loginForm.addEventListener(
         "submit",
@@ -226,22 +444,7 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault();
             event.stopPropagation();
 
-
-            console.log(
-                "===================================="
-            );
-
-            console.log(
-                "LOGIN SUBMIT FIRED"
-            );
-
-            console.log(
-                "===================================="
-            );
-
-
             hideMessage();
-
 
             const emailInput =
                 document.getElementById(
@@ -253,58 +456,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     "loginPassword"
                 );
 
-
-            if (!emailInput) {
-
-                console.error(
-                    "loginEmail NOT FOUND"
-                );
-
-                showMessage(
-                    "حقل البريد الإلكتروني غير موجود."
-                );
-
-                return;
-            }
-
-
-            if (!passwordInput) {
-
-                console.error(
-                    "loginPassword NOT FOUND"
-                );
-
-                showMessage(
-                    "حقل كلمة المرور غير موجود."
-                );
-
-                return;
-            }
-
-
             const email =
-                emailInput.value
-                    .trim()
-                    .toLowerCase();
+                emailInput?.value
+                    ?.trim()
+                    .toLowerCase() || "";
 
             const password =
-                passwordInput.value;
-
-
-            console.log(
-                "LOGIN EMAIL:",
-                email
-            );
-
-            console.log(
-                "PASSWORD LENGTH:",
-                password.length
-            );
-
-
-            /* ==================================================
-               VALIDATION
-            ================================================== */
+                passwordInput?.value || "";
 
             if (!email) {
 
@@ -312,11 +470,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     "أدخل البريد الإلكتروني."
                 );
 
-                emailInput.focus();
+                emailInput?.focus();
 
                 return;
             }
-
 
             if (!password) {
 
@@ -324,15 +481,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     "أدخل كلمة المرور."
                 );
 
-                passwordInput.focus();
+                passwordInput?.focus();
 
                 return;
             }
-
-
-            /* ==================================================
-               BUTTON
-            ================================================== */
 
             loginButton.disabled =
                 true;
@@ -340,17 +492,11 @@ document.addEventListener("DOMContentLoaded", () => {
             loginButton.textContent =
                 "جاري تسجيل الدخول...";
 
-
             try {
 
                 console.log(
-                    "CALLING SUPABASE SIGN IN..."
+                    "LOGIN REQUEST"
                 );
-
-
-                /* ==================================================
-                   SIGN IN
-                ================================================== */
 
                 const {
                     data,
@@ -358,98 +504,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 } =
                     await supabaseClient.auth
                         .signInWithPassword({
-
-                            email:
-                                email,
-
-                            password:
-                                password
-
+                            email,
+                            password
                         });
 
-
                 console.log(
-                    "SUPABASE LOGIN RESULT:",
+                    "LOGIN RESULT:",
                     {
                         data,
                         error
                     }
                 );
 
-
-                /* ==================================================
-                   ERROR
-                ================================================== */
-
                 if (error) {
-
-                    console.error(
-                        "SUPABASE LOGIN ERROR:",
-                        error
-                    );
-
                     throw error;
                 }
 
-
-                /* ==================================================
-                   SESSION CHECK
-                ================================================== */
-
                 if (!data?.session) {
 
-                    console.error(
-                        "NO SESSION CREATED"
-                    );
-
                     throw new Error(
-                        "تم التحقق من الحساب لكن لم يتم إنشاء جلسة تسجيل الدخول."
+                        "تم التحقق من الحساب لكن لم يتم إنشاء جلسة."
                     );
                 }
-
-
-                console.log(
-                    "LOGIN SUCCESS"
-                );
-
-                console.log(
-                    "USER:",
-                    data.user
-                );
-
-                console.log(
-                    "SESSION:",
-                    data.session
-                );
-
-
-                /* ==================================================
-                   SUCCESS
-                ================================================== */
 
                 showMessage(
                     "تم تسجيل الدخول بنجاح.",
                     "success"
                 );
 
-
-                /*
-                 * نعطي Supabase لحظة لحفظ الجلسة
-                 */
-
                 await new Promise(
                     resolve =>
                         setTimeout(
                             resolve,
-                            500
+                            350
                         )
                 );
-
-
-                console.log(
-                    "REDIRECTING TO CHAT..."
-                );
-
 
                 window.location.replace(
                     "/"
@@ -458,31 +547,12 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (error) {
 
                 console.error(
-                    "===================================="
-                );
-
-                console.error(
-                    "LOGIN FAILED"
-                );
-
-                console.error(
+                    "LOGIN ERROR:",
                     error
                 );
 
-                console.error(
-                    "MESSAGE:",
-                    error?.message
-                );
-
-                console.error(
-                    "===================================="
-                );
-
-
                 showMessage(
-                    getAuthErrorMessage(
-                        error
-                    )
+                    getAuthErrorMessage(error)
                 );
 
             } finally {
@@ -497,116 +567,80 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
+    // ======================================================
+    // CONFIRMATION REDIRECT
+    // ======================================================
 
-    /* ======================================================
-       REGISTER
-       نخلي كود التسجيل الموجود عندك يشتغل
-       بدون تغيير إذا كان مربوط بملف آخر.
-    ====================================================== */
+    async function handleEmailConfirmation() {
 
+        const hash =
+            window.location.hash || "";
 
-    /* ======================================================
-       AUTH ERROR
-    ====================================================== */
+        const search =
+            window.location.search || "";
 
-    function getAuthErrorMessage(
-        error
-    ) {
+        const isConfirmation =
+            hash.includes("access_token") ||
+            hash.includes("type=signup") ||
+            search.includes("confirmed=true");
 
-        const message =
-            String(
-                error?.message || ""
-            );
-
-
-        const lower =
-            message.toLowerCase();
-
-
-        if (
-            lower.includes(
-                "invalid login credentials"
-            )
-        ) {
-
-            return (
-                "البريد الإلكتروني أو كلمة المرور غير صحيحة."
-            );
+        if (!isConfirmation) {
+            return false;
         }
 
-
-        if (
-            lower.includes(
-                "email not confirmed"
-            )
-        ) {
-
-            return (
-                "يجب تأكيد البريد الإلكتروني أولاً. تحقق من بريدك."
-            );
-        }
-
-
-        if (
-            lower.includes(
-                "user not found"
-            )
-        ) {
-
-            return (
-                "لا يوجد حساب بهذا البريد الإلكتروني."
-            );
-        }
-
-
-        if (
-            lower.includes(
-                "too many requests"
-            ) ||
-            lower.includes(
-                "rate limit"
-            )
-        ) {
-
-            return (
-                "تم إجراء محاولات كثيرة. حاول مرة أخرى بعد قليل."
-            );
-        }
-
-
-        if (
-            lower.includes(
-                "failed to fetch"
-            )
-        ) {
-
-            return (
-                "تعذر الاتصال بخادم تسجيل الدخول. تحقق من الإنترنت."
-            );
-        }
-
-
-        if (message) {
-
-            return message;
-        }
-
-
-        return (
-            "حدث خطأ أثناء تسجيل الدخول."
+        console.log(
+            "EMAIL CONFIRMATION FLOW"
         );
+
+        try {
+
+            /*
+             * Supabase قد ينشئ Session بعد الضغط
+             * على رابط تأكيد البريد.
+             *
+             * نحن نريد المستخدم يرجع لتسجيل الدخول
+             * بنفسه، لذلك نسجل الخروج من Session
+             * الناتجة عن التأكيد.
+             */
+
+            await supabaseClient.auth.signOut();
+
+        } catch (error) {
+
+            console.error(
+                "CONFIRMATION SIGNOUT ERROR:",
+                error
+            );
+        }
+
+        try {
+
+            window.history.replaceState(
+                {},
+                document.title,
+                "/login.html"
+            );
+
+        } catch {
+            // ignore
+        }
+
+        showLoginForm();
+
+        showMessage(
+            "تم تأكيد البريد الإلكتروني بنجاح. الآن سجّل الدخول إلى حسابك.",
+            "success"
+        );
+
+        return true;
     }
 
-
-    /* ======================================================
-       AUTH STATE
-    ====================================================== */
+    // ======================================================
+    // AUTH STATE
+    // ======================================================
 
     supabaseClient.auth.onAuthStateChange(
-        (
-            event,
-            session
-        ) => {
+        (event, session) => {
 
             console.log(
                 "AUTH EVENT:",
@@ -614,15 +648,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 session
             );
 
+            /*
+             * لا نعيد التوجيه أثناء مسار تأكيد البريد.
+             */
+            const hash =
+                window.location.hash || "";
+
+            if (
+                event === "SIGNED_IN" &&
+                !hash.includes("type=signup") &&
+                !hash.includes("access_token")
+            ) {
+
+                window.location.replace(
+                    "/"
+                );
+            }
+
         }
     );
 
+    // ======================================================
+    // EXISTING SESSION
+    // ======================================================
 
-    /* ======================================================
-       CHECK EXISTING SESSION
-    ====================================================== */
+    async function checkExistingSession() {
 
-    async function checkSession() {
+        const confirmationHandled =
+            await handleEmailConfirmation();
+
+        if (confirmationHandled) {
+            return;
+        }
 
         try {
 
@@ -633,17 +690,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 await supabaseClient.auth
                     .getSession();
 
-
             if (error) {
 
                 console.error(
-                    "SESSION CHECK ERROR:",
+                    "SESSION ERROR:",
                     error
                 );
 
                 return;
             }
-
 
             if (data?.session) {
 
@@ -659,15 +714,13 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
 
             console.error(
-                "SESSION CHECK FAILED:",
+                "SESSION CHECK ERROR:",
                 error
             );
         }
     }
 
-
-    checkSession();
-
+    checkExistingSession();
 
     console.log(
         "LOGIN.JS READY"
