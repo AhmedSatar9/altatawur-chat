@@ -87,10 +87,6 @@
             overflow: hidden;
         }
 
-        /* =====================================================
-           HEADER
-        ===================================================== */
-
         .topbar {
             flex: 0 0 auto;
 
@@ -125,9 +121,7 @@
         .brand {
             display: flex;
             align-items: center;
-
             gap: 12px;
-
             min-width: 0;
         }
 
@@ -204,7 +198,6 @@
         .header-actions {
             display: flex;
             align-items: center;
-
             gap: 9px;
         }
 
@@ -231,14 +224,6 @@
                 rgba(16, 23, 46, 0.80);
 
             cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                background 0.15s ease;
-        }
-
-        .header-button:active {
-            transform: scale(0.96);
         }
 
         .new-chat-button {
@@ -247,21 +232,13 @@
 
         .menu-button {
             width: 46px;
-
             padding: 0;
-
             font-size: 22px;
         }
 
-        /* =====================================================
-           CHAT
-        ===================================================== */
-
         .chat-area {
             flex: 1;
-
             min-height: 0;
-
             width: 100%;
 
             position: relative;
@@ -290,30 +267,7 @@
             scroll-behavior: smooth;
 
             scrollbar-width: thin;
-
-            scrollbar-color:
-                rgba(120, 130, 170, 0.30)
-                transparent;
         }
-
-        .messages::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .messages::-webkit-scrollbar-thumb {
-            background:
-                rgba(120, 130, 170, 0.30);
-
-            border-radius: 20px;
-        }
-
-        /* =====================================================
-           WELCOME
-        ===================================================== */
 
         .welcome {
             min-height: 100%;
@@ -330,9 +284,7 @@
 
         .welcome-content {
             width: 100%;
-
             max-width: 620px;
-
             text-align: center;
         }
 
@@ -358,10 +310,6 @@
                     #8055f6,
                     #22c8e9
                 );
-
-            box-shadow:
-                0 18px 50px
-                rgba(65, 155, 235, 0.20);
         }
 
         .welcome h2 {
@@ -369,7 +317,6 @@
                 0 0 10px;
 
             font-size: 30px;
-
             font-weight: 750;
         }
 
@@ -379,7 +326,6 @@
             color: #858da8;
 
             font-size: 16px;
-
             line-height: 1.8;
         }
 
@@ -420,21 +366,8 @@
             cursor: pointer;
 
             font-size: 14px;
-
             line-height: 1.5;
-
-            transition:
-                background 0.15s ease,
-                transform 0.15s ease;
         }
-
-        .suggestion:active {
-            transform: scale(0.98);
-        }
-
-        /* =====================================================
-           MESSAGES
-        ===================================================== */
 
         .message-row {
             width: 100%;
@@ -509,10 +442,6 @@
                 rgba(255, 80, 105, 0.25);
         }
 
-        /* =====================================================
-           COMPOSER
-        ===================================================== */
-
         .composer-wrap {
             position: absolute;
 
@@ -541,13 +470,11 @@
 
         .composer {
             width: 100%;
-
             max-width: 980px;
 
             margin: 0 auto;
 
             display: flex;
-
             align-items: flex-end;
 
             gap: 9px;
@@ -571,14 +498,10 @@
 
             backdrop-filter:
                 blur(20px);
-
-            -webkit-backdrop-filter:
-                blur(20px);
         }
 
         .message-input {
             flex: 1;
-
             width: 100%;
 
             min-height: 50px;
@@ -598,7 +521,6 @@
             background: transparent;
 
             font-size: 16px;
-
             line-height: 1.55;
         }
 
@@ -633,29 +555,15 @@
                 );
 
             cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                opacity 0.15s ease;
-        }
-
-        .send-button:active {
-            transform: scale(0.94);
         }
 
         .send-button:disabled {
             opacity: 0.45;
-
             cursor: wait;
         }
 
-        /* =====================================================
-           MENU
-        ===================================================== */
-
         .menu-overlay {
             position: fixed;
-
             inset: 0;
 
             z-index: 90;
@@ -665,20 +573,10 @@
 
             backdrop-filter:
                 blur(3px);
-
-            -webkit-backdrop-filter:
-                blur(3px);
-
-            opacity: 1;
-
-            transition:
-                opacity 0.22s ease;
         }
 
         .menu-overlay.hidden {
-            opacity: 0;
-
-            pointer-events: none;
+            display: none;
         }
 
         .side-menu {
@@ -726,15 +624,12 @@
 
         .menu-header {
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
         }
 
         .menu-header h2 {
             margin: 0;
-
             font-size: 26px;
         }
 
@@ -758,7 +653,6 @@
             color: #ffffff;
 
             font-size: 27px;
-
             cursor: pointer;
         }
 
@@ -766,7 +660,6 @@
             margin-top: 25px;
 
             display: flex;
-
             align-items: center;
 
             gap: 13px;
@@ -826,17 +719,11 @@
             max-width: 240px;
 
             overflow: hidden;
-
             text-overflow: ellipsis;
-
             white-space: nowrap;
 
             font-size: 15px;
         }
-
-        /* =====================================================
-           CONVERSATIONS
-        ===================================================== */
 
         .conversation-section {
             margin-top: 25px;
@@ -844,9 +731,7 @@
 
         .conversation-title {
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             margin-bottom: 10px;
@@ -854,13 +739,11 @@
             color: #8993ad;
 
             font-size: 13px;
-
             font-weight: 600;
         }
 
         .conversation-list {
             display: flex;
-
             flex-direction: column;
 
             gap: 7px;
@@ -870,17 +753,6 @@
             overflow-y: auto;
 
             padding-left: 2px;
-        }
-
-        .conversation-list::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .conversation-list::-webkit-scrollbar-thumb {
-            background:
-                rgba(130, 145, 190, 0.20);
-
-            border-radius: 20px;
         }
 
         .conversation-item {
@@ -893,7 +765,6 @@
                 11px;
 
             display: flex;
-
             align-items: center;
 
             text-align: right;
@@ -912,17 +783,7 @@
             cursor: pointer;
 
             font-size: 14px;
-
             line-height: 1.45;
-
-            transition:
-                background 0.15s ease,
-                border-color 0.15s ease;
-        }
-
-        .conversation-item:hover {
-            background:
-                rgba(28, 38, 70, 0.75);
         }
 
         .conversation-item.active {
@@ -969,13 +830,11 @@
             display: flex;
 
             align-items: center;
-
             justify-content: center;
 
             border-radius: 17px;
 
             font-size: 15px;
-
             cursor: pointer;
         }
 
@@ -1003,10 +862,6 @@
                 );
         }
 
-        /* =====================================================
-           TOAST
-        ===================================================== */
-
         .toast {
             position: fixed;
 
@@ -1020,7 +875,6 @@
                 translateY(20px);
 
             min-width: 220px;
-
             max-width: 90vw;
 
             padding:
@@ -1061,10 +915,6 @@
                 translateY(0);
         }
 
-        /* =====================================================
-           MOBILE
-        ===================================================== */
-
         @media (max-width: 700px) {
 
             .topbar {
@@ -1082,7 +932,6 @@
             .brand-logo {
                 width: 44px;
                 height: 44px;
-
                 flex-basis: 44px;
 
                 border-radius: 14px;
@@ -1096,10 +945,6 @@
 
             .online-status {
                 font-size: 11px;
-            }
-
-            .header-actions {
-                gap: 6px;
             }
 
             .new-chat-button {
@@ -1144,7 +989,6 @@
 
             .suggestions {
                 grid-template-columns: 1fr;
-
                 margin-top: 22px;
             }
 
@@ -1154,7 +998,6 @@
 
             .message-bubble {
                 max-width: 88%;
-
                 font-size: 15px;
 
                 padding:
@@ -1178,14 +1021,12 @@
 
             .message-input {
                 font-size: 15px;
-
                 min-height: 47px;
             }
 
             .send-button {
                 width: 49px;
                 height: 49px;
-
                 flex-basis: 49px;
 
                 border-radius: 15px;
@@ -1196,7 +1037,6 @@
             .side-menu {
                 width: 90vw;
             }
-
         }
 
         @media (max-width: 380px) {
@@ -1208,27 +1048,24 @@
             .brand-logo {
                 width: 41px;
                 height: 41px;
-
                 flex-basis: 41px;
             }
 
             .message-bubble {
                 max-width: 92%;
             }
-
         }
 
     </style>
 
 </head>
 
+
 <body>
 
 <div class="app">
 
-    <!-- =====================================================
-         HEADER
-    ===================================================== -->
+    <!-- HEADER -->
 
     <header class="topbar">
 
@@ -1256,6 +1093,7 @@
 
         </div>
 
+
         <div class="header-actions">
 
             <button
@@ -1266,11 +1104,11 @@
                 + محادثة جديدة
             </button>
 
+
             <button
                 id="menuButton"
                 class="header-button menu-button"
                 type="button"
-                aria-label="فتح القائمة"
             >
                 ☰
             </button>
@@ -1280,9 +1118,7 @@
     </header>
 
 
-    <!-- =====================================================
-         CHAT
-    ===================================================== -->
+    <!-- CHAT -->
 
     <main class="chat-area">
 
@@ -1310,36 +1146,40 @@
                         اسألني عن أي موضوع، وأنا أساعدك بالمعلومات والأفكار والحلول.
                     </p>
 
+
                     <div class="suggestions">
 
                         <button
                             class="suggestion"
-                            type="button"
                             data-prompt="اكتبلي فكرة مشروع صغيرة ومربحة"
+                            type="button"
                         >
                             💡 اقترحلي فكرة مشروع
                         </button>
 
+
                         <button
                             class="suggestion"
-                            type="button"
                             data-prompt="ساعدني أكتب إعلان احترافي وجذاب"
+                            type="button"
                         >
                             ✍️ اكتبلي إعلان
                         </button>
 
+
                         <button
                             class="suggestion"
-                            type="button"
                             data-prompt="اشرحلي الذكاء الاصطناعي بطريقة بسيطة"
+                            type="button"
                         >
                             🤖 اشرحلي الذكاء الاصطناعي
                         </button>
 
+
                         <button
                             class="suggestion"
-                            type="button"
                             data-prompt="ساعدني أخطط لشيء أريد أسويه"
+                            type="button"
                         >
                             📋 ساعدني بالتخطيط
                         </button>
@@ -1353,9 +1193,7 @@
         </section>
 
 
-        <!-- =================================================
-             COMPOSER
-        ================================================= -->
+        <!-- COMPOSER -->
 
         <div class="composer-wrap">
 
@@ -1369,11 +1207,11 @@
                     autocomplete="off"
                 ></textarea>
 
+
                 <button
                     id="sendButton"
                     class="send-button"
                     type="button"
-                    aria-label="إرسال"
                 >
                     ↑
                 </button>
@@ -1387,9 +1225,7 @@
 </div>
 
 
-<!-- =========================================================
-     MENU OVERLAY
-========================================================= -->
+<!-- MENU OVERLAY -->
 
 <div
     id="menuOverlay"
@@ -1397,9 +1233,7 @@
 ></div>
 
 
-<!-- =========================================================
-     SIDE MENU
-========================================================= -->
+<!-- SIDE MENU -->
 
 <aside
     id="sideMenu"
@@ -1413,11 +1247,11 @@
             القائمة
         </h2>
 
+
         <button
             id="closeMenu"
             class="close-menu"
             type="button"
-            aria-label="إغلاق"
         >
             ×
         </button>
@@ -1425,9 +1259,7 @@
     </div>
 
 
-    <!-- =====================================================
-         ACCOUNT
-    ===================================================== -->
+    <!-- ACCOUNT -->
 
     <div class="account-card">
 
@@ -1438,11 +1270,13 @@
             أ
         </div>
 
+
         <div class="account-info">
 
             <small>
                 الحساب
             </small>
+
 
             <strong id="usernameDisplay">
                 جاري التحميل...
@@ -1453,9 +1287,7 @@
     </div>
 
 
-    <!-- =====================================================
-         CONVERSATIONS
-    ===================================================== -->
+    <!-- CONVERSATIONS -->
 
     <section class="conversation-section">
 
@@ -1467,14 +1299,13 @@
 
         </div>
 
+
         <div
             id="conversationList"
             class="conversation-list"
         >
 
-            <div
-                class="empty-conversations"
-            >
+            <div class="empty-conversations">
                 جاري تحميل المحادثات...
             </div>
 
@@ -1483,9 +1314,7 @@
     </section>
 
 
-    <!-- =====================================================
-         NEW CHAT
-    ===================================================== -->
+    <!-- NEW CHAT -->
 
     <button
         id="newChatSide"
@@ -1496,9 +1325,7 @@
     </button>
 
 
-    <!-- =====================================================
-         LOGOUT
-    ===================================================== -->
+    <!-- LOGOUT -->
 
     <button
         id="logoutButton"
@@ -1511,9 +1338,7 @@
 </aside>
 
 
-<!-- =========================================================
-     TOAST
-========================================================= -->
+<!-- TOAST -->
 
 <div
     id="toast"
@@ -1526,15 +1351,21 @@
 "use strict";
 
 
-// =========================================================
-// SUPABASE
-// =========================================================
+// ======================================================
+// SUPABASE CONFIG
+// ======================================================
 
 const SUPABASE_URL =
     "https://wxsricscchalzvazdbzd.supabase.co";
 
+
+// مهم:
+// استخدم نفس Publishable Key في كل ملفات الواجهة.
+// لا تستخدم Secret Key هنا.
+
 const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_5oPDD77Veu5OczxaZje7vg_orfNjB5t";
+    "sb_publishable_5oPDD77VeuO5czxaZje7vg_orfNjB5t";
+
 
 const supabaseClient =
     window.supabase.createClient(
@@ -1550,9 +1381,17 @@ const supabaseClient =
     );
 
 
-// =========================================================
+// ======================================================
+// CONSTANTS
+// ======================================================
+
+const CURRENT_CONVERSATION_KEY =
+    "altatawur_current_conversation";
+
+
+// ======================================================
 // ELEMENTS
-// =========================================================
+// ======================================================
 
 const messages =
     document.getElementById(
@@ -1630,9 +1469,9 @@ const toast =
     );
 
 
-// =========================================================
+// ======================================================
 // STATE
-// =========================================================
+// ======================================================
 
 let currentUser =
     null;
@@ -1650,11 +1489,13 @@ let toastTimer =
     null;
 
 
-// =========================================================
+// ======================================================
 // TOAST
-// =========================================================
+// ======================================================
 
-function showToast(text) {
+function showToast(
+    text
+) {
 
     if (!toast) {
         return;
@@ -1680,14 +1521,14 @@ function showToast(text) {
                 );
 
             },
-            3500
+            3000
         );
 }
 
 
-// =========================================================
+// ======================================================
 // MENU
-// =========================================================
+// ======================================================
 
 function openMenu() {
 
@@ -1705,6 +1546,7 @@ function openMenu() {
     );
 }
 
+
 function closeMenuPanel() {
 
     sideMenu.classList.remove(
@@ -1721,15 +1563,18 @@ function closeMenuPanel() {
     );
 }
 
+
 menuButton.addEventListener(
     "click",
     openMenu
 );
 
+
 closeMenu.addEventListener(
     "click",
     closeMenuPanel
 );
+
 
 menuOverlay.addEventListener(
     "click",
@@ -1737,9 +1582,9 @@ menuOverlay.addEventListener(
 );
 
 
-// =========================================================
-// RESET CHAT
-// =========================================================
+// ======================================================
+// RESET CHAT UI
+// ======================================================
 
 function resetChatUI() {
 
@@ -1764,39 +1609,70 @@ function resetChatUI() {
 }
 
 
-// =========================================================
+// ======================================================
 // NEW CHAT
-// =========================================================
+// ======================================================
 
 function startNewChat() {
+
+    if (isSending) {
+
+        showToast(
+            "انتظر حتى يكتمل الرد الحالي."
+        );
+
+        return;
+    }
+
 
     currentConversationId =
         null;
 
+
     conversation =
         [];
 
+
     localStorage.removeItem(
-        "altatawur_current_conversation"
+        CURRENT_CONVERSATION_KEY
     );
+
 
     resetChatUI();
 
-    renderConversationList();
+
+    document
+        .querySelectorAll(
+            ".conversation-item"
+        )
+        .forEach(
+            item => {
+
+                item.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
 
     closeMenuPanel();
 
+
     messageInput.focus();
+
 
     showToast(
         "تم فتح محادثة جديدة."
     );
 }
 
+
 newChatButton.addEventListener(
     "click",
     startNewChat
 );
+
 
 newChatSide.addEventListener(
     "click",
@@ -1804,106 +1680,116 @@ newChatSide.addEventListener(
 );
 
 
-// =========================================================
+// ======================================================
 // ADD MESSAGE
-// =========================================================
+// ======================================================
 
 function addMessage(
     text,
     role
 ) {
 
-    if (welcome) {
+    welcome.classList.add(
+        "hidden"
+    );
 
-        welcome.classList.add(
-            "hidden"
-        );
-
-    }
 
     const row =
         document.createElement(
             "div"
         );
+
 
     row.className =
         `message-row ${role}`;
 
+
     const bubble =
         document.createElement(
             "div"
         );
 
+
     bubble.className =
         "message-bubble";
 
+
     bubble.textContent =
         text;
+
 
     row.appendChild(
         bubble
     );
 
+
     messages.appendChild(
         row
     );
 
+
     scrollToBottom();
+
 
     return row;
 }
 
 
-// =========================================================
+// ======================================================
 // LOADING
-// =========================================================
+// ======================================================
 
 function showLoading() {
 
-    if (welcome) {
+    welcome.classList.add(
+        "hidden"
+    );
 
-        welcome.classList.add(
-            "hidden"
-        );
-
-    }
 
     const row =
         document.createElement(
             "div"
         );
 
+
     row.className =
         "message-row assistant";
+
 
     const bubble =
         document.createElement(
             "div"
         );
 
+
     bubble.className =
         "message-bubble loading";
 
+
     bubble.textContent =
         "جاري التفكير...";
+
 
     row.appendChild(
         bubble
     );
 
+
     messages.appendChild(
         row
     );
 
+
     scrollToBottom();
+
 
     return row;
 }
 
 
-// =========================================================
+// ======================================================
 // SCROLL
-// =========================================================
+// ======================================================
 
 function scrollToBottom() {
 
@@ -1918,14 +1804,15 @@ function scrollToBottom() {
 }
 
 
-// =========================================================
+// ======================================================
 // RESIZE INPUT
-// =========================================================
+// ======================================================
 
 function resizeInput() {
 
     messageInput.style.height =
         "auto";
+
 
     messageInput.style.height =
         Math.min(
@@ -1934,15 +1821,16 @@ function resizeInput() {
         ) + "px";
 }
 
+
 messageInput.addEventListener(
     "input",
     resizeInput
 );
 
 
-// =========================================================
+// ======================================================
 // SESSION
-// =========================================================
+// ======================================================
 
 async function getValidSession() {
 
@@ -1952,6 +1840,7 @@ async function getValidSession() {
     } =
         await supabaseClient.auth
             .getSession();
+
 
     if (error) {
 
@@ -1966,6 +1855,7 @@ async function getValidSession() {
 
     }
 
+
     if (!data?.session) {
 
         throw new Error(
@@ -1974,19 +1864,21 @@ async function getValidSession() {
 
     }
 
+
     return data.session;
 }
 
 
-// =========================================================
-// LOAD USER PROFILE
-// =========================================================
+// ======================================================
+// PROFILE
+// ======================================================
 
 async function loadUserProfile() {
 
     if (!currentUser) {
         return;
     }
+
 
     try {
 
@@ -2005,24 +1897,28 @@ async function loadUserProfile() {
                 )
                 .maybeSingle();
 
-        let username =
+
+        if (error) {
+
+            console.error(
+                "PROFILE ERROR:",
+                error
+            );
+
+        }
+
+
+        const username =
             data?.username ||
             currentUser.user_metadata?.username ||
             data?.email ||
             currentUser.email ||
             "مستخدم";
 
-        if (error) {
-
-            console.error(
-                "PROFILE LOAD ERROR:",
-                error
-            );
-
-        }
 
         usernameDisplay.textContent =
             username;
+
 
         accountAvatar.textContent =
             username
@@ -2030,21 +1926,23 @@ async function loadUserProfile() {
                 .charAt(0)
                 .toUpperCase() ||
             "أ";
+
 
     } catch (error) {
 
         console.error(
-            "PROFILE ERROR:",
+            "PROFILE LOAD ERROR:",
             error
         );
 
         const username =
-            currentUser.user_metadata?.username ||
             currentUser.email ||
             "مستخدم";
 
+
         usernameDisplay.textContent =
             username;
+
 
         accountAvatar.textContent =
             username
@@ -2052,19 +1950,21 @@ async function loadUserProfile() {
                 .charAt(0)
                 .toUpperCase() ||
             "أ";
+
     }
 }
 
 
-// =========================================================
-// LOAD CONVERSATIONS LIST
-// =========================================================
+// ======================================================
+// LOAD CONVERSATIONS
+// ======================================================
 
 async function loadConversationList() {
 
     if (!currentUser) {
         return;
     }
+
 
     try {
 
@@ -2094,6 +1994,7 @@ async function loadConversationList() {
                     }
                 );
 
+
         if (error) {
 
             console.error(
@@ -2101,18 +2002,23 @@ async function loadConversationList() {
                 error
             );
 
+
             conversationList.innerHTML = `
                 <div class="empty-conversations">
                     تعذر تحميل المحادثات.
                 </div>
             `;
 
+
             return;
+
         }
+
 
         renderConversationList(
             data || []
         );
+
 
     } catch (error) {
 
@@ -2125,26 +2031,306 @@ async function loadConversationList() {
 }
 
 
-// =========================================================
-// RENDER CONVERSATION LIST
-// =========================================================
+// ======================================================
+// RENDER CONVERSATIONS
+// ======================================================
 
 function renderConversationList(
-    conversations = null
+    conversations
 ) {
 
-    if (!conversationList) {
+    conversationList.innerHTML =
+        "";
+
+
+    if (
+        !conversations ||
+        conversations.length === 0
+    ) {
+
+        conversationList.innerHTML = `
+            <div class="empty-conversations">
+                لا توجد محادثات محفوظة بعد.
+            </div>
+        `;
+
+
         return;
     }
 
-    if (
-        conversations === null
-    ) {
 
-        /*
-         * هذه الحالة تستخدم عند فتح محادثة جديدة.
-         * نحافظ على القائمة الحالية قدر الإمكان.
-         */
+    conversations.forEach(
+        item => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+
+            button.className =
+                "conversation-item";
+
+
+            button.dataset.id =
+                String(
+                    item.id
+                );
+
+
+            if (
+                String(item.id) ===
+                String(currentConversationId)
+            ) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const text =
+                document.createElement(
+                    "span"
+                );
+
+
+            text.className =
+                "conversation-item-text";
+
+
+            text.textContent =
+                item.title ||
+                "محادثة جديدة";
+
+
+            button.appendChild(
+                text
+            );
+
+
+            button.addEventListener(
+                "click",
+                async () => {
+
+                    await openConversation(
+                        item.id
+                    );
+
+                    closeMenuPanel();
+
+                }
+            );
+
+
+            conversationList.appendChild(
+                button
+            );
+
+        }
+    );
+}
+
+
+// ======================================================
+// OPEN CONVERSATION
+// ======================================================
+
+async function openConversation(
+    conversationId
+) {
+
+    if (
+        !conversationId ||
+        !currentUser
+    ) {
+        return;
+    }
+
+
+    if (isSending) {
+
+        showToast(
+            "انتظر حتى يكتمل الرد الحالي."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        // ==============================================
+        // VERIFY OWNER
+        // ==============================================
+
+        const {
+            data:
+                conversationData,
+
+            error:
+                conversationError
+
+        } =
+            await supabaseClient
+                .from("conversations")
+                .select(
+                    "id,user_id,title,created_at,updated_at"
+                )
+                .eq(
+                    "id",
+                    conversationId
+                )
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+                .maybeSingle();
+
+
+        if (
+            conversationError ||
+            !conversationData
+        ) {
+
+            console.error(
+                "OPEN CONVERSATION ERROR:",
+                conversationError
+            );
+
+
+            showToast(
+                "تعذر فتح المحادثة."
+            );
+
+
+            return;
+        }
+
+
+        // ==============================================
+        // SET CURRENT
+        // ==============================================
+
+        currentConversationId =
+            conversationData.id;
+
+
+        localStorage.setItem(
+            CURRENT_CONVERSATION_KEY,
+            String(
+                currentConversationId
+            )
+        );
+
+
+        // ==============================================
+        // LOAD MESSAGES
+        // ==============================================
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("messages")
+                .select(
+                    "id,conversation_id,role,content,created_at"
+                )
+                .eq(
+                    "conversation_id",
+                    conversationData.id
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (error) {
+
+            console.error(
+                "LOAD MESSAGES ERROR:",
+                error
+            );
+
+
+            showToast(
+                "تعذر تحميل رسائل المحادثة."
+            );
+
+
+            return;
+        }
+
+
+        // ==============================================
+        // REBUILD UI
+        // ==============================================
+
+        conversation =
+            [];
+
+
+        resetChatUI();
+
+
+        for (
+            const message
+            of data || []
+        ) {
+
+            if (
+                message.role !== "user" &&
+                message.role !== "assistant"
+            ) {
+
+                continue;
+
+            }
+
+
+            const content =
+                String(
+                    message.content ||
+                    ""
+                );
+
+
+            if (!content.trim()) {
+                continue;
+            }
+
+
+            conversation.push({
+
+                role:
+                    message.role,
+
+                content:
+                    content
+
+            });
+
+
+            addMessage(
+                content,
+                message.role
+            );
+
+        }
+
+
+        // ==============================================
+        // ACTIVE ITEM
+        // ==============================================
 
         document
             .querySelectorAll(
@@ -2164,94 +2350,29 @@ function renderConversationList(
                 }
             );
 
-        return;
+
+        scrollToBottom();
+
+
+    } catch (error) {
+
+        console.error(
+            "OPEN CONVERSATION ERROR:",
+            error
+        );
+
+
+        showToast(
+            "حدث خطأ أثناء فتح المحادثة."
+        );
+
     }
-
-    conversationList.innerHTML =
-        "";
-
-    if (
-        !conversations.length
-    ) {
-
-        conversationList.innerHTML = `
-            <div class="empty-conversations">
-                لا توجد محادثات محفوظة بعد.
-            </div>
-        `;
-
-        return;
-    }
-
-    conversations.forEach(
-        (item) => {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-            button.type =
-                "button";
-
-            button.className =
-                "conversation-item";
-
-            button.dataset.id =
-                String(item.id);
-
-            if (
-                String(item.id) ===
-                String(currentConversationId)
-            ) {
-
-                button.classList.add(
-                    "active"
-                );
-
-            }
-
-            const text =
-                document.createElement(
-                    "span"
-                );
-
-            text.className =
-                "conversation-item-text";
-
-            text.textContent =
-                item.title ||
-                "محادثة جديدة";
-
-            button.appendChild(
-                text
-            );
-
-            button.addEventListener(
-                "click",
-                async () => {
-
-                    await openConversation(
-                        item.id
-                    );
-
-                    closeMenuPanel();
-
-                }
-            );
-
-            conversationList.appendChild(
-                button
-            );
-
-        }
-    );
 }
 
 
-// =========================================================
+// ======================================================
 // LOAD LAST CONVERSATION
-// =========================================================
+// ======================================================
 
 async function loadLastConversation() {
 
@@ -2259,26 +2380,24 @@ async function loadLastConversation() {
         return;
     }
 
+
     try {
 
         const savedId =
             localStorage.getItem(
-                "altatawur_current_conversation"
+                CURRENT_CONVERSATION_KEY
             );
 
-        // ==================================================
-        // SAVED
-        // ==================================================
+
+        // ==============================================
+        // OPEN SAVED
+        // ==============================================
 
         if (savedId) {
 
             const {
-                data:
-                    savedConversation,
-
-                error:
-                    savedConversationError
-
+                data,
+                error
             } =
                 await supabaseClient
                     .from("conversations")
@@ -2295,36 +2414,38 @@ async function loadLastConversation() {
                     )
                     .maybeSingle();
 
+
             if (
-                !savedConversationError &&
-                savedConversation
+                !error &&
+                data
             ) {
 
                 await openConversation(
-                    savedConversation.id
+                    data.id
                 );
 
-                return;
 
+                return;
             }
 
+
             localStorage.removeItem(
-                "altatawur_current_conversation"
+                CURRENT_CONVERSATION_KEY
             );
 
         }
 
 
-        // ==================================================
-        // LAST
-        // ==================================================
+        // ==============================================
+        // LOAD LATEST
+        // ==============================================
 
         const {
             data:
-                conversations,
+                latestConversations,
 
             error:
-                conversationsError
+                latestError
 
         } =
             await supabaseClient
@@ -2350,50 +2471,50 @@ async function loadLastConversation() {
                 )
                 .limit(1);
 
-        if (conversationsError) {
+
+        if (latestError) {
 
             console.error(
-                "LOAD LAST CONVERSATION ERROR:",
-                conversationsError
+                "LATEST CONVERSATION ERROR:",
+                latestError
             );
+
 
             resetChatUI();
 
+
             return;
         }
+
 
         if (
-            conversations &&
-            conversations.length > 0
+            latestConversations &&
+            latestConversations.length
         ) {
 
-            const latest =
-                conversations[0];
-
-            currentConversationId =
-                latest.id;
-
-            localStorage.setItem(
-                "altatawur_current_conversation",
-                String(
-                    latest.id
-                )
-            );
-
             await openConversation(
-                latest.id
+                latestConversations[0].id
             );
+
 
             return;
         }
+
+
+        // ==============================================
+        // NO CONVERSATIONS
+        // ==============================================
 
         currentConversationId =
             null;
 
+
         conversation =
             [];
 
+
         resetChatUI();
+
 
     } catch (error) {
 
@@ -2402,184 +2523,16 @@ async function loadLastConversation() {
             error
         );
 
+
         resetChatUI();
 
     }
 }
 
 
-// =========================================================
-// OPEN CONVERSATION
-// =========================================================
-
-async function openConversation(
-    conversationId
-) {
-
-    if (
-        !conversationId ||
-        !currentUser
-    ) {
-        return;
-    }
-
-    try {
-
-        // ==================================================
-        // VERIFY OWNER
-        // ==================================================
-
-        const {
-            data:
-                conversationData,
-
-            error:
-                conversationError
-
-        } =
-            await supabaseClient
-                .from("conversations")
-                .select(
-                    "id,user_id,title,created_at,updated_at"
-                )
-                .eq(
-                    "id",
-                    conversationId
-                )
-                .eq(
-                    "user_id",
-                    currentUser.id
-                )
-                .maybeSingle();
-
-        if (
-            conversationError ||
-            !conversationData
-        ) {
-
-            console.error(
-                "OPEN CONVERSATION CHECK ERROR:",
-                conversationError
-            );
-
-            localStorage.removeItem(
-                "altatawur_current_conversation"
-            );
-
-            currentConversationId =
-                null;
-
-            return;
-
-        }
-
-        currentConversationId =
-            conversationData.id;
-
-        localStorage.setItem(
-            "altatawur_current_conversation",
-            String(
-                conversationData.id
-            )
-        );
-
-
-        // ==================================================
-        // LOAD MESSAGES
-        // ==================================================
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("messages")
-                .select(
-                    "id,conversation_id,role,content,created_at"
-                )
-                .eq(
-                    "conversation_id",
-                    conversationData.id
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: true
-                    }
-                );
-
-        if (error) {
-
-            console.error(
-                "LOAD MESSAGES ERROR:",
-                error
-            );
-
-            showToast(
-                "تعذر تحميل رسائل المحادثة."
-            );
-
-            return;
-
-        }
-
-
-        // ==================================================
-        // REBUILD
-        // ==================================================
-
-        conversation =
-            [];
-
-        resetChatUI();
-
-        for (
-            const message
-            of data || []
-        ) {
-
-            if (
-                message.role !== "user" &&
-                message.role !== "assistant"
-            ) {
-                continue;
-            }
-
-            conversation.push({
-
-                role:
-                    message.role,
-
-                content:
-                    message.content
-
-            });
-
-            addMessage(
-                message.content,
-                message.role
-            );
-
-        }
-
-        renderConversationList();
-
-        scrollToBottom();
-
-    } catch (error) {
-
-        console.error(
-            "OPEN CONVERSATION ERROR:",
-            error
-        );
-
-    }
-}
-
-
-// =========================================================
+// ======================================================
 // SEND MESSAGE
-// =========================================================
+// ======================================================
 
 async function sendMessage() {
 
@@ -2587,12 +2540,15 @@ async function sendMessage() {
         return;
     }
 
+
     const text =
         messageInput.value.trim();
+
 
     if (!text) {
         return;
     }
+
 
     if (!currentUser) {
 
@@ -2600,28 +2556,34 @@ async function sendMessage() {
             "يجب تسجيل الدخول أولاً."
         );
 
+
         return;
     }
+
 
     isSending =
         true;
 
+
     sendButton.disabled =
         true;
+
 
     let loading =
         null;
 
+
     try {
 
-        // ==================================================
-        // SHOW USER
-        // ==================================================
+        // ==============================================
+        // SHOW USER MESSAGE
+        // ==============================================
 
         addMessage(
             text,
             "user"
         );
+
 
         conversation.push({
 
@@ -2633,32 +2595,36 @@ async function sendMessage() {
 
         });
 
+
         messageInput.value =
             "";
 
+
         messageInput.style.height =
             "auto";
+
 
         loading =
             showLoading();
 
 
-        // ==================================================
+        // ==============================================
         // SESSION
-        // ==================================================
+        // ==============================================
 
         const session =
             await getValidSession();
 
 
-        // ==================================================
+        // ==============================================
         // API
-        // ==================================================
+        // ==============================================
 
         const response =
             await fetch(
                 "/api/chat",
                 {
+
                     method:
                         "POST",
 
@@ -2690,6 +2656,7 @@ async function sendMessage() {
         let result =
             {};
 
+
         try {
 
             result =
@@ -2703,24 +2670,23 @@ async function sendMessage() {
         }
 
 
-        // ==================================================
+        // ==============================================
         // ERROR
-        // ==================================================
+        // ==============================================
 
         if (!response.ok) {
 
             throw new Error(
                 result?.error ||
-                result?.details ||
                 "حدث خطأ في الخادم."
             );
 
         }
 
 
-        // ==================================================
+        // ==============================================
         // REMOVE LOADING
-        // ==================================================
+        // ==============================================
 
         if (loading) {
 
@@ -2732,9 +2698,9 @@ async function sendMessage() {
         }
 
 
-        // ==================================================
-        // CONVERSATION ID
-        // ==================================================
+        // ==============================================
+        // SAVE CONVERSATION ID
+        // ==============================================
 
         if (
             result?.conversation_id
@@ -2743,8 +2709,9 @@ async function sendMessage() {
             currentConversationId =
                 result.conversation_id;
 
+
             localStorage.setItem(
-                "altatawur_current_conversation",
+                CURRENT_CONVERSATION_KEY,
                 String(
                     currentConversationId
                 )
@@ -2753,9 +2720,9 @@ async function sendMessage() {
         }
 
 
-        // ==================================================
-        // ANSWER
-        // ==================================================
+        // ==============================================
+        // ASSISTANT ANSWER
+        // ==============================================
 
         const answer =
             result?.message ||
@@ -2781,11 +2748,35 @@ async function sendMessage() {
         });
 
 
-        // ==================================================
-        // REFRESH CONVERSATIONS
-        // ==================================================
+        // ==============================================
+        // REFRESH SIDEBAR
+        // ==============================================
 
         await loadConversationList();
+
+
+        // ==============================================
+        // ACTIVE ITEM
+        // ==============================================
+
+        document
+            .querySelectorAll(
+                ".conversation-item"
+            )
+            .forEach(
+                item => {
+
+                    item.classList.toggle(
+                        "active",
+                        item.dataset.id ===
+                            String(
+                                currentConversationId
+                            )
+                    );
+
+                }
+            );
+
 
     } catch (error) {
 
@@ -2794,40 +2785,17 @@ async function sendMessage() {
             error
         );
 
+
         if (loading) {
             loading.remove();
         }
 
-        const errorText =
-            error?.message ||
-            "حدث خطأ. حاول مرة أخرى.";
 
-        const row =
-            addMessage(
-                errorText,
-                "assistant"
-            );
-
-        const bubble =
-            row.querySelector(
-                ".message-bubble"
-            );
-
-        if (bubble) {
-
-            bubble.classList.add(
-                "error"
-            );
-
-        }
-
-        /*
-         * إذا لم تنشأ محادثة بعد،
-         * نحذف رسالة المستخدم من السياق المحلي.
-         */
+        // ==============================================
+        // REMOVE FAILED USER MESSAGE FROM LOCAL STATE
+        // ==============================================
 
         if (
-            !currentConversationId &&
             conversation.length > 0 &&
             conversation[
                 conversation.length - 1
@@ -2838,13 +2806,39 @@ async function sendMessage() {
 
         }
 
+
+        const row =
+            addMessage(
+                error?.message ||
+                "حدث خطأ. حاول مرة أخرى.",
+                "assistant"
+            );
+
+
+        const bubble =
+            row.querySelector(
+                ".message-bubble"
+            );
+
+
+        if (bubble) {
+
+            bubble.classList.add(
+                "error"
+            );
+
+        }
+
+
     } finally {
 
         isSending =
             false;
 
+
         sendButton.disabled =
             false;
+
 
         messageInput.focus();
 
@@ -2858,13 +2852,13 @@ sendButton.addEventListener(
 );
 
 
-// =========================================================
+// ======================================================
 // ENTER
-// =========================================================
+// ======================================================
 
 messageInput.addEventListener(
     "keydown",
-    (event) => {
+    event => {
 
         if (
             event.key === "Enter" &&
@@ -2881,27 +2875,24 @@ messageInput.addEventListener(
 );
 
 
-// =========================================================
+// ======================================================
 // SUGGESTIONS
-// =========================================================
+// ======================================================
 
 document
     .querySelectorAll(
         ".suggestion"
     )
     .forEach(
-        (button) => {
+        button => {
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    const prompt =
+                    messageInput.value =
                         button.dataset.prompt ||
                         "";
-
-                    messageInput.value =
-                        prompt;
 
                     resizeInput();
 
@@ -2914,17 +2905,19 @@ document
     );
 
 
-// =========================================================
+// ======================================================
 // LOGOUT
-// =========================================================
+// ======================================================
 
 async function logout() {
 
     logoutButton.disabled =
         true;
 
+
     logoutButton.textContent =
         "جاري تسجيل الخروج...";
+
 
     try {
 
@@ -2934,17 +2927,21 @@ async function logout() {
             await supabaseClient.auth
                 .signOut();
 
+
         if (error) {
             throw error;
         }
 
+
         localStorage.removeItem(
-            "altatawur_current_conversation"
+            CURRENT_CONVERSATION_KEY
         );
+
 
         window.location.replace(
             "/login.html"
         );
+
 
     } catch (error) {
 
@@ -2953,18 +2950,22 @@ async function logout() {
             error
         );
 
+
         logoutButton.disabled =
             false;
+
 
         logoutButton.textContent =
             "تسجيل الخروج";
 
+
         showToast(
-            "تعذر تسجيل الخروج. حاول مرة أخرى."
+            "تعذر تسجيل الخروج."
         );
 
     }
 }
+
 
 logoutButton.addEventListener(
     "click",
@@ -2972,9 +2973,9 @@ logoutButton.addEventListener(
 );
 
 
-// =========================================================
+// ======================================================
 // AUTH STATE
-// =========================================================
+// ======================================================
 
 supabaseClient.auth.onAuthStateChange(
     (
@@ -2987,14 +2988,15 @@ supabaseClient.auth.onAuthStateChange(
             event
         );
 
+
         if (
-            event ===
-            "SIGNED_OUT"
+            event === "SIGNED_OUT"
         ) {
 
             localStorage.removeItem(
-                "altatawur_current_conversation"
+                CURRENT_CONVERSATION_KEY
             );
+
 
             window.location.replace(
                 "/login.html"
@@ -3006,43 +3008,67 @@ supabaseClient.auth.onAuthStateChange(
 );
 
 
-// =========================================================
+// ======================================================
+// ESC
+// ======================================================
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closeMenuPanel();
+
+        }
+
+    }
+);
+
+
+// ======================================================
 // INITIALIZE
-// =========================================================
+// ======================================================
 
 async function initialize() {
 
     try {
 
         console.log(
-            "INITIALIZING CHAT..."
+            "INITIALIZING ALTATAWUR CHAT..."
         );
+
 
         const session =
             await getValidSession();
 
+
         currentUser =
             session.user;
+
 
         console.log(
             "CURRENT USER:",
             currentUser.id
         );
 
+
         await loadUserProfile();
 
+
         await loadConversationList();
+
 
         await loadLastConversation();
 
-        /*
-         * نعيد تحميل القائمة بعد فتح آخر محادثة
-         * حتى تظهر حالة active بشكل صحيح.
-         */
 
         await loadConversationList();
 
+
         messageInput.focus();
+
 
     } catch (error) {
 
@@ -3051,22 +3077,23 @@ async function initialize() {
             error
         );
 
+
         window.location.replace(
             "/login.html"
         );
 
     }
-
 }
 
 
-// =========================================================
+// ======================================================
 // START
-// =========================================================
+// ======================================================
 
 initialize();
 
 </script>
 
 </body>
+
 </html>
