@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 
 // ======================================================
-// ENVIRONMENT VARIABLES
+// ENVIRONMENT
 // ======================================================
 
 const SUPABASE_URL =
@@ -19,50 +19,54 @@ const OPENAI_API_KEY =
 
 
 // ======================================================
-// OPENAI CLIENT
+// OPENAI
 // ======================================================
 
-const openai = new OpenAI({
-    apiKey: OPENAI_API_KEY
-});
+const openai =
+    new OpenAI({
+        apiKey:
+            OPENAI_API_KEY
+    });
 
 
 // ======================================================
-// SUPABASE AUTH CLIENT
+// SUPABASE AUTH
 // ======================================================
 
-const supabaseAuth = createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-            detectSessionInUrl: false
+const supabaseAuth =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+                detectSessionInUrl: false
+            }
         }
-    }
-);
+    );
 
 
 // ======================================================
-// SUPABASE ADMIN CLIENT
+// SUPABASE ADMIN
 // ======================================================
 
-const supabaseAdmin = createClient(
-    SUPABASE_URL,
-    SUPABASE_SECRET_KEY,
-    {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-            detectSessionInUrl: false
+const supabaseAdmin =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_SECRET_KEY,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+                detectSessionInUrl: false
+            }
         }
-    }
-);
+    );
 
 
 // ======================================================
-// API HANDLER
+// HANDLER
 // ======================================================
 
 export default async function handler(req, res) {
@@ -74,37 +78,23 @@ export default async function handler(req, res) {
     if (req.method !== "POST") {
 
         return res.status(405).json({
-            error: "Method Not Allowed"
+            error:
+                "Method Not Allowed"
         });
 
     }
 
-
     try {
 
         // ==================================================
-        // ENVIRONMENT CHECK
+        // ENVIRONMENT
         // ==================================================
 
-        if (!SUPABASE_URL) {
-
-            return res.status(500).json({
-                error:
-                    "إعدادات Supabase غير مكتملة."
-            });
-
-        }
-
-        if (!SUPABASE_PUBLISHABLE_KEY) {
-
-            return res.status(500).json({
-                error:
-                    "إعدادات Supabase غير مكتملة."
-            });
-
-        }
-
-        if (!SUPABASE_SECRET_KEY) {
+        if (
+            !SUPABASE_URL ||
+            !SUPABASE_PUBLISHABLE_KEY ||
+            !SUPABASE_SECRET_KEY
+        ) {
 
             return res.status(500).json({
                 error:
@@ -130,10 +120,11 @@ export default async function handler(req, res) {
         const authorization =
             req.headers.authorization;
 
-
         if (
             !authorization ||
-            !authorization.startsWith("Bearer ")
+            !authorization.startsWith(
+                "Bearer "
+            )
         ) {
 
             return res.status(401).json({
@@ -143,12 +134,10 @@ export default async function handler(req, res) {
 
         }
 
-
         const token =
             authorization
                 .substring(7)
                 .trim();
-
 
         if (!token) {
 
@@ -168,8 +157,8 @@ export default async function handler(req, res) {
             data: userData,
             error: userError
         } =
-            await supabaseAuth.auth.getUser(token);
-
+            await supabaseAuth.auth
+                .getUser(token);
 
         if (userError) {
 
@@ -185,7 +174,6 @@ export default async function handler(req, res) {
 
         }
 
-
         if (!userData?.user) {
 
             return res.status(401).json({
@@ -195,24 +183,21 @@ export default async function handler(req, res) {
 
         }
 
-
         const user =
             userData.user;
 
 
         // ==================================================
-        // REQUEST BODY
+        // BODY
         // ==================================================
 
         const body =
             req.body || {};
 
-
         const requestedConversationId =
             typeof body.conversation_id === "string"
                 ? body.conversation_id.trim()
                 : null;
-
 
         const incomingMessage =
             typeof body.message === "string"
@@ -221,7 +206,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // VALIDATE MESSAGE
+        // VALIDATE
         // ==================================================
 
         if (!incomingMessage) {
@@ -233,17 +218,15 @@ export default async function handler(req, res) {
 
         }
 
-
-        // ==================================================
-        // MESSAGE LENGTH LIMIT
-        // ==================================================
-
         const userMessage =
-            incomingMessage.slice(0, 12000);
+            incomingMessage.slice(
+                0,
+                12000
+            );
 
 
         // ==================================================
-        // FIND / CREATE CONVERSATION
+        // CONVERSATION
         // ==================================================
 
         let conversationId =
@@ -251,14 +234,18 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // EXISTING CONVERSATION
+        // EXISTING
         // ==================================================
 
         if (conversationId) {
 
             const {
-                data: existingConversation,
-                error: conversationError
+                data:
+                    existingConversation,
+
+                error:
+                    conversationError
+
             } =
                 await supabaseAdmin
                     .from("conversations")
@@ -290,7 +277,6 @@ export default async function handler(req, res) {
 
             }
 
-
             if (!existingConversation) {
 
                 return res.status(403).json({
@@ -304,7 +290,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // CREATE NEW CONVERSATION
+        // CREATE NEW
         // ==================================================
 
         if (!conversationId) {
@@ -314,19 +300,24 @@ export default async function handler(req, res) {
                     .slice(0, 80) ||
                 "محادثة جديدة";
 
-
             const {
-                data: newConversation,
-                error: createConversationError
+                data:
+                    newConversation,
+
+                error:
+                    createConversationError
+
             } =
                 await supabaseAdmin
                     .from("conversations")
                     .insert({
+
                         user_id:
                             user.id,
 
                         title:
                             title
+
                     })
                     .select(
                         "id,user_id,title"
@@ -348,21 +339,6 @@ export default async function handler(req, res) {
 
             }
 
-
-            if (!newConversation?.id) {
-
-                console.error(
-                    "CREATE CONVERSATION ERROR: No ID returned"
-                );
-
-                return res.status(500).json({
-                    error:
-                        "تعذر إنشاء المحادثة."
-                });
-
-            }
-
-
             conversationId =
                 newConversation.id;
 
@@ -374,7 +350,8 @@ export default async function handler(req, res) {
         // ==================================================
 
         const {
-            error: saveUserMessageError
+            error:
+                saveUserMessageError
         } =
             await supabaseAdmin
                 .from("messages")
@@ -408,12 +385,16 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // LOAD REAL CONVERSATION HISTORY
+        // LOAD HISTORY
         // ==================================================
 
         const {
-            data: savedMessages,
-            error: loadMessagesError
+            data:
+                savedMessages,
+
+            error:
+                loadMessagesError
+
         } =
             await supabaseAdmin
                 .from("messages")
@@ -449,36 +430,38 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // PREPARE OPENAI MESSAGES
+        // OPENAI MESSAGES
         // ==================================================
 
         const safeMessages =
             (savedMessages || [])
-                .map((message) => {
+                .map(
+                    (message) => {
 
-                    const role =
-                        message?.role === "assistant"
-                            ? "assistant"
-                            : "user";
+                        const role =
+                            message?.role ===
+                            "assistant"
+                                ? "assistant"
+                                : "user";
 
+                        const content =
+                            String(
+                                message?.content ||
+                                ""
+                            )
+                                .trim()
+                                .slice(
+                                    0,
+                                    12000
+                                );
 
-                    const content =
-                        String(
-                            message?.content || ""
-                        )
-                            .trim()
-                            .slice(0, 12000);
-
-
-                    return {
-                        role:
+                        return {
                             role,
-
-                        content:
                             content
-                    };
+                        };
 
-                })
+                    }
+                )
                 .filter(
                     message =>
                         message.content.length > 0
@@ -486,7 +469,9 @@ export default async function handler(req, res) {
                 .slice(-30);
 
 
-        if (safeMessages.length === 0) {
+        if (
+            safeMessages.length === 0
+        ) {
 
             return res.status(400).json({
                 error:
@@ -497,7 +482,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // OPENAI REQUEST
+        // OPENAI
         // ==================================================
 
         let response;
@@ -551,17 +536,18 @@ export default async function handler(req, res) {
                 openaiError
             );
 
-
             const openaiMessage =
                 String(
-                    openaiError?.message || ""
+                    openaiError?.message ||
+                    ""
                 );
-
 
             if (
                 openaiMessage
                     .toLowerCase()
-                    .includes("invalid api key")
+                    .includes(
+                        "invalid api key"
+                    )
             ) {
 
                 return res.status(500).json({
@@ -570,7 +556,6 @@ export default async function handler(req, res) {
                 });
 
             }
-
 
             return res.status(500).json({
                 error:
@@ -581,7 +566,7 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // GET ANSWER
+        // ANSWER
         // ==================================================
 
         const answer =
@@ -590,11 +575,12 @@ export default async function handler(req, res) {
 
 
         // ==================================================
-        // SAVE ASSISTANT MESSAGE
+        // SAVE ASSISTANT
         // ==================================================
 
         const {
-            error: saveAssistantError
+            error:
+                saveAssistantError
         } =
             await supabaseAdmin
                 .from("messages")
@@ -632,7 +618,8 @@ export default async function handler(req, res) {
         // ==================================================
 
         const {
-            error: updateConversationError
+            error:
+                updateConversationError
         } =
             await supabaseAdmin
                 .from("conversations")
@@ -652,7 +639,9 @@ export default async function handler(req, res) {
                 );
 
 
-        if (updateConversationError) {
+        if (
+            updateConversationError
+        ) {
 
             console.error(
                 "UPDATE CONVERSATION ERROR:",
@@ -679,18 +668,12 @@ export default async function handler(req, res) {
 
         });
 
-
     } catch (error) {
-
-        // ==================================================
-        // GENERAL ERROR
-        // ==================================================
 
         console.error(
             "CHAT API ERROR:",
             error
         );
-
 
         return res.status(500).json({
             error:
