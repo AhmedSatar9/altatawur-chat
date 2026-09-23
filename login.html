@@ -1,28 +1,40 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     >
 
-    <title>التطور چات - تسجيل الدخول</title>
+    <meta
+        name="theme-color"
+        content="#070b18"
+    >
+
+    <title>التطور چات</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
         * {
             box-sizing: border-box;
         }
 
         html,
         body {
-            margin: 0;
-            padding: 0;
             width: 100%;
             min-height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         body {
@@ -35,21 +47,24 @@
                 Arial,
                 sans-serif;
 
+            color: #ffffff;
+
             background:
                 radial-gradient(
-                    circle at top right,
-                    rgba(124, 77, 255, 0.18),
-                    transparent 35%
+                    circle at 88% 3%,
+                    rgba(128, 85, 246, 0.20),
+                    transparent 31%
                 ),
                 radial-gradient(
-                    circle at bottom left,
-                    rgba(32, 211, 238, 0.12),
-                    transparent 35%
+                    circle at 8% 94%,
+                    rgba(34, 200, 233, 0.13),
+                    transparent 32%
                 ),
-                #050812;
+                #070b18;
 
-            color: #ffffff;
-            min-height: 100vh;
+            min-height: 100dvh;
+
+            overflow-x: hidden;
         }
 
         button,
@@ -61,95 +76,180 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
         .auth-page {
-            min-height: 100vh;
+            width: 100%;
+            min-height: 100dvh;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+
+            padding:
+                28px
+                20px;
+
+            position: relative;
         }
+
+
+        /* =====================================================
+           CARD WRAPPER
+        ===================================================== */
 
         .auth-wrapper {
             width: 100%;
-            max-width: 520px;
+            max-width: 780px;
+
+            display: flex;
+            justify-content: center;
         }
 
-        .auth-card {
-            width: 100%;
-            padding: 36px;
 
-            border-radius: 30px;
+        /* =====================================================
+           AUTH CARD
+        ===================================================== */
+
+        .auth-card {
+
+            width: 100%;
+            max-width: 780px;
+
+            padding:
+                52px
+                54px
+                38px;
+
+            border-radius: 32px;
 
             background:
-                rgba(14, 20, 39, 0.94);
+                rgba(13, 19, 38, 0.93);
 
             border:
                 1px solid
-                rgba(128, 145, 190, 0.20);
+                rgba(135, 150, 195, 0.22);
 
             box-shadow:
-                0 30px 100px
-                rgba(0, 0, 0, 0.40);
+                0 35px 100px
+                rgba(0, 0, 0, 0.38);
+
+            backdrop-filter:
+                blur(25px)
+                saturate(130%);
+
+            -webkit-backdrop-filter:
+                blur(25px)
+                saturate(130%);
 
             text-align: center;
         }
 
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
+
         .logo-box {
-            width: 76px;
-            height: 76px;
+
+            width: 108px;
+            height: 108px;
 
             margin:
-                0 auto 20px;
+                0 auto 28px;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            border-radius: 23px;
+            overflow: hidden;
+
+            border-radius: 31px;
 
             background:
                 linear-gradient(
                     135deg,
                     #8055f6,
-                    #21c7e9
+                    #22c8e9
                 );
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.10);
+
+            box-shadow:
+                0 20px 55px
+                rgba(62, 158, 235, 0.23);
+        }
+
+        .logo-box img {
+
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+        }
+
+
+        /* =====================================================
+           TITLE
+        ===================================================== */
+
+        .auth-card h1 {
+
+            margin:
+                0;
 
             color: #ffffff;
 
-            font-size: 42px;
-            font-weight: 800;
+            font-size: 38px;
 
-            box-shadow:
-                0 15px 35px
-                rgba(45, 180, 235, 0.22);
+            line-height: 1.25;
+
+            font-weight: 750;
+
+            letter-spacing: -0.6px;
         }
 
-        .auth-card h1 {
-            margin: 0;
-            font-size: 34px;
-            line-height: 1.3;
-        }
 
         .auth-subtitle {
-            margin:
-                10px 0 28px;
 
-            color: #929ab4;
-            font-size: 16px;
-            line-height: 1.7;
+            margin:
+                13px 0 31px;
+
+            color: #858da8;
+
+            font-size: 17px;
+
+            line-height: 1.8;
         }
 
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
         .message {
+
             display: none;
 
+            width: 100%;
+
             padding:
-                14px 16px;
+                13px
+                16px;
 
             margin-bottom: 20px;
 
-            border-radius: 17px;
+            border-radius: 16px;
 
-            font-size: 15px;
+            font-size: 14px;
+
             line-height: 1.7;
 
             text-align: right;
@@ -160,6 +260,7 @@
         }
 
         .message.error {
+
             color: #ffb2bd;
 
             background:
@@ -167,10 +268,11 @@
 
             border:
                 1px solid
-                rgba(255, 65, 92, 0.30);
+                rgba(255, 65, 92, 0.28);
         }
 
         .message.success {
+
             color: #79e8c0;
 
             background:
@@ -178,54 +280,90 @@
 
             border:
                 1px solid
-                rgba(57, 220, 163, 0.30);
+                rgba(57, 220, 163, 0.28);
         }
+
+
+        /* =====================================================
+           TABS
+        ===================================================== */
 
         .auth-tabs {
+
+            width: 100%;
+
             display: flex;
+
             gap: 5px;
 
-            padding: 5px;
-            margin-bottom: 25px;
+            padding: 6px;
 
-            border-radius: 18px;
+            margin-bottom: 30px;
 
-            background: #070c19;
+            border-radius: 21px;
+
+            background:
+                #050a17;
         }
 
+
         .auth-tab {
+
             flex: 1;
 
-            height: 52px;
+            height: 58px;
+
+            padding: 0;
 
             border: 0;
-            border-radius: 14px;
 
-            background: transparent;
+            border-radius: 17px;
 
-            color: #8f97ae;
+            background:
+                transparent;
 
-            font-size: 16px;
+            color: #858da7;
+
+            font-size: 17px;
+
+            font-weight: 500;
 
             cursor: pointer;
 
             transition:
-                0.2s ease;
+                background 0.20s ease,
+                color 0.20s ease,
+                transform 0.15s ease;
+        }
+
+        .auth-tab:active {
+            transform: scale(0.98);
         }
 
         .auth-tab.active {
-            background: #121a31;
+
             color: #ffffff;
 
+            background:
+                #151e38;
+
             box-shadow:
-                0 5px 20px
-                rgba(0, 0, 0, 0.15);
+                0 7px 22px
+                rgba(0, 0, 0, 0.16);
         }
 
+
+        /* =====================================================
+           FORMS
+        ===================================================== */
+
         .auth-form {
+
             display: none;
 
             flex-direction: column;
+
+            width: 100%;
 
             text-align: right;
 
@@ -236,65 +374,114 @@
             display: flex;
         }
 
+
+        /* =====================================================
+           LABELS
+        ===================================================== */
+
         .auth-form label {
-            margin-top: 7px;
 
-            color: #d7dbea;
+            margin-top: 9px;
 
-            font-size: 15px;
+            color: #d8dceb;
+
+            font-size: 16px;
+
+            line-height: 1.5;
+
+            font-weight: 500;
         }
 
+
+        /* =====================================================
+           INPUTS
+        ===================================================== */
+
         .auth-form input {
+
             width: 100%;
-            height: 58px;
+
+            height: 62px;
 
             padding:
-                0 17px;
-
-            border-radius: 17px;
+                0 19px;
 
             border:
                 1px solid
-                rgba(129, 143, 180, 0.20);
+                rgba(130, 145, 190, 0.20);
+
+            border-radius: 19px;
 
             outline: none;
 
-            background: #070c19;
+            background:
+                #060b19;
 
             color: #ffffff;
 
-            font-size: 16px;
+            font-size: 17px;
 
             direction: rtl;
 
             transition:
-                0.2s ease;
+                border-color 0.20s ease,
+                box-shadow 0.20s ease,
+                background 0.20s ease;
         }
+
 
         .auth-form input::placeholder {
-            color: #59627a;
+            color: #58627d;
         }
 
+
         .auth-form input:focus {
-            border-color: #45c8ed;
+
+            border-color:
+                rgba(69, 200, 237, 0.65);
+
+            background:
+                #080e1d;
 
             box-shadow:
                 0 0 0 3px
-                rgba(69, 200, 237, 0.10);
+                rgba(69, 200, 237, 0.09);
         }
 
-        .primary-button {
-            width: 100%;
-            height: 60px;
 
-            margin-top: 17px;
+        /* البريد الإلكتروني يكون LTR */
+
+        #loginEmail,
+        #registerEmail {
+
+            direction: ltr;
+
+            text-align: left;
+        }
+
+
+        /* =====================================================
+           PRIMARY BUTTON
+        ===================================================== */
+
+        .primary-button {
+
+            width: 100%;
+
+            height: 64px;
+
+            margin-top: 20px;
+
+            padding: 0;
 
             border: 0;
-            border-radius: 18px;
+
+            border-radius: 20px;
 
             color: #ffffff;
 
-            font-size: 18px;
+            font-size: 19px;
+
             font-weight: 700;
 
             cursor: pointer;
@@ -307,35 +494,60 @@
                 );
 
             box-shadow:
-                0 10px 30px
-                rgba(72, 164, 230, 0.16);
+                0 14px 35px
+                rgba(67, 166, 230, 0.17);
 
             transition:
                 transform 0.15s ease,
-                opacity 0.15s ease;
+                opacity 0.15s ease,
+                box-shadow 0.15s ease;
         }
+
 
         .primary-button:active {
-            transform: scale(0.98);
+
+            transform:
+                scale(0.985);
+
+            box-shadow:
+                0 8px 20px
+                rgba(67, 166, 230, 0.12);
         }
 
+
         .primary-button:disabled {
+
             opacity: 0.60;
+
             cursor: wait;
         }
 
-        .terms {
-            margin:
-                25px 0 0;
 
-            color: #727c97;
+        /* =====================================================
+           TERMS
+        ===================================================== */
+
+        .terms {
+
+            margin:
+                27px auto 0;
+
+            max-width: 600px;
+
+            color: #737d98;
 
             font-size: 13px;
 
-            line-height: 1.8;
+            line-height: 1.9;
         }
 
+
+        /* =====================================================
+           BACK LINK
+        ===================================================== */
+
         .back-link {
+
             display: inline-block;
 
             margin-top: 18px;
@@ -345,56 +557,235 @@
             font-size: 14px;
 
             text-decoration: none;
+
+            transition:
+                color 0.15s ease;
         }
 
         .back-link:hover {
             color: #ffffff;
         }
 
-        @media (max-width: 600px) {
 
-            .auth-page {
-                padding: 14px;
-            }
+        /* =====================================================
+           DESKTOP
+        ===================================================== */
+
+        @media (min-width: 701px) {
 
             .auth-card {
+                min-height: 700px;
+            }
+
+        }
+
+
+        /* =====================================================
+           TABLET / MOBILE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            body {
+                overflow-y: auto;
+            }
+
+            .auth-page {
+
+                min-height: 100dvh;
+
+                align-items: flex-start;
+
                 padding:
-                    28px 18px;
+                    28px
+                    14px
+                    calc(
+                        28px +
+                        env(safe-area-inset-bottom)
+                    );
+            }
+
+
+            .auth-wrapper {
+                max-width: 100%;
+            }
+
+
+            .auth-card {
+
+                width: 100%;
+
+                padding:
+                    32px
+                    18px
+                    27px;
+
+                border-radius: 27px;
+            }
+
+
+            .logo-box {
+
+                width: 88px;
+                height: 88px;
+
+                margin-bottom: 23px;
+
+                border-radius: 27px;
+            }
+
+
+            .auth-card h1 {
+
+                font-size: 30px;
+
+                letter-spacing: -0.4px;
+            }
+
+
+            .auth-subtitle {
+
+                margin:
+                    10px 0 25px;
+
+                font-size: 15px;
+
+                line-height: 1.8;
+            }
+
+
+            .auth-tabs {
+
+                margin-bottom: 24px;
+
+                border-radius: 19px;
+            }
+
+
+            .auth-tab {
+
+                height: 55px;
+
+                border-radius: 15px;
+
+                font-size: 16px;
+            }
+
+
+            .auth-form label {
+
+                font-size: 15px;
+            }
+
+
+            .auth-form input {
+
+                height: 58px;
+
+                border-radius: 17px;
+
+                padding:
+                    0 16px;
+
+                font-size: 16px;
+            }
+
+
+            .primary-button {
+
+                height: 60px;
+
+                border-radius: 18px;
+
+                font-size: 18px;
+            }
+
+
+            .terms {
+
+                margin-top: 23px;
+
+                font-size: 12.5px;
+            }
+
+        }
+
+
+        /* =====================================================
+           SMALL PHONES
+        ===================================================== */
+
+        @media (max-width: 380px) {
+
+            .auth-page {
+
+                padding:
+                    18px
+                    9px
+                    24px;
+            }
+
+
+            .auth-card {
+
+                padding:
+                    27px
+                    15px
+                    23px;
 
                 border-radius: 24px;
             }
 
+
             .logo-box {
-                width: 68px;
-                height: 68px;
 
-                border-radius: 20px;
+                width: 78px;
+                height: 78px;
 
-                font-size: 37px;
+                border-radius: 24px;
             }
+
 
             .auth-card h1 {
-                font-size: 29px;
+                font-size: 27px;
             }
+
 
             .auth-subtitle {
                 font-size: 14px;
-                margin-bottom: 22px;
             }
+
+
+            .auth-tabs {
+                padding: 5px;
+            }
+
+
+            .auth-tab {
+                height: 52px;
+                font-size: 15px;
+            }
+
 
             .auth-form input {
-                height: 56px;
+                height: 55px;
             }
+
 
             .primary-button {
-                height: 58px;
+                height: 57px;
                 font-size: 17px;
             }
+
         }
+
     </style>
+
 </head>
 
+
 <body>
+
 
 <div class="auth-page">
 
@@ -402,23 +793,49 @@
 
         <div class="auth-card">
 
+
+            <!-- =================================================
+                 LOGO
+            ================================================== -->
+
             <div class="logo-box">
-                ت
+
+                <img
+                    src="/assets/altatawur-robot-logo.jpeg"
+                    alt="التطور چات"
+                >
+
             </div>
+
+
+            <!-- =================================================
+                 TITLE
+            ================================================== -->
 
             <h1>
                 التطور چات
             </h1>
+
 
             <p class="auth-subtitle">
                 سجّل دخولك حتى تبدأ محادثاتك
                 مع المساعد الذكي.
             </p>
 
+
+            <!-- =================================================
+                 MESSAGE
+            ================================================== -->
+
             <div
                 id="message"
                 class="message"
             ></div>
+
+
+            <!-- =================================================
+                 TABS
+            ================================================== -->
 
             <div class="auth-tabs">
 
@@ -430,6 +847,7 @@
                     تسجيل الدخول
                 </button>
 
+
                 <button
                     id="registerTab"
                     class="auth-tab"
@@ -439,6 +857,11 @@
                 </button>
 
             </div>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
 
             <form
                 id="loginForm"
@@ -450,6 +873,7 @@
                     البريد الإلكتروني
                 </label>
 
+
                 <input
                     id="loginEmail"
                     type="email"
@@ -458,9 +882,11 @@
                     required
                 >
 
+
                 <label for="loginPassword">
                     كلمة المرور
                 </label>
+
 
                 <input
                     id="loginPassword"
@@ -469,6 +895,7 @@
                     autocomplete="current-password"
                     required
                 >
+
 
                 <button
                     id="loginButton"
@@ -480,6 +907,11 @@
 
             </form>
 
+
+            <!-- =================================================
+                 REGISTER FORM
+            ================================================== -->
+
             <form
                 id="registerForm"
                 class="auth-form"
@@ -489,6 +921,7 @@
                 <label for="registerUsername">
                     اسم المستخدم
                 </label>
+
 
                 <input
                     id="registerUsername"
@@ -500,9 +933,11 @@
                     required
                 >
 
+
                 <label for="registerEmail">
                     البريد الإلكتروني
                 </label>
+
 
                 <input
                     id="registerEmail"
@@ -512,9 +947,11 @@
                     required
                 >
 
+
                 <label for="registerPassword">
                     كلمة المرور
                 </label>
+
 
                 <input
                     id="registerPassword"
@@ -525,9 +962,11 @@
                     required
                 >
 
+
                 <label for="registerConfirmPassword">
                     تأكيد كلمة المرور
                 </label>
+
 
                 <input
                     id="registerConfirmPassword"
@@ -537,6 +976,7 @@
                     minlength="8"
                     required
                 >
+
 
                 <button
                     id="registerButton"
@@ -548,10 +988,20 @@
 
             </form>
 
+
+            <!-- =================================================
+                 TERMS
+            ================================================== -->
+
             <p class="terms">
                 باستخدامك التطور چات، أنت توافق
                 على استخدام الخدمة وفق إعدادات المنصة.
             </p>
+
+
+            <!-- =================================================
+                 BACK
+            ================================================== -->
 
             <a
                 href="/"
@@ -560,11 +1010,21 @@
                 العودة إلى التطور چات
             </a>
 
+
         </div>
+
     </div>
+
 </div>
+
+
+<!-- =========================================================
+     AUTH JAVASCRIPT
+========================================================= -->
 
 <script src="/login.js?v=5"></script>
 
+
 </body>
+
 </html>
