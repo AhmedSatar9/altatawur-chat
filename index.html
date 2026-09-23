@@ -86,330 +86,219 @@
 
 
         /* =====================================================
-   HEADER — iPhone Floating Style
-===================================================== */
+           HEADER — ChatGPT Style Floating Sections
+        ===================================================== */
 
-.topbar {
-    position: absolute;
+        .topbar {
+            position: absolute;
 
-    top: 8px;
-    left: 9px;
-    right: 9px;
+            top: 14px;
+            left: 16px;
+            right: 16px;
 
-    width: auto;
-    height: 64px;
+            height: 58px;
 
-    margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-    padding:
-        8px
-        12px;
+            pointer-events: none;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+            z-index: 20;
 
-    background:
-        rgba(10, 15, 30, 0.58);
+            direction: ltr;
+        }
 
-    border:
-        1px solid
-        rgba(140, 155, 200, 0.16);
 
-    border-radius: 21px;
+        /* =====================================================
+           RIGHT BRAND BUBBLE
+        ===================================================== */
 
-    backdrop-filter:
-        blur(18px)
-        saturate(140%);
+        .brand {
+            height: 54px;
 
-    -webkit-backdrop-filter:
-        blur(18px)
-        saturate(140%);
+            display: flex;
+            align-items: center;
 
-    box-shadow:
-        0 8px 30px
-        rgba(0, 0, 0, 0.16);
+            gap: 9px;
 
-    z-index: 20;
-}
+            padding:
+                5px
+                13px
+                5px
+                6px;
 
+            direction: rtl;
 
-/* اسم الموقع */
+            background:
+                rgba(10, 15, 30, 0.52);
 
-.brand {
-    display: flex;
+            border:
+                1px solid
+                rgba(140, 155, 200, 0.15);
 
-    align-items: center;
+            border-radius: 18px;
 
-    min-width: 0;
+            backdrop-filter:
+                blur(18px)
+                saturate(140%);
 
-    direction: rtl;
-}
+            -webkit-backdrop-filter:
+                blur(18px)
+                saturate(140%);
 
-.brand-info {
-    min-width: 0;
-}
+            box-shadow:
+                0 8px 30px
+                rgba(0, 0, 0, 0.14);
 
-.brand-info h1 {
-    margin: 0;
+            pointer-events: auto;
+        }
 
-    color: #ffffff;
 
-    font-size: 21px;
+        /* شعار الموقع */
 
-    line-height: 1.2;
+        .brand-logo {
+            width: 43px;
+            height: 43px;
 
-    font-weight: 750;
+            flex: 0 0 43px;
 
-    white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    letter-spacing: -0.3px;
-}
+            overflow: hidden;
 
+            border-radius: 14px;
 
-/* أزرار الهيدر */
+            background:
+                rgba(255, 255, 255, 0.055);
 
-.header-actions {
-    display: flex;
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+        }
 
-    align-items: center;
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
 
-    gap: 7px;
+            display: block;
 
-    direction: ltr;
-}
+            object-fit: cover;
+        }
 
 
-/* زر عام */
+        /* اسم الموقع */
 
-.header-button {
-    height: 44px;
+        .brand-info {
+            min-width: 0;
+        }
 
-    display: flex;
+        .brand-info h1 {
+            margin: 0;
 
-    align-items: center;
+            color: #ffffff;
 
-    justify-content: center;
+            font-size: 19px;
 
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.08);
+            line-height: 1.2;
 
-    border-radius: 15px;
+            font-weight: 750;
 
-    color: #ffffff;
+            white-space: nowrap;
 
-    background:
-        rgba(255, 255, 255, 0.055);
+            letter-spacing: -0.3px;
+        }
 
-    cursor: pointer;
 
-    transition:
-        transform 0.15s ease,
-        background 0.15s ease;
-}
+        /* =====================================================
+           LEFT HEADER ACTIONS
+        ===================================================== */
 
-.header-button:active {
-    transform: scale(0.95);
+        .header-actions {
+            display: flex;
 
-    background:
-        rgba(255, 255, 255, 0.10);
-}
+            align-items: center;
 
+            gap: 7px;
 
-/* محادثة جديدة */
+            direction: ltr;
 
-.new-chat-button {
-    padding:
-        0
-        13px;
+            pointer-events: auto;
+        }
 
-    font-size: 13px;
 
-    white-space: nowrap;
-}
+        /* زر عام */
 
+        .header-button {
+            width: 46px;
+            height: 46px;
 
-/* زر القائمة */
+            padding: 0;
 
-.menu-button {
-    width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    padding: 0;
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.09);
 
-    font-size: 21px;
+            border-radius: 16px;
 
-    font-weight: 500;
-}
+            color: #ffffff;
 
+            background:
+                rgba(10, 15, 30, 0.52);
 
-/* =====================================================
-   تعديل مساحة المحادثة بسبب الهيدر العائم
-===================================================== */
+            backdrop-filter:
+                blur(18px)
+                saturate(140%);
 
-.chat-area {
-    padding-top: 0;
-}
+            -webkit-backdrop-filter:
+                blur(18px)
+                saturate(140%);
 
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.14);
 
-/* =====================================================
-   MOBILE HEADER
-===================================================== */
+            cursor: pointer;
 
-@@media (max-width: 700px) {
+            transition:
+                transform 0.15s ease,
+                background 0.15s ease;
+        }
 
-    .topbar {
-        top: 8px;
-        left: 9px;
-        right: 9px;
+        .header-button:active {
+            transform: scale(0.92);
 
-        height: 64px;
+            background:
+                rgba(255, 255, 255, 0.10);
+        }
 
-        padding:
-            8px
-            12px;
 
-        border-radius: 21px;
-    }
+        /* محادثة جديدة */
 
-    .brand {
-        gap: 9px;
-    }
+        .new-chat-button {
+            font-size: 25px;
 
-    .brand-info h1 {
-        font-size: 20px;
-    }
+            font-weight: 300;
 
-    .online-status {
-        font-size: 11px;
-    }
+            line-height: 1;
+        }
 
-    .header-actions {
-        gap: 6px;
-    }
 
-    .new-chat-button {
-        display: none;
-    }
+        /* زر القائمة */
 
-    .menu-button {
-        width: 43px;
-        height: 43px;
-    }
+        .menu-button {
+            font-size: 22px;
 
-    .messages {
-        padding:
-            92px
-            12px
-            135px;
-    }
+            font-weight: 500;
 
-    .welcome {
-        padding:
-            15px
-            0
-            80px;
-    }
-
-    .welcome-logo {
-        width: 66px;
-        height: 66px;
-
-        border-radius: 21px;
-
-        font-size: 34px;
-    }
-
-    .welcome h2 {
-        font-size: 25px;
-    }
-
-    .welcome p {
-        font-size: 14px;
-    }
-
-    .suggestions {
-        grid-template-columns: 1fr;
-
-        margin-top: 22px;
-    }
-
-    .suggestion {
-        min-height: 54px;
-    }
-
-    .message-bubble {
-        max-width: 88%;
-
-        font-size: 15px;
-
-        padding:
-            12px
-            14px;
-    }
-
-    .composer-wrap {
-        padding:
-            9px
-            10px
-            calc(
-                9px +
-                env(safe-area-inset-bottom)
-            );
-    }
-
-    .composer {
-        border-radius: 20px;
-    }
-
-    .message-input {
-        font-size: 15px;
-
-        min-height: 47px;
-    }
-
-    .send-button {
-        width: 49px;
-        height: 49px;
-
-        flex-basis: 49px;
-
-        border-radius: 15px;
-
-        font-size: 25px;
-    }
-
-    .side-menu {
-        width: 90vw;
-    }
-}
-
-
-/* =====================================================
-   SMALL PHONES
-===================================================== */
-
-@media (max-width: 380px) {
-
-    .topbar {
-        left: 8px;
-        right: 8px;
-
-        padding-left: 13px;
-    }
-
-    .brand-info h1 {
-        font-size: 18px;
-    }
-
-    .new-chat-button {
-        padding:
-            0
-            9px;
-
-        font-size: 11px;
-    }
-}
+            line-height: 1;
+        }
 
 
         /* =====================================================
@@ -417,45 +306,46 @@
         ===================================================== */
 
         .chat-area {
-    flex: 1;
+            flex: 1;
 
-    min-height: 0;
+            min-height: 0;
 
-    width: 100%;
+            width: 100%;
 
-    position: relative;
+            position: relative;
 
-    display: flex;
-    flex-direction: column;
+            display: flex;
+            flex-direction: column;
 
-    overflow: hidden;
-}
+            overflow: hidden;
+        }
+
 
         .messages {
-    flex: 1;
+            flex: 1;
 
-    width: 100%;
+            width: 100%;
 
-    max-width: 980px;
+            max-width: 980px;
 
-    margin: 0 auto;
+            margin: 0 auto;
 
-    padding:
-        92px
-        20px
-        145px;
+            padding:
+                92px
+                20px
+                145px;
 
-    overflow-y: auto;
-    overflow-x: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
 
-    scroll-behavior: smooth;
+            scroll-behavior: smooth;
 
-    scrollbar-width: thin;
+            scrollbar-width: thin;
 
-    scrollbar-color:
-        rgba(120, 130, 170, 0.30)
-        transparent;
-}
+            scrollbar-color:
+                rgba(120, 130, 170, 0.30)
+                transparent;
+        }
 
         .messages::-webkit-scrollbar {
             width: 5px;
@@ -497,6 +387,7 @@
 
             text-align: center;
         }
+
 
         /* =====================================================
            LOGO - WELCOME
@@ -1198,50 +1089,65 @@
         @media (max-width: 700px) {
 
             .topbar {
-                height: 70px;
+                top: 10px;
 
-                padding:
-                    10px
-                    13px;
+                left: 13px;
+                right: 13px;
+
+                height: 60px;
             }
 
             .brand {
-                gap: 9px;
+                height: 54px;
+
+                gap: 8px;
+
+                padding:
+                    5px
+                    11px
+                    5px
+                    5px;
+
+                border-radius: 18px;
             }
 
             .brand-logo {
-                width: 44px;
-                height: 44px;
+                width: 42px;
+                height: 42px;
 
-                flex-basis: 44px;
+                flex-basis: 42px;
 
-                border-radius: 14px;
+                border-radius: 13px;
             }
 
             .brand-info h1 {
-                font-size: 20px;
-            }
-
-            .online-status {
-                font-size: 11px;
+                font-size: 19px;
             }
 
             .header-actions {
                 gap: 6px;
             }
 
+            .header-button {
+                width: 45px;
+                height: 45px;
+
+                border-radius: 15px;
+            }
+
             .new-chat-button {
-                display: none;
+                display: flex;
+
+                font-size: 25px;
             }
 
             .menu-button {
-                width: 43px;
-                height: 43px;
+                font-size: 21px;
             }
 
             .messages {
                 padding:
-                    18px
+                    86px
                     12px
                     135px;
             }
@@ -1324,17 +1230,36 @@
             }
         }
 
+
+        /* =====================================================
+           SMALL PHONES
+        ===================================================== */
+
         @media (max-width: 380px) {
 
-            .brand-info h1 {
-                font-size: 18px;
+            .topbar {
+                left: 9px;
+                right: 9px;
+            }
+
+            .brand {
+                padding-right: 9px;
             }
 
             .brand-logo {
-                width: 41px;
-                height: 41px;
+                width: 40px;
+                height: 40px;
 
-                flex-basis: 41px;
+                flex-basis: 40px;
+            }
+
+            .brand-info h1 {
+                font-size: 17px;
+            }
+
+            .header-button {
+                width: 43px;
+                height: 43px;
             }
 
             .message-bubble {
@@ -1351,45 +1276,75 @@
 
 <div class="app">
 
+
+    <!-- =====================================================
+         HEADER
+    ===================================================== -->
+
     <header class="topbar">
 
-    <!-- اسم الموقع -->
-    <div class="brand">
 
-        <div class="brand-info">
+        <!-- =================================================
+             RIGHT — BRAND
+        ================================================= -->
 
-            <h1>
-                التطور چات
-            </h1>
+        <div class="brand">
+
+            <div class="brand-logo">
+
+                <img
+                    src="/assets/altatawur-robot-logo.jpeg"
+                    alt="التطور چات"
+                >
+
+            </div>
+
+            <div class="brand-info">
+
+                <h1>
+                    التطور چات
+                </h1>
+
+            </div>
 
         </div>
 
-    </div>
+
+        <!-- =================================================
+             LEFT — ACTIONS
+        ================================================= -->
+
+        <div class="header-actions">
 
 
-    <!-- أزرار الهيدر -->
-    <div class="header-actions">
+            <!-- محادثة جديدة -->
 
-        <button
-            id="newChatButton"
-            class="header-button new-chat-button"
-            type="button"
-        >
-            + محادثة جديدة
-        </button>
+            <button
+                id="newChatButton"
+                class="header-button new-chat-button"
+                type="button"
+                aria-label="محادثة جديدة"
+                title="محادثة جديدة"
+            >
+                +
+            </button>
 
-        <button
-            id="menuButton"
-            class="header-button menu-button"
-            type="button"
-            aria-label="فتح القائمة"
-        >
-            ☰
-        </button>
 
-    </div>
+            <!-- القائمة -->
 
-</header>
+            <button
+                id="menuButton"
+                class="header-button menu-button"
+                type="button"
+                aria-label="فتح القائمة"
+                title="القائمة"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
 
 
     <main class="chat-area">
@@ -1407,10 +1362,12 @@
                 <div class="welcome-content">
 
                     <div class="welcome-logo">
+
                         <img
                             src="/assets/altatawur-robot-logo.jpeg"
                             alt="التطور چات"
                         >
+
                     </div>
 
                     <h2>
@@ -2798,11 +2755,6 @@ async function sendMessage() {
             );
         }
 
-
-        /*
-         * إذا فشلت العملية قبل إنشاء المحادثة،
-         * نحذف الرسالة من السياق المحلي.
-         */
 
         if (
             !currentConversationId &&
