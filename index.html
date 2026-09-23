@@ -90,46 +90,44 @@
 ===================================================== */
 
 .topbar {
-    position: fixed;
+    flex: 0 0 auto;
 
-    top: 12px;
-    left: 14px;
-    right: 14px;
+    height: 82px;
 
-    z-index: 80;
-
-    height: 64px;
+    margin: 10px 14px 0;
 
     padding:
-        8px
         10px
-        8px
         18px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     background:
-        rgba(12, 12, 14, 0.94);
+        rgba(10, 15, 30, 0.58);
 
     border:
         1px solid
-        rgba(255, 255, 255, 0.08);
+        rgba(255, 255, 255, 0.10);
 
-    border-radius: 22px;
-
-    box-shadow:
-        0 12px 35px
-        rgba(0, 0, 0, 0.30);
+    border-radius: 24px;
 
     backdrop-filter:
-        blur(25px);
+        blur(18px)
+        saturate(140%);
 
     -webkit-backdrop-filter:
-        blur(25px);
+        blur(18px)
+        saturate(140%);
+
+    box-shadow:
+        0 8px 30px
+        rgba(0, 0, 0, 0.18);
+
+    position: relative;
+
+    z-index: 20;
 }
 
 
