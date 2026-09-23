@@ -256,60 +256,131 @@
    MOBILE HEADER
 ===================================================== */
 
-@media (max-width: 700px) {
+@@media (max-width: 700px) {
 
     .topbar {
-    height: 64px;
+        top: 8px;
+        left: 9px;
+        right: 9px;
 
-    margin: 8px 9px 0;
-
-    padding:
-        8px
-        12px;
-
-    border-radius: 21px;
-
-    background:
-        rgba(10, 15, 30, 0.58);
-
-    backdrop-filter:
-        blur(18px)
-        saturate(140%);
-
-    -webkit-backdrop-filter:
-        blur(18px)
-        saturate(140%);
-}
-
-    .brand-info h1 {
-        font-size: 19px;
-    }
-
-    .header-actions {
-        gap: 5px;
-    }
-
-    .new-chat-button {
-        display: flex;
-
-        height: 42px;
+        height: 64px;
 
         padding:
-            0
-            11px;
+            8px
+            12px;
 
-        font-size: 12px;
+        border-radius: 21px;
     }
 
-    .menu-button {
-        width: 42px;
-        height: 42px;
+    .brand {
+        gap: 9px;
+    }
 
+    .brand-info h1 {
         font-size: 20px;
     }
 
-    .chat-area {
-        padding-top: 0;
+    .online-status {
+        font-size: 11px;
+    }
+
+    .header-actions {
+        gap: 6px;
+    }
+
+    .new-chat-button {
+        display: none;
+    }
+
+    .menu-button {
+        width: 43px;
+        height: 43px;
+    }
+
+    .messages {
+        padding:
+            92px
+            12px
+            135px;
+    }
+
+    .welcome {
+        padding:
+            15px
+            0
+            80px;
+    }
+
+    .welcome-logo {
+        width: 66px;
+        height: 66px;
+
+        border-radius: 21px;
+
+        font-size: 34px;
+    }
+
+    .welcome h2 {
+        font-size: 25px;
+    }
+
+    .welcome p {
+        font-size: 14px;
+    }
+
+    .suggestions {
+        grid-template-columns: 1fr;
+
+        margin-top: 22px;
+    }
+
+    .suggestion {
+        min-height: 54px;
+    }
+
+    .message-bubble {
+        max-width: 88%;
+
+        font-size: 15px;
+
+        padding:
+            12px
+            14px;
+    }
+
+    .composer-wrap {
+        padding:
+            9px
+            10px
+            calc(
+                9px +
+                env(safe-area-inset-bottom)
+            );
+    }
+
+    .composer {
+        border-radius: 20px;
+    }
+
+    .message-input {
+        font-size: 15px;
+
+        min-height: 47px;
+    }
+
+    .send-button {
+        width: 49px;
+        height: 49px;
+
+        flex-basis: 49px;
+
+        border-radius: 15px;
+
+        font-size: 25px;
+    }
+
+    .side-menu {
+        width: 90vw;
     }
 }
 
