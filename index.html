@@ -90,21 +90,20 @@
 ===================================================== */
 
 .topbar {
-    position: fixed;
+    position: absolute;
 
-    top: 10px;
-    left: 10px;
-    right: 10px;
+    top: 8px;
+    left: 9px;
+    right: 9px;
 
-    z-index: 80;
-
+    width: auto;
     height: 64px;
+
+    margin: 0;
 
     padding:
         8px
-        12px
-        8px
-        16px;
+        12px;
 
     display: flex;
     align-items: center;
@@ -115,13 +114,9 @@
 
     border:
         1px solid
-        rgba(255, 255, 255, 0.10);
+        rgba(140, 155, 200, 0.16);
 
     border-radius: 21px;
-
-    box-shadow:
-        0 8px 30px
-        rgba(0, 0, 0, 0.18);
 
     backdrop-filter:
         blur(18px)
@@ -130,6 +125,12 @@
     -webkit-backdrop-filter:
         blur(18px)
         saturate(140%);
+
+    box-shadow:
+        0 8px 30px
+        rgba(0, 0, 0, 0.16);
+
+    z-index: 20;
 }
 
 
@@ -345,43 +346,45 @@
         ===================================================== */
 
         .chat-area {
-            flex: 1;
+    flex: 1;
 
-            min-height: 0;
+    min-height: 0;
 
-            width: 100%;
+    width: 100%;
 
-            position: relative;
+    position: relative;
 
-            display: flex;
-            flex-direction: column;
-        }
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
 
         .messages {
-            flex: 1;
+    flex: 1;
 
-            width: 100%;
+    width: 100%;
 
-            max-width: 980px;
+    max-width: 980px;
 
-            margin: 0 auto;
+    margin: 0 auto;
 
-            padding:
-                24px
-                20px
-                145px;
+    padding:
+        92px
+        20px
+        145px;
 
-            overflow-y: auto;
-            overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-            scroll-behavior: smooth;
+    scroll-behavior: smooth;
 
-            scrollbar-width: thin;
+    scrollbar-width: thin;
 
-            scrollbar-color:
-                rgba(120, 130, 170, 0.30)
-                transparent;
-        }
+    scrollbar-color:
+        rgba(120, 130, 170, 0.30)
+        transparent;
+}
 
         .messages::-webkit-scrollbar {
             width: 5px;
