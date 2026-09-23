@@ -898,18 +898,41 @@
         }
 
         .conversation-list {
-            display: flex;
+    display: flex;
 
-            flex-direction: column;
+    flex-direction: column;
 
-            gap: 7px;
+    gap: 7px;
 
-            max-height: 43vh;
+    max-height: 55vh;
 
-            overflow-y: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-            padding-left: 2px;
-        }
+    padding-left: 2px;
+    padding-right: 2px;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(120, 130, 170, 0.30)
+        transparent;
+}
+
+.conversation-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.conversation-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.conversation-list::-webkit-scrollbar-thumb {
+    background:
+        rgba(120, 130, 170, 0.30);
+
+    border-radius: 20px;
+}
 
         .conversation-item {
             width: 100%;
