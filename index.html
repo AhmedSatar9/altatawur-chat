@@ -1786,6 +1786,7 @@ function startNewChat() {
         return;
     }
 
+    // إلغاء المحادثة الحالية محليًا
     currentConversationId = null;
 
     conversation = [];
@@ -1794,12 +1795,20 @@ function startNewChat() {
         CURRENT_CONVERSATION_KEY
     );
 
+    // تنظيف واجهة الرسائل
     resetChatUI();
 
-    renderConversationList();
+    // إزالة التحديد من جميع المحادثات
+    document
+        .querySelectorAll(".conversation-item")
+        .forEach(item => {
+            item.classList.remove("active");
+        });
 
+    // إغلاق القائمة
     closeMenuPanel();
 
+    // وضع المؤشر داخل مربع الكتابة
     messageInput.focus();
 
     showToast(
